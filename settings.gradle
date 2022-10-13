@@ -1,2 +1,1 @@
-rootProject.name = 'traffic-light-simulator'
-
+include 'desktop', 'core'
