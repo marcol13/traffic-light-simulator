@@ -5,16 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dba55210-8f1e-4f56-8a7d-8e06ced278e9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Car.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/City.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Crossing.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Direction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Lane.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Light.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/CityGenerator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/city_generator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/UrbanTrafficFlowSimulation.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/UrbanTrafficFlowSimulation.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -113,8 +107,24 @@
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.put.urbantraffic" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/core/src/com/put/urbantraffic" />
+    </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.CityGenerator">
+    <configuration name="CityGenerator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.put.urbantraffic.CityGenerator" />
+      <module name="traffic-light-simulator.core.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.put.urbantraffic.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="ClojureREPL" factoryName="Local" activateToolWindowBeforeRun="false">
       <setting name="displayName" value="" />
       <setting name="replType" value="NREPL" />
@@ -161,6 +171,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.CityGenerator" />
         <item itemvalue="Gradle.traffic-light-simulator:desktop [run]" />
       </list>
     </recent_temporary>
@@ -173,7 +184,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1665689010531</updated>
-      <workItem from="1665689014382" duration="2840000" />
+      <workItem from="1665689014382" duration="3221000" />
+      <workItem from="1665824302817" duration="2348000" />
     </task>
     <servers />
   </component>
@@ -190,5 +202,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
