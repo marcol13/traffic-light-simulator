@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dba55210-8f1e-4f56-8a7d-8e06ced278e9" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/UrbanTrafficFlowSimulation.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/UrbanTrafficFlowSimulation.java" afterDir="false" />
     </list>
@@ -83,6 +84,9 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="2G5qtiU6zmLQTDfB6Y7TapCD7j6" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -93,7 +97,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Downloads/test" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -107,6 +111,9 @@
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.put.urbantraffic" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Pawel\Documents\GitHub\traffic-light-simulator\core\src\com\put\urbantraffic" />
     </key>
   </component>
   <component name="RunManager">
@@ -169,6 +176,8 @@
       <option name="presentableId" value="Default" />
       <updated>1665689010531</updated>
       <workItem from="1665689014382" duration="2840000" />
+      <workItem from="1665838844202" duration="4689000" />
+      <workItem from="1665847713786" duration="2593000" />
     </task>
     <servers />
   </component>
@@ -185,6 +194,5 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

@@ -1,11 +1,17 @@
 package com.put.urbantraffic;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import lombok.val;
 
 import java.util.ArrayList;
@@ -13,10 +19,16 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
-    SpriteBatch batch;
-    Texture img;
-    City city;
+
+
     private ShapeRenderer shapeRenderer;
+    private float playerX;
+    private float playerY;
+    ExtendViewport extendViewport;
+
+    private City city;
+
+    private static final float MOVE_SPEED = 150f;
     private static final int NODE_CIRCLE_RADIUS = 15;
     private static final int CORNER_CIRCLE_RADIUS = 7;
     private static final int NODE_OFFSET_LANE = 4;
@@ -24,8 +36,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     @Override
     public void create() {
         shapeRenderer = new ShapeRenderer();
-        batch = new SpriteBatch();
-        img = new Texture("badlogic.jpg");
+        extendViewport = new ExtendViewport(800,800);
+
 
         val crossing1 = new Crossing(0, 100, 100, new ArrayList<Light>());
         val crossing2 = new Crossing(1, 200, 200, new ArrayList<Light>());
@@ -60,9 +72,16 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
     @Override
     public void render() {
-        ScreenUtils.clear(1, 0, 0, 1);
+
+        moveCamera();
+
+        ScreenUtils.clear(0, 0, 0, 1);
+
+        extendViewport.apply();
+        shapeRenderer.setProjectionMatrix(extendViewport.getCamera().combined);
+
         for (Crossing crossing : city.getCrossings()) {
-            drawCircle(crossing.getX(), crossing.getY(), NODE_CIRCLE_RADIUS, Color.BLACK);
+            drawCircle(crossing.getX(), crossing.getY(), NODE_CIRCLE_RADIUS, Color.WHITE);
         }
         for (Road road : city.getRoads()) {
             int lanesAmount = road.getLaneList().size();
@@ -73,7 +92,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
             for(Node node: road.getNodeList()){
                 if(node.getX() != startX && node.getY() != startY){
-                    drawCircle(endX, endY, CORNER_CIRCLE_RADIUS, Color.BLACK);
+                    drawCircle(endX, endY, CORNER_CIRCLE_RADIUS, Color.WHITE);
                     drawLanes(startX, startY, endX, endY, lanesAmount);
                     startX = endX;
                     startY = endY;
@@ -83,6 +102,31 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             }
             drawLanes(startX, startY, endX, endY, lanesAmount);
         }
+    }
+
+    public void moveCamera(){
+        float delta = Gdx.graphics.getDeltaTime();
+
+        if (Gdx.input.isKeyPressed(Input.Keys.O)){
+            ((OrthographicCamera) extendViewport.getCamera()).zoom = .5f;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.P)){
+            ((OrthographicCamera) extendViewport.getCamera()).zoom = 2f;
+        }
+
+
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            playerX -= MOVE_SPEED * delta;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            playerX += MOVE_SPEED * delta;
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            playerY -= MOVE_SPEED * delta;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            playerY += MOVE_SPEED * delta;
+        }
+
+        extendViewport.getCamera().position.set(playerX, playerY, 0);
 
     }
 
@@ -96,8 +140,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             offsetY = NODE_OFFSET_LANE;
         }
         for(int i = 0; i < lanesAmount; i++){
-            shapeRenderer.setColor(Color.BLACK);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(Color.WHITE);
             shapeRenderer.line(startX + offsetX * i, startY + offsetY * i, endX + offsetX * i, endY + offsetY * i);
             shapeRenderer.end();
         }
@@ -111,8 +155,11 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     }
 
     @Override
+    public void resize(int width, int height) {
+        extendViewport.update(width,height);
+    }
+
+    @Override
     public void dispose() {
-        batch.dispose();
-        img.dispose();
     }
 }
