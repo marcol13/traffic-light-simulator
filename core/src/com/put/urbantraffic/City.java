@@ -7,6 +7,5 @@ import java.util.List;
 @Data
 public class City {
     private final List<Crossing> crossings;
-    private final List<Lane> lanes;
-    
+    private final List<Road> roads;
 }

@@ -5,15 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dba55210-8f1e-4f56-8a7d-8e06ced278e9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Car.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/City.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Crossing.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Direction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Lane.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Light.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Node.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Road.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/City.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/City.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Lane.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Lane.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/UrbanTrafficFlowSimulation.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/UrbanTrafficFlowSimulation.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -107,6 +106,9 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.0" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
@@ -143,7 +145,7 @@
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/desktop" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
+        <option name="scriptParameters" value="" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -152,7 +154,7 @@
             <option value="run" />
           </list>
         </option>
-        <option name="vmOptions" />
+        <option name="vmOptions" value="" />
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
@@ -190,5 +192,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

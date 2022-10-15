@@ -28,6 +28,12 @@ allprojects {
         gdxControllersVersion = '2.2.1'
     }
 
+    apply plugin: "java"
+    compileJava{
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+
     repositories {
         mavenLocal()
         mavenCentral()
