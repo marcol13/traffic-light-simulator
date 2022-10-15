@@ -18,6 +18,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     City city;
     private ShapeRenderer shapeRenderer;
     private static final int NODE_CIRCLE_RADIUS = 15;
+    private static final int CORNER_CIRCLE_RADIUS = 7;
     private static final int NODE_OFFSET_LANE = 4;
 
     @Override
@@ -30,7 +31,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         val crossing2 = new Crossing(1, 200, 200, new ArrayList<Light>());
         val crossing3 = new Crossing(1, 100, 200, new ArrayList<Light>());
         val crossing4 = new Crossing(1, 200, 100, new ArrayList<Light>());
-        val crossings = new ArrayList<>(Arrays.asList(crossing1, crossing2, crossing3, crossing4));
+        val crossings = new ArrayList<>(Arrays.asList(crossing1, crossing2, crossing4));
 
         val lane1 = new Lane(0, crossing1, crossing3, new ArrayList<Direction>());
         val lane2 = new Lane(0, crossing2, crossing4, new ArrayList<Direction>());
@@ -60,12 +61,9 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     @Override
     public void render() {
         ScreenUtils.clear(1, 0, 0, 1);
-        shapeRenderer.setColor(Color.BLACK);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         for (Crossing crossing : city.getCrossings()) {
-            shapeRenderer.circle(crossing.getX(), crossing.getY(), NODE_CIRCLE_RADIUS);
+            drawCircle(crossing.getX(), crossing.getY(), NODE_CIRCLE_RADIUS, Color.BLACK);
         }
-        shapeRenderer.end();
         for (Road road : city.getRoads()) {
             int lanesAmount = road.getLaneList().size();
             int startX =  road.getNodeList().get(0).getX();
@@ -75,6 +73,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
             for(Node node: road.getNodeList()){
                 if(node.getX() != startX && node.getY() != startY){
+                    drawCircle(endX, endY, CORNER_CIRCLE_RADIUS, Color.BLACK);
                     drawLanes(startX, startY, endX, endY, lanesAmount);
                     startX = endX;
                     startY = endY;
@@ -102,6 +101,13 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             shapeRenderer.line(startX + offsetX * i, startY + offsetY * i, endX + offsetX * i, endY + offsetY * i);
             shapeRenderer.end();
         }
+    }
+
+    public void drawCircle(int x, int y, int radius, Color color){
+        shapeRenderer.setColor(color);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.circle(x, y, radius);
+        shapeRenderer.end();
     }
 
     @Override
