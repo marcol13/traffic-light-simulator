@@ -7,11 +7,11 @@ import java.util.concurrent.ThreadLocalRandom;
 public class CityGenerator {
     private final int width = 2 * 16;
     private final int height = 2 * 9;
-    private final int crossingAmount = 3;
+    private final int crossingAmount = 15;
 
     int[][] generate() {
         val grid = new int[height][width];
-        val heightOffset = (height + 1) % 2;
+        val heightOffset = (height) % 2;
         for (int i = 0; i < width; i++) {
             grid[height / 2 - heightOffset][i] = 1;
         }
@@ -20,7 +20,7 @@ public class CityGenerator {
         }
         for (int iter = 0; iter < crossingAmount; iter++) {
             int x = width / 2;
-            int y = heightOffset / 2;
+            int y = height / 2;
             while (grid[y][x] == 9 || grid[y][x] == 1) {
                 x = 2 * generateRandomInt(1, (width - 2) / 2);
                 y = 2 * generateRandomInt(1, (height - 2) / 2);
