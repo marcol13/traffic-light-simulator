@@ -2,12 +2,16 @@ package com.put.urbantraffic;
 
 import lombok.val;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CityGenerator {
     private final int width = 2 * 16;
     private final int height = 2 * 9;
     private final int crossingAmount = 5;
+    private List<Point> potentialCrossingsCoordinates = new ArrayList<Point>(); ;
 
     int[][] generate() {
         val grid = new int[height][width];
@@ -27,11 +31,16 @@ public class CityGenerator {
                 y = 2 * generateRandomInt(0, (height + 1) / 2 - 2) + 1;
             }
             grid[y][x] = 9;
+            potentialCrossingsCoordinates.add(new Point(x, y));
+
             // right
             for (int i = x + 1; i < width; i++) {
                 if (grid[y][i] == 1 || grid[y][i] == 9) {
                     fillArray(grid[y], x + 1, i, 1);
-                    grid[y][i] = 9;
+                    if (grid[y][i] != 9){
+                        grid[y][i] = 9;
+                        potentialCrossingsCoordinates.add(new Point(i, y));
+                    }
                     break;
                 }
             }
@@ -39,7 +48,10 @@ public class CityGenerator {
             for (int i = x - 1; i > -1; i--) {
                 if (grid[y][i] == 1 || grid[y][i] == 9) {
                     fillArray(grid[y], i + 1, x, 1);
-                    grid[y][i] = 9;
+                    if (grid[y][i] != 9){
+                        grid[y][i] = 9;
+                        potentialCrossingsCoordinates.add(new Point(i, y));
+                    }
                     break;
                 }
             }
@@ -50,7 +62,10 @@ public class CityGenerator {
                     for (int j = y + 1; j < i; j++) {
                         grid[j][x] = 1;
                     }
-                    grid[i][x] = 9;
+                    if (grid[i][x] != 9){
+                        grid[i][x] = 9;
+                        potentialCrossingsCoordinates.add(new Point(x, i));
+                    }
                     break;
                 }
             }
@@ -61,19 +76,19 @@ public class CityGenerator {
                     for (int j = i + 1; j < y; j++) {
                         grid[j][x] = 1;
                     }
-                    grid[i][x] = 9;
+                    if (grid[i][x] != 9){
+                        grid[i][x] = 9;
+                        potentialCrossingsCoordinates.add(new Point(x, i));
+                    }
                     break;
                 }
             }
         }
 
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                if (grid[i][j] == 9) {
-                    grid[i][j] = checkIfShouldStayCrossing(grid, i, j);
-                }
-            }
+        for(Point point: potentialCrossingsCoordinates){
+            grid[point.y][point.x] = checkIfShouldStayCrossing(grid, point.y, point.x);
         }
+
         return grid;
     }
 
