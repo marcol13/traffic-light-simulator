@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CityGenerator {
-    private final int width = 2 * 16;
-    private final int height = 2 * 9;
-    private final int crossingAmount = 5;
+    //    private int width;
+//    private int height;
+//    private int crossingAmount;
     private List<Point> potentialCrossingsCoordinates = new ArrayList<Point>(); ;
 
-    int[][] generate() {
+    int[][] generate(int width, int height, int crossingAmount) {
+
         val grid = new int[height][width];
         for (int i = 0; i < width; i++) {
             grid[height / 4 * 2 + 1][i] = 1;
@@ -122,13 +123,13 @@ public class CityGenerator {
     }
 
     public static void main(String[] args) {
-        for (int[] x : new CityGenerator().generate())
-        {
-            for (int y : x)
-            {
-                System.out.print(y + " ");
-            }
-            System.out.println();
-        }
+//        for (int[] x : new CityGenerator().generate())
+//        {
+//            for (int y : x)
+//            {
+//                System.out.print(y + " ");
+//            }
+//            System.out.println();
+//        }
     }
 }
