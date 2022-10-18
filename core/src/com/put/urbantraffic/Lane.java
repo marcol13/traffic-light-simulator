@@ -13,7 +13,6 @@ public class Lane {
     private final long id;
     private final Crossing startCrossing;
     private final Crossing endCrossing;
-    private final int speedLimit;
     private final List<Direction> directions;
 
     private final List<Car> carsList = new ArrayList<>();

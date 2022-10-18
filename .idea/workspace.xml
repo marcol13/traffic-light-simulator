@@ -5,15 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dba55210-8f1e-4f56-8a7d-8e06ced278e9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Car.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/City.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Crossing.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Direction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Lane.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Light.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Node.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Road.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/City.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/City.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/CityGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/CityGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Lane.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Lane.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/UrbanTrafficFlowSimulation.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/UrbanTrafficFlowSimulation.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -35,17 +32,15 @@
         <task path="$PROJECT_DIR$/desktop">
           <activation />
         </task>
+        <task path="$PROJECT_DIR$/core">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="traffic-light-simulator" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="traffic-light-simulator" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
@@ -91,6 +86,9 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="2G5qtiU6zmLQTDfB6Y7TapCD7j6" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -101,7 +99,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../draw city/traffic-light-simulator/build.gradle" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -113,8 +111,11 @@
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.put.urbantraffic" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/core/src/com/put/urbantraffic" />
+    </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Gradle.traffic-light-simulator:desktop [run]">
     <configuration default="true" type="ClojureREPL" factoryName="Local" activateToolWindowBeforeRun="false">
       <setting name="displayName" value="" />
       <setting name="replType" value="NREPL" />
@@ -137,6 +138,32 @@
       <setting name="customPortFile" value="" />
       <setting name="fixLineNumbers" value="false" />
       <method v="2" />
+    </configuration>
+    <configuration name="City" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.put.urbantraffic.City" />
+      <module name="traffic-light-simulator.core.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.put.urbantraffic.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CityGenerator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.put.urbantraffic.CityGenerator" />
+      <module name="traffic-light-simulator.core.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.put.urbantraffic.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
     <configuration name="traffic-light-simulator:desktop [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -162,6 +189,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.traffic-light-simulator:desktop [run]" />
+        <item itemvalue="Application.City" />
+        <item itemvalue="Application.CityGenerator" />
       </list>
     </recent_temporary>
   </component>
@@ -173,7 +202,11 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1665689010531</updated>
-      <workItem from="1665689014382" duration="2840000" />
+      <workItem from="1665689014382" duration="3221000" />
+      <workItem from="1665824302817" duration="2348000" />
+      <workItem from="1665955071996" duration="2467000" />
+      <workItem from="1666086449780" duration="610000" />
+      <workItem from="1666087332957" duration="27042000" />
     </task>
     <servers />
   </component>
@@ -190,5 +223,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core/src/com/put/urbantraffic/City.java</url>
+          <line>213</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
