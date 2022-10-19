@@ -101,18 +101,22 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     }
 
     public void drawLanes(int startX, int startY, int endX, int endY, int lanesAmount){
-        int offsetX, offsetY;
+        int offsetX, offsetY, shiftX, shiftY;
         if(startX == endX){
             offsetX = NODE_OFFSET_LANE;
             offsetY = 0;
+            shiftX = NODE_OFFSET_LANE / 2 * (lanesAmount - 1);
+            shiftY = 1;
         } else{
             offsetX = 0;
             offsetY = NODE_OFFSET_LANE;
+            shiftX = 1;
+            shiftY = NODE_OFFSET_LANE / 2 * (lanesAmount - 1);
         }
         for(int i = 0; i < lanesAmount; i++){
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.WHITE);
-            shapeRenderer.line(startX + offsetX * i, startY + offsetY * i, endX + offsetX * i, endY + offsetY * i);
+            shapeRenderer.line(startX + offsetX * i - shiftX, startY + offsetY * i - shiftY, endX + offsetX * i - shiftX, endY + offsetY * i - shiftY);
             shapeRenderer.end();
         }
     }
