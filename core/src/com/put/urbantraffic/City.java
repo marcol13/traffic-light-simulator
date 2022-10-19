@@ -28,7 +28,7 @@ public class City {
             }
             System.out.println();
         }
-        System.out.println(counter);
+        System.out.println("Quantity of Turns: " + counter);
         crossings = new ArrayList<>();
         roads = new ArrayList<>();
         parseGridToClasses(grid);
