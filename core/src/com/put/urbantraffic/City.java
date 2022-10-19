@@ -16,15 +16,19 @@ public class City {
     public City(){
 
         int[][] grid = new CityGenerator().generate(2*16, 2*9, 15);
-
+        int counter = 0;
         for (int[] x : grid)
         {
             for (int y : x)
             {
                 System.out.print(y + " ");
+                if(y == 8){
+                    counter++;
+                }
             }
             System.out.println();
         }
+        System.out.println(counter);
         crossings = new ArrayList<>();
         roads = new ArrayList<>();
         parseGridToClasses(grid);
@@ -130,43 +134,45 @@ public class City {
 //        Checking Right up/down
         for (int y = 1; y < grid.length; y+=2) {
             for (int x = 1; x < grid[0].length; x+=2) {
-                if (grid[y][x] == 9) {
-                    if (grid[y][x + 1] == 1) {
+                int tempx = x;
+                int tempy = y;
+                if (grid[tempy][tempx] == 9) {
+                    if (grid[tempy][tempx + 1] == 1) {
                         Crossing startCrossing = null;
                         for (Crossing crossing : crossings) {
-                            if (crossing.getX() == x && crossing.getY() == y) {
+                            if (crossing.getX() == tempx && crossing.getY() == tempy) {
                                 startCrossing = crossing;
                                 break;
                             }
                         }
                         List<Node> nodes = new ArrayList<>();
-                        nodes.add(new Node(x * MESH_OFFSET, y * MESH_OFFSET));
-                        x += 2;
-                        while (grid[y][x] == 1) {
-                            x++;
-                            if(x == grid[0].length){
-                                x--;
+                        nodes.add(new Node(tempx * MESH_OFFSET, tempy * MESH_OFFSET));
+                        tempx += 2;
+                        while (grid[tempy][tempx] == 1) {
+                            tempx++;
+                            if(tempx == grid[0].length){
+                                tempx--;
                                 break;
                             }
                         }
                         Crossing endCrossing = null;
-                        if (grid[y][x] == 8) {
-                            nodes.add(new Node(x * MESH_OFFSET, y * MESH_OFFSET));
+                        if (grid[tempy][tempx] == 8) {
+                            nodes.add(new Node(tempx * MESH_OFFSET, tempy * MESH_OFFSET));
                             int directionAfterTurn;
-                            if(grid[y + 1][x] == 1) {
+                            if(grid[tempy + 1][tempx] == 1) {
                                 directionAfterTurn = 1;
                             }else{
                                 directionAfterTurn = -1;
                             }
-                            int tempy = y + directionAfterTurn;
-                            while (grid[tempy][x] == 1) {
+                            tempy += directionAfterTurn;
+                            while (grid[tempy][tempx] == 1) {
                                 tempy += directionAfterTurn;
                             }
 
-                            nodes.add(new Node(x * MESH_OFFSET, tempy * MESH_OFFSET));
+                            nodes.add(new Node(tempx * MESH_OFFSET, tempy * MESH_OFFSET));
 //                            Search for that crossing
                             for (Crossing crossing : crossings) {
-                                if (crossing.getX() == x && crossing.getY() == tempy) {
+                                if (crossing.getX() == tempx && crossing.getY() == tempy) {
                                     endCrossing = crossing;
                                     break;
                                 }
