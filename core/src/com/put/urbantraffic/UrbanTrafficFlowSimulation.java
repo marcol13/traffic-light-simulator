@@ -10,8 +10,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import lombok.val;
 
 import java.util.ArrayList;
@@ -19,8 +17,6 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
-
-
     private ShapeRenderer shapeRenderer;
     private float playerX;
     private float playerY;
@@ -36,38 +32,12 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     @Override
     public void create() {
         shapeRenderer = new ShapeRenderer();
-        extendViewport = new ExtendViewport(800,800);
+        extendViewport = new ExtendViewport(1200,1200);
 
 
-        val crossing1 = new Crossing(0, 100, 100, new ArrayList<Light>());
-        val crossing2 = new Crossing(1, 200, 200, new ArrayList<Light>());
-        val crossing3 = new Crossing(1, 100, 200, new ArrayList<Light>());
-        val crossing4 = new Crossing(1, 200, 100, new ArrayList<Light>());
-        val crossings = new ArrayList<>(Arrays.asList(crossing1, crossing2, crossing4));
-
-        val lane1 = new Lane(0, crossing1, crossing3, new ArrayList<Direction>());
-        val lane2 = new Lane(0, crossing2, crossing4, new ArrayList<Direction>());
-        val lane3 = new Lane(0, crossing1, crossing4, new ArrayList<Direction>());
-        val lane4 = new Lane(0, crossing3, crossing1, new ArrayList<Direction>());
-        val lane5 = new Lane(0, crossing1, crossing2, new ArrayList<Direction>());
-        val lane6 = new Lane(0, crossing1, crossing2, new ArrayList<Direction>());
-        val lane7 = new Lane(0, crossing2, crossing1, new ArrayList<Direction>());
-//        val lanes = new ArrayList<>(Arrays.asList(lane1, lane2, lane3));
-
-        val node1 = new Node(100, 100);
-        val node2 = new Node(100, 200);
-        val node3 = new Node(200, 200);
-
-
-        val road1 = new Road(50, new ArrayList<>(Arrays.asList(lane1, lane4)), new ArrayList<>(Arrays.asList(node1, node2)));
-        val road2 = new Road(50, new ArrayList<>(Arrays.asList(lane5, lane6, lane7)), new ArrayList<>(Arrays.asList(node1, node2, node3)));
-
-        val roades = new ArrayList<>(Arrays.asList(road2));
-
-        city = new City(
-                crossings,
-                roades
-        );
+        city = new City();
+        System.out.println("Quantity of Crossings: " + city.getCrossings().size());
+        System.out.println("Quantity of Roads: " +city.getRoads().size());
     }
 
     @Override
@@ -108,9 +78,9 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         float delta = Gdx.graphics.getDeltaTime();
 
         if (Gdx.input.isKeyPressed(Input.Keys.O)){
-            ((OrthographicCamera) extendViewport.getCamera()).zoom = .5f;
+            ((OrthographicCamera) extendViewport.getCamera()).zoom += .5f * delta;
         } else if (Gdx.input.isKeyPressed(Input.Keys.P)){
-            ((OrthographicCamera) extendViewport.getCamera()).zoom = 2f;
+            ((OrthographicCamera) extendViewport.getCamera()).zoom -= .5f * delta;
         }
 
 
