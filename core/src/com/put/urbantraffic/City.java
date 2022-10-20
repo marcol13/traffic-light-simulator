@@ -241,10 +241,35 @@ public class City {
             }
         }
 
+//        Adding driveways
+        int x = 0;
+        int y = grid.length / 4 * 2 + 1;
+        addDriveway(grid, -1, grid.length / 4 * 2 + 1, 1, 0, crossingId, laneId);
+        addDriveway(grid, grid[0].length, grid.length / 4 * 2 + 1, -1, 0, crossingId + 1, laneId + 2);
+        addDriveway(grid, grid[0].length / 4 * 2 - 1, -1, 0, 1, crossingId + 2, laneId + 4);
+        addDriveway(grid, grid[0].length / 4 * 2 - 1, grid.length, 0, -1, crossingId + 3, laneId + 6);
+        crossingId += 4;
+        laneId += 8;
+    }
 
-//        int x = 0;
-//        int y =
-
+    private static void addDriveway(int[][] grid, int x, int y, int addX, int addY, int crossingId, int laneId){
+        List<Node> nodes = new ArrayList<>();
+        Crossing crossing2 = new Crossing(crossingId, x * MESH_OFFSET, y * MESH_OFFSET,  new ArrayList<Light>());
+        crossings.add(crossing2);
+        nodes.add(new Node(x * MESH_OFFSET, y * MESH_OFFSET));
+        x+=addX;
+        y+=addY;
+        while(grid[y][x] == 1){
+            x+=addX;
+            y+=addY;
+        }
+        nodes.add(new Node(x * MESH_OFFSET, y * MESH_OFFSET));
+        for (Crossing crossing : crossings) {
+            if (crossing.getX() == x * MESH_OFFSET && crossing.getY() == y * MESH_OFFSET) {
+                roads.add(new Road(50, Arrays.asList(new Lane(laneId, crossing2, crossing, new ArrayList<Direction>()), new Lane(laneId + 1, crossing, crossing2, new ArrayList<Direction>())), nodes));
+                break;
+            }
+        }
     }
 
     public List<Crossing> getCrossings() {
