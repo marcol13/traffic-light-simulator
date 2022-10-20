@@ -50,6 +50,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         extendViewport.apply();
         shapeRenderer.setProjectionMatrix(extendViewport.getCamera().combined);
 
+
+        drawCircle(0, 0, 10*CORNER_CIRCLE_RADIUS, Color.WHITE);
         for (Crossing crossing : city.getCrossings()) {
             drawCircle(crossing.getX(), crossing.getY(), NODE_CIRCLE_RADIUS, Color.WHITE);
         }

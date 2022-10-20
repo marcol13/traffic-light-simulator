@@ -15,7 +15,7 @@ public class City {
 
     public City(){
 
-        int[][] grid = new CityGenerator().generate(2*16, 2*9, 15);
+        int[][] grid = new CityGenerator().generate(2*16, 2*9, 50);
         int counter = 0;
         for (int[] x : grid)
         {
@@ -240,6 +240,10 @@ public class City {
                 }
             }
         }
+
+
+//        int x = 0;
+//        int y =
 
     }
 
