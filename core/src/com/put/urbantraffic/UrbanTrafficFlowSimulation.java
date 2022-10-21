@@ -35,9 +35,19 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         extendViewport = new ExtendViewport(1200,1200);
 
 
-        city = new City();
+        city = new City(4*16, 4*9, 1);
         System.out.println("Quantity of Crossings: " + city.getCrossings().size());
         System.out.println("Quantity of Roads: " +city.getRoads().size());
+
+        SimulationCore simulation = new SimulationCore();
+        simulation.city = city;
+        simulation.epochs = 40;
+        simulation.numberOfChildren = 10;
+        simulation.numberOfCrossings = city.getCrossings().size();
+        simulation.mutationScale = 50;
+        simulation.initialDeltaRange = 1000;
+        simulation.startSimulation();
+
     }
 
     @Override

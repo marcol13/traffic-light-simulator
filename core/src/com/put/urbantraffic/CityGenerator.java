@@ -21,9 +21,9 @@ public class CityGenerator {
         for(int i=0; i<((width + 1) / 2. - 2) ; i++){
             for(int j=0; j<((height + 1) / 2. - 2); j++){
                 sumOfProbabilities += Math.pow(max((longest_distance - (int)Math.sqrt(Math.pow(((width + 1) / 2. - 2)/2 - i, 2) + Math.pow(((height + 1) / 2. - 2)/2 - j, 2))) - longest_distance*0/2., 0) , 4);
-                System.out.print(Math.pow(max((longest_distance - (int)Math.sqrt(Math.pow(((width + 1) / 2. - 2)/2 - i, 2) + Math.pow(((height + 1) / 2. - 2)/2 - j, 2))) - longest_distance*0/2., 0), 4) + " ");
+//                System.out.print(Math.pow(max((longest_distance - (int)Math.sqrt(Math.pow(((width + 1) / 2. - 2)/2 - i, 2) + Math.pow(((height + 1) / 2. - 2)/2 - j, 2))) - longest_distance*0/2., 0), 4) + " ");
             }
-            System.out.println();
+//            System.out.println();
         }
 
 

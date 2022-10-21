@@ -13,9 +13,9 @@ public class City {
 
     private static final int MESH_OFFSET = 100;
 
-    public City(){
+    public City(int width, int height, int crossingAmount){
 
-        int[][] grid = new CityGenerator().generate(2*16, 2*9, 50);
+        int[][] grid = new CityGenerator().generate(width, height, crossingAmount);
         int counter = 0;
         for (int[] x : grid)
         {
