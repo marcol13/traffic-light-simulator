@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dba55210-8f1e-4f56-8a7d-8e06ced278e9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/SimulationCore.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/SimulatorChild.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/City.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/City.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/CityGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/CityGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/SimulationCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/SimulationCore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/SimulatorChild.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/SimulatorChild.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/UrbanTrafficFlowSimulation.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/UrbanTrafficFlowSimulation.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -212,7 +210,7 @@
       <workItem from="1666207977703" duration="12032000" />
       <workItem from="1666252044282" duration="535000" />
       <workItem from="1666286104423" duration="8103000" />
-      <workItem from="1666366636029" duration="11672000" />
+      <workItem from="1666366636029" duration="12895000" />
     </task>
     <servers />
   </component>
@@ -240,7 +238,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/core/src/com/put/urbantraffic/SimulationCore.java</url>
-          <line>25</line>
+          <line>24</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <breakpoint enabled="true" type="java-exception">

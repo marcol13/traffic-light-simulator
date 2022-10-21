@@ -5,16 +5,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import lombok.val;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
@@ -34,8 +28,12 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         shapeRenderer = new ShapeRenderer();
         extendViewport = new ExtendViewport(1200,1200);
 
-
-        city = new City(4*16, 4*9, 1);
+//        Crossing amount < 70 -> *2
+//        Crossing amount < 300 -> *4
+//        Crossing amount < 600 -> *6
+        int gridMultiplier = 6;
+        int crossingAmount = 500;
+        city = new City(gridMultiplier*16, gridMultiplier*9, crossingAmount);
         System.out.println("Quantity of Crossings: " + city.getCrossings().size());
         System.out.println("Quantity of Roads: " +city.getRoads().size());
 
@@ -61,7 +59,6 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         shapeRenderer.setProjectionMatrix(extendViewport.getCamera().combined);
 
 
-//        drawCircle(0, 0, 10*CORNER_CIRCLE_RADIUS, Color.WHITE);
         for (Crossing crossing : city.getCrossings()) {
             drawCircle(crossing.getX(), crossing.getY(), NODE_CIRCLE_RADIUS, Color.WHITE);
         }
