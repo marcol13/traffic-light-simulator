@@ -57,7 +57,7 @@ public class City {
                     if (grid[y][x + 1] == 1) {
                         Crossing startCrossing = null;
                         for (Crossing crossing : crossings) {
-                            if (crossing.getX() == x && crossing.getY() == y) {
+                            if (crossing.getX() == x * MESH_OFFSET && crossing.getY() == y * MESH_OFFSET) {
                                 startCrossing = crossing;
                                 break;
                             }
@@ -77,8 +77,9 @@ public class City {
                             nodes.add(new Node(x * MESH_OFFSET, y * MESH_OFFSET));
 //                            Search for that crossing
                             for (Crossing crossing : crossings) {
-                                if (crossing.getX() == x && crossing.getY() == y) {
+                                if (crossing.getX() == x * MESH_OFFSET && crossing.getY() == y * MESH_OFFSET) {
                                     endCrossing = crossing;
+                                    break;
                                 }
                             }
                             roads.add(new Road(Math.abs(nodes.get(0).getX() - nodes.get(nodes.size()-1).getX()),Arrays.asList(new Lane(laneId, startCrossing, endCrossing, new ArrayList<Direction>()), new Lane(laneId + 1, endCrossing, startCrossing, new ArrayList<Direction>())), nodes));
@@ -98,7 +99,7 @@ public class City {
                     if (grid[y + 1][x] == 1) {
                         Crossing startCrossing = null;
                         for (Crossing crossing : crossings) {
-                            if (crossing.getX() == x && crossing.getY() == y) {
+                            if (crossing.getX() == x * MESH_OFFSET && crossing.getY() == y * MESH_OFFSET) {
                                 startCrossing = crossing;
                                 break;
                             }
@@ -118,8 +119,9 @@ public class City {
                             nodes.add(new Node(x * MESH_OFFSET, y * MESH_OFFSET));
 //                            Search for that crossing
                             for (Crossing crossing : crossings) {
-                                if (crossing.getX() == x && crossing.getY() == y) {
+                                if (crossing.getX() == x * MESH_OFFSET && crossing.getY() == y * MESH_OFFSET) {
                                     endCrossing = crossing;
+                                    break;
                                 }
                             }
                             roads.add(new Road(Math.abs(nodes.get(0).getY() - nodes.get(nodes.size()-1).getY()) , Arrays.asList(new Lane(laneId, startCrossing, endCrossing, new ArrayList<Direction>()), new Lane(laneId + 1, endCrossing, startCrossing, new ArrayList<Direction>())), nodes));
@@ -142,7 +144,7 @@ public class City {
                     if (grid[tempy][tempx + 1] == 1) {
                         Crossing startCrossing = null;
                         for (Crossing crossing : crossings) {
-                            if (crossing.getX() == tempx && crossing.getY() == tempy) {
+                            if (crossing.getX() == tempx * MESH_OFFSET && crossing.getY() == tempy * MESH_OFFSET) {
                                 startCrossing = crossing;
                                 break;
                             }
@@ -174,7 +176,7 @@ public class City {
                             nodes.add(new Node(tempx * MESH_OFFSET, tempy * MESH_OFFSET));
 //                            Search for that crossing
                             for (Crossing crossing : crossings) {
-                                if (crossing.getX() == tempx && crossing.getY() == tempy) {
+                                if (crossing.getX() == tempx * MESH_OFFSET && crossing.getY() == tempy * MESH_OFFSET) {
                                     endCrossing = crossing;
                                     break;
                                 }
@@ -198,11 +200,12 @@ public class City {
                     if (grid[tempy][tempx - 1] == 1) {
                         Crossing startCrossing = null;
                         for (Crossing crossing : crossings) {
-                            if (crossing.getX() == tempx && crossing.getY() == tempy) {
+                            if (crossing.getX() == tempx * MESH_OFFSET && crossing.getY() == tempy * MESH_OFFSET) {
                                 startCrossing = crossing;
                                 break;
                             }
                         }
+                        
                         List<Node> nodes = new ArrayList<>();
                         nodes.add(new Node(tempx * MESH_OFFSET, tempy * MESH_OFFSET));
                         tempx--;
@@ -230,11 +233,12 @@ public class City {
                             nodes.add(new Node(tempx * MESH_OFFSET, tempy * MESH_OFFSET));
 //                            Search for that crossing
                             for (Crossing crossing : crossings) {
-                                if (crossing.getX() == tempx && crossing.getY() == tempy) {
+                                if (crossing.getX() == tempx * MESH_OFFSET && crossing.getY() == tempy * MESH_OFFSET) {
                                     endCrossing = crossing;
                                     break;
                                 }
                             }
+                            
                             roads.add(new Road(Math.abs(nodes.get(0).getX() - nodes.get(nodes.size()-1).getX()) + Math.abs(nodes.get(0).getY() - nodes.get(nodes.size()-1).getY()), Arrays.asList(new Lane(laneId, startCrossing, endCrossing, new ArrayList<Direction>()), new Lane(laneId + 1, endCrossing, startCrossing, new ArrayList<Direction>())), nodes));
                             laneId += 2;
                         }
