@@ -31,8 +31,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //        Crossing amount < 70 -> *2
 //        Crossing amount < 300 -> *4
 //        Crossing amount < 600 -> *6
-        int gridMultiplier = 6;
-        int crossingAmount = 500;
+        int gridMultiplier = 2;
+        int crossingAmount = 20;
         city = new City(gridMultiplier*16, gridMultiplier*9, crossingAmount);
         System.out.println("Quantity of Crossings: " + city.getCrossings().size());
         System.out.println("Quantity of Roads: " +city.getRoads().size());
@@ -45,6 +45,10 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         simulation.mutationScale = 50;
         simulation.initialDeltaRange = 1000;
         simulation.startSimulation();
+
+        for (Road road : city.getRoads()) {
+            System.out.println("ROAD LENGTH:" + road.getLength());
+        }
 
     }
 

@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="dba55210-8f1e-4f56-8a7d-8e06ced278e9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/SimulationCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/SimulationCore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/SimulatorChild.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/SimulatorChild.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/City.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/City.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Road.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Road.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/UrbanTrafficFlowSimulation.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/UrbanTrafficFlowSimulation.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
