@@ -3,7 +3,7 @@ package com.put.urbantraffic;
 
 import lombok.val;
 
-public class SimulatorChild extends Thread{
+public class SimulatorChild implements Runnable {
     public int[] lightDeltas;
     public float valueOfGoalFunction;
 
@@ -14,7 +14,7 @@ public class SimulatorChild extends Thread{
         for(int delta :lightDeltas){
             sumator+=delta;
         }
-        int N = 10000;
+        int N = 20000;
         val array = new int[N];
         for (int i = 0; i < array.length; i++) {
             array[i] = i;
