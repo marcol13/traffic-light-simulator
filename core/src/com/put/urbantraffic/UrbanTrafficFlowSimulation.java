@@ -10,6 +10,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import lombok.val;
 
+import java.util.Date;
+
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
     private float playerX;
@@ -37,6 +39,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         System.out.println("Quantity of Crossings: " + city.getCrossings().size());
         System.out.println("Quantity of Roads: " +city.getRoads().size());
 
+        val startTime = new Date();
         SimulationCore simulation = new SimulationCore();
         simulation.city = city;
         simulation.epochs = 40;
@@ -45,6 +48,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         simulation.mutationScale = 50;
         simulation.initialDeltaRange = 1000;
         simulation.startSimulation();
+        System.out.println();
+        System.out.println("TOTAL TIME: " + (new Date().getTime() - startTime.getTime()));
 
     }
 
