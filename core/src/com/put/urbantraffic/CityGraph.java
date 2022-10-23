@@ -75,6 +75,17 @@ public class CityGraph {
             }
         }
 
+        final List<List<Integer>> paths = getIdPaths(prev);
+
+        System.out.println("=== VERTEX " + crossingId + " =====");
+        System.out.println(Arrays.toString(dist));
+        System.out.println(Arrays.toString(prev));
+        System.out.println(paths);
+
+        return new Pair<>(dist, paths);
+    }
+
+    private List<List<Integer>> getIdPaths(int[] prev) {
         val paths = new ArrayList<List<Integer>>();
         for (int i = 0; i < prev.length; i++) {
             int v = prev[i];
@@ -86,11 +97,7 @@ public class CityGraph {
             list.add(i);
             paths.add(list);
         }
-        System.out.println("=== VERTEX " + crossingId + " =====");
-        System.out.println(Arrays.toString(dist));
-        System.out.println(Arrays.toString(prev));
-        System.out.println(paths);
-        return new Pair<>(dist, paths);
+        return paths;
     }
 
     private PathWithTime[] convertIntoCityRepresentation(
