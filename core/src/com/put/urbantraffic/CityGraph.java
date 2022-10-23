@@ -35,10 +35,10 @@ public class CityGraph {
     }
 
     void dijkstra(int graphSize, List<List<CrossingWithTime>> neighbours, int crossingId) {
-        var dist = new float[graphSize];
+        float[] dist = new float[graphSize];
         Arrays.fill(dist, Float.MAX_VALUE);
         dist[crossingId] = 0;
-        var prev = new int[graphSize];
+        int[] prev = new int[graphSize];
         Arrays.fill(prev, -1);
 
         val queue = new PriorityQueue<>((Comparator<CrossingWithTime>) (o1, o2) -> Float.compare(o2.time, o1.time));
@@ -62,7 +62,7 @@ public class CityGraph {
 
         val paths = new ArrayList<List<Integer>>();
         for (int i = 0; i < prev.length; i++) {
-            var v = prev[i];
+            int v = prev[i];
             val list = new ArrayList<Integer>();
             while (v != -1) {
                 list.add(0, v);
