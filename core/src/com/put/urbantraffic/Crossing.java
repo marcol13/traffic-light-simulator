@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class Crossing {
-    private final long id;
+    private final int id;
     private final int x;
     private final int y;
 
