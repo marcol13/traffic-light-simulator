@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 public class CityGraph {
     PathWithTime[][] generate(City city) {
         val crossings = city.getCrossings();
+        val crossingsAmount = crossings.size();
         val roads = city.getRoads();
         val crossingsMap = crossings.stream()
                 .collect(Collectors.toMap(Crossing::getId, item -> item));
@@ -20,14 +21,23 @@ public class CityGraph {
                     return new Pair<>(startId, endId);
                 }, item -> item));
 
-        int crossingsAmount = crossings.size();
+        val neighboursLists = getNeighboursLists(roads, crossingsAmount);
 
+        // run Dijkstra for each crossing
+        final PathWithTime[][] result = new PathWithTime[crossingsAmount][];
+        for (int i = 0; i < crossingsAmount; i++) {
+            result[i] = convertIntoCityRepresentation(dijkstra(crossingsAmount, neighboursLists, i), crossingsMap, roadMap);
+        }
+
+        return result;
+    }
+
+    private List<List<CrossingWithTime>> getNeighboursLists(List<Road> roads, int crossingsAmount) {
         val neighbours = new ArrayList<List<CrossingWithTime>>(crossingsAmount);
         for (int i = 0; i < crossingsAmount; i++) {
             neighbours.add(new ArrayList<>());
         }
 
-        // all neighbours
         for (val road : roads) {
             for (val lane : road.getLaneList()) {
                 val startCrossingId = lane.getStartCrossing().getId();
@@ -36,13 +46,7 @@ public class CityGraph {
                 neighbours.get(startCrossingId).add(new CrossingWithTime(endCrossing.getId(), time));
             }
         }
-
-        // run Dijkstra for each crossing
-        PathWithTime[][] result = new PathWithTime[crossingsAmount][];
-        for (int i = 0; i < crossingsAmount; i++) {
-            result[i] = convertIntoCityRepresentation(dijkstra(crossingsAmount, neighbours, i), crossingsMap, roadMap);
-        }
-        return result;
+        return neighbours;
     }
 
     Pair<float[], List<List<Integer>>> dijkstra(int graphSize, List<List<CrossingWithTime>> neighbours, int crossingId) {
@@ -105,7 +109,7 @@ public class CityGraph {
                 val firstCrossingId = crossing.get(i).getId();
                 val secondCrossingId = crossing.get(i + 1).getId();
                 Road road = roadsMap.get(new Pair<>(firstCrossingId, secondCrossingId));
-                if (road == null ) {
+                if (road == null) {
                     road = roadsMap.get(new Pair<>(secondCrossingId, firstCrossingId));
                 }
                 Objects.requireNonNull(road);
