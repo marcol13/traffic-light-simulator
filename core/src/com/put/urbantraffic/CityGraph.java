@@ -41,12 +41,7 @@ public class CityGraph {
         var prev = new int[graphSize];
         Arrays.fill(prev, -1);
 
-        val queue = new PriorityQueue<>(new Comparator<CrossingWithTime>() {
-            @Override
-            public int compare(CrossingWithTime o1, CrossingWithTime o2) {
-                return Float.compare(o2.time, o1.time);
-            }
-        });
+        val queue = new PriorityQueue<>((Comparator<CrossingWithTime>) (o1, o2) -> Float.compare(o2.time, o1.time));
 
         for (int i = 0; i < graphSize; i++) {
             queue.add(new CrossingWithTime(i, dist[i]));
