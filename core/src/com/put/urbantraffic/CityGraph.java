@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.val;
 import lombok.var;
 
-import java.sql.Array;
 import java.util.*;
 
 public class CityGraph {
@@ -13,15 +12,9 @@ public class CityGraph {
         val roads = city.getRoads();
         int crossingsAmount = crossings.size();
 
-        val matrix = new float[crossingsAmount][crossingsAmount];
         val neighbours = new ArrayList<List<CrossingWithTime>>(crossingsAmount);
         for (int i = 0; i < crossingsAmount; i++) {
             neighbours.add(new ArrayList<>());
-        }
-
-        // from vertex to itself
-        for (int i = 0; i < matrix.length; i++) {
-            matrix[i][i] = 0;
         }
 
         // all neighbours
@@ -30,14 +23,13 @@ public class CityGraph {
                 val startCrossingId = lane.getStartCrossing().getId();
                 val endCrossing = lane.getEndCrossing();
                 float time = getTime(road);
-                matrix[startCrossingId][endCrossing.getId()] = time;
                 neighbours.get(startCrossingId).add(new CrossingWithTime(endCrossing.getId(), time));
             }
         }
 
         // run Dijkstra for each crossing
         for (int i = 0; i < crossingsAmount; i++) {
-            dijkstra(matrix.length, neighbours, i);
+            dijkstra(crossingsAmount, neighbours, i);
         }
 
     }
@@ -127,11 +119,4 @@ public class CityGraph {
         final int crossingId;
         final float time;
     }
-
-    @Data
-    static class PathWithTime {
-        final float time;
-        final List<Integer> path;
-    }
-
 }
