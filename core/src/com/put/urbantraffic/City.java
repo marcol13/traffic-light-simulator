@@ -11,6 +11,11 @@ public class City {
 
     private static final int MESH_OFFSET = 100;
 
+    public City(List<Crossing> crossings, List<Road> roads){
+        City.crossings = crossings;
+        City.roads = roads;
+    }
+
     public City(int width, int height, int crossingAmount){
 
         int[][] grid = new CityGenerator().generate(width, height, crossingAmount);
@@ -42,12 +47,10 @@ public class City {
         }
         Road startRode = roads.get(startIndex);
         Road endRode = roads.get(endIndex);
-        Lane startLane = getRandomListElement(startRode.getLaneList(), rand);
-        Lane endLane = getRandomListElement(endRode.getLaneList(), rand);
         Node startNode = getRandomListElement(startRode.getNodeList(), rand);
         Node endNode = getRandomListElement(endRode.getNodeList(), rand);
 
-
+//        return new Car(startNode, endNode);
     }
 
     private <T> T getRandomListElement(List<T> elementsList, Random rand){
