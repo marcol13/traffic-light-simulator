@@ -2,10 +2,7 @@ package com.put.urbantraffic;
 
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Data
 public class City {
@@ -34,6 +31,27 @@ public class City {
         roads = new ArrayList<>();
         parseGridToClasses(grid);
         calculateRoadSpeedLimit();
+    }
+
+    public void spawnCar(){
+        Random rand = new Random();
+        int startIndex = 0, endIndex = 0;
+        while(startIndex == endIndex){
+            startIndex = rand.nextInt(roads.size());
+            endIndex = rand.nextInt(roads.size());
+        }
+        Road startRode = roads.get(startIndex);
+        Road endRode = roads.get(endIndex);
+        Lane startLane = getRandomListElement(startRode.getLaneList(), rand);
+        Lane endLane = getRandomListElement(endRode.getLaneList(), rand);
+        Node startNode = getRandomListElement(startRode.getNodeList(), rand);
+        Node endNode = getRandomListElement(endRode.getNodeList(), rand);
+
+
+    }
+
+    private <T> T getRandomListElement(List<T> elementsList, Random rand){
+        return elementsList.get(rand.nextInt(elementsList.size()));
     }
 
 
