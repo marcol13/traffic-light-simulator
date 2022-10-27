@@ -1,7 +1,5 @@
 package com.put.urbantraffic;
 
-import lombok.val;
-
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
@@ -17,6 +15,7 @@ public class SimulationCore {
     int numberOfCrossings;
     int mutationScale;
     int initialDeltaRange;
+    int tournamentSelectionContestants;
     SimulatorChild[] children;
     SimulatorChild[] parents;
 
@@ -92,8 +91,10 @@ public class SimulationCore {
         int index;
         int index2;
         for(int child=0; child<numberOfChildren;child++){
-            index = returnGaussian();
-            index2 = returnGaussian();
+//            index = returnGaussian();
+//            index2 = returnGaussian();
+            index = returnTournamentSelection(individuals);
+            index2 = returnTournamentSelection(individuals);
             newChildren[child] = new SimulatorChild();
             newChildren[child].lightDeltas = makeNewGenotype(individuals[index].lightDeltas,individuals[index2].lightDeltas);
         }
@@ -104,14 +105,51 @@ public class SimulationCore {
         return new SimulatorChild[][]{newParents, newChildren};
     }
 
-    private int returnGaussian() {
-        Random r = new Random();
-        int gaussNumber =(int) (abs(r.nextGaussian()) / 3 * population / 2);
-        while (gaussNumber >= population/2) {
-            gaussNumber = (int) (abs(r.nextGaussian()) / 3 * population / 2);
+    private int returnTournamentSelection(SimulatorChild[] individuals) {
+        int[] indexes = new int[tournamentSelectionContestants];
+        Arrays.fill(indexes, -1);
+        int tryIndex;
+        boolean flag;
+        for(int index=0; index<tournamentSelectionContestants; index++){
+            do{
+                flag=false;
+                tryIndex = (int) (Math.random() * individuals.length / 2);
+                for(int i=0; i<index; i++){
+                    if(indexes[i] == tryIndex){
+                        flag = true;
+                        break;
+                    }
+                }
+            }while(flag);
+            indexes[index] = tryIndex;
+
         }
-        return gaussNumber;
+
+        float min = individuals[indexes[0]].valueOfGoalFunction;
+        int index = indexes[0];
+        for (int i=1; i<tournamentSelectionContestants; i++){
+            if(individuals[indexes[i]].valueOfGoalFunction < min){
+                min = individuals[indexes[i]].valueOfGoalFunction;
+                index = indexes[i];
+            }
+        }
+        System.out.println("Child:");
+        for(int i=0; i<tournamentSelectionContestants; i++){
+            System.out.println(indexes[i] + " " + individuals[indexes[i]].valueOfGoalFunction);
+        }
+        System.out.println("Wybrano:" + index + " " + min);
+        return index;
     }
+
+
+//    private int returnGaussian() {
+//        Random r = new Random();
+//        int gaussNumber =(int) (abs(r.nextGaussian()) / 3 * population / 2);
+//        while (gaussNumber >= population/2) {
+//            gaussNumber = (int) (abs(r.nextGaussian()) / 3 * population / 2);
+//        }
+//        return gaussNumber;
+//    }
 
     private int[] makeNewGenotype(int[] genotypeMother, int[] genotypeFather) {
         int[] newGenotype = new int[genotypeMother.length];
