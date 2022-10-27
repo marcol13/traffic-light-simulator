@@ -2,10 +2,7 @@ package com.put.urbantraffic;
 
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Data
 public class City {
@@ -13,6 +10,11 @@ public class City {
     private static List<Road> roads;
 
     private static final int MESH_OFFSET = 100;
+
+    public City(List<Crossing> crossings, List<Road> roads){
+        City.crossings = crossings;
+        City.roads = roads;
+    }
 
     public City(int width, int height, int crossingAmount){
 
@@ -34,6 +36,25 @@ public class City {
         roads = new ArrayList<>();
         parseGridToClasses(grid);
         calculateRoadSpeedLimit();
+    }
+
+    public void spawnCar(){
+        Random rand = new Random();
+        int startIndex = 0, endIndex = 0;
+        while(startIndex == endIndex){
+            startIndex = rand.nextInt(roads.size());
+            endIndex = rand.nextInt(roads.size());
+        }
+        Road startRode = roads.get(startIndex);
+        Road endRode = roads.get(endIndex);
+        Node startNode = getRandomListElement(startRode.getNodeList(), rand);
+        Node endNode = getRandomListElement(endRode.getNodeList(), rand);
+
+//        return new Car(startNode, endNode);
+    }
+
+    private <T> T getRandomListElement(List<T> elementsList, Random rand){
+        return elementsList.get(rand.nextInt(elementsList.size()));
     }
 
 
