@@ -132,33 +132,6 @@ public class CityGraph {
         return result;
     }
 
-    public static void main(String[] args) {
-        new CityGraph().dijkstra(
-                4,
-                new ArrayList<>(Arrays.asList(
-                        new ArrayList<>(Arrays.asList( // 0
-                                new CrossingWithTime(1, 2),
-                                new CrossingWithTime(2, 5)
-                        )),
-                        new ArrayList<>(Arrays.asList( // 1
-                                new CrossingWithTime(0, 2),
-                                new CrossingWithTime(2, 1),
-                                new CrossingWithTime(3, 4)
-                        )),
-                        new ArrayList<>(Arrays.asList( // 2
-                                new CrossingWithTime(0, 5),
-                                new CrossingWithTime(1, 1),
-                                new CrossingWithTime(3, 2)
-                        )),
-                        new ArrayList<>(Arrays.asList( // 3
-                                new CrossingWithTime(1, 4),
-                                new CrossingWithTime(2, 2)
-                        )))
-                ),
-                0
-        );
-    }
-
     private static float getTime(Road road) {
         return road.getLength() / (float) road.getSpeedLimit();
     }
