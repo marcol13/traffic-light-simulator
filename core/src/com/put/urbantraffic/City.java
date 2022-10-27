@@ -281,7 +281,7 @@ public class City {
     private void calculateRoadSpeedLimit(){
         roads.sort(Comparator.comparing(Road::getLength));
 
-        int i = 1;
+        int i = 0;
 
        do{
             roads.get(i).setSpeedLimit(40);
