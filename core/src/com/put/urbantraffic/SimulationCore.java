@@ -13,6 +13,7 @@ public class SimulationCore {
     City city;
     int epochs;
     int numberOfChildren;
+    int population;
     int numberOfCrossings;
     int mutationScale;
     int initialDeltaRange;
@@ -49,7 +50,7 @@ public class SimulationCore {
 
         for(int epoch=0; epoch < epochs; epoch++){
             System.out.println();
-            System.out.println("Epoka: " + epoch);
+            System.out.println("Epoch: " + epoch);
             for(int child=0; child<numberOfChildren;child++){
                 children[child].start();
             }
@@ -88,14 +89,11 @@ public class SimulationCore {
 
         SimulatorChild[] newChildren = new SimulatorChild[numberOfChildren];
         SimulatorChild[] newParents = new SimulatorChild[numberOfChildren];
-        Random r = new Random();
         int index;
         int index2;
         for(int child=0; child<numberOfChildren;child++){
-            index = (int)(abs(r.nextGaussian()) * numberOfChildren / 5);
-            do{
-                index2 = (int)(abs(r.nextGaussian()) * numberOfChildren / 5);
-            }while(index == index2);
+            index = returnGaussian();
+            index2 = returnGaussian();
             newChildren[child] = new SimulatorChild();
             newChildren[child].lightDeltas = makeNewGenotype(individuals[index].lightDeltas,individuals[index2].lightDeltas);
         }
@@ -104,6 +102,15 @@ public class SimulationCore {
             newParents[parent] = individuals[parent];
         }
         return new SimulatorChild[][]{newParents, newChildren};
+    }
+
+    private int returnGaussian() {
+        Random r = new Random();
+        int gaussNumber =(int) (abs(r.nextGaussian()) / 3 * population / 2);
+        while (gaussNumber >= population/2) {
+            gaussNumber = (int) (abs(r.nextGaussian()) / 3 * population / 2);
+        }
+        return gaussNumber;
     }
 
     private int[] makeNewGenotype(int[] genotypeMother, int[] genotypeFather) {
