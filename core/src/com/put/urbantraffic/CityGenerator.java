@@ -7,13 +7,42 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.lang.Math.max;
+
 public class CityGenerator {
-    //    private int width;
-//    private int height;
-//    private int crossingAmount;
     private List<Point> potentialCrossingsCoordinates = new ArrayList<Point>(); ;
 
     int[][] generate(int width, int height, int crossingAmount) {
+//        Creating array for randomizing numbers with weights
+        int scaler=10;
+
+        int longest_distance = (int)Math.sqrt(Math.pow(((width + 1) / 2. - 2)/2, 2) + Math.pow(((height + 1) / 2. - 2)/2, 2));
+        int sumOfProbabilities = 0;
+        for(int i=0; i<((width + 1) / 2. - 2) ; i++){
+            for(int j=0; j<((height + 1) / 2. - 2); j++){
+                sumOfProbabilities += Math.pow(max((longest_distance - (int)Math.sqrt(Math.pow(((width + 1) / 2. - 2)/2 - i, 2) + Math.pow(((height + 1) / 2. - 2)/2 - j, 2))) - longest_distance*0/2., 0) , 4);
+//                System.out.print(Math.pow(max((longest_distance - (int)Math.sqrt(Math.pow(((width + 1) / 2. - 2)/2 - i, 2) + Math.pow(((height + 1) / 2. - 2)/2 - j, 2))) - longest_distance*0/2., 0), 4) + " ");
+            }
+//            System.out.println();
+        }
+
+
+        int[][] tilesProbabilities= new int[sumOfProbabilities][2];
+        int previousTilesCounter=0;
+        for(int i=0; i<((width + 1) / 2. - 2); i++){
+            for(int j=0; j<((height + 1) / 2. - 2); j++){
+                int k;
+                for(k=0; k < Math.pow(max(longest_distance - (int)Math.sqrt(Math.pow(((width + 1) / 2. - 2)/2 - i, 2) + Math.pow(((height + 1) / 2. - 2)/2 - j, 2)) - longest_distance*0/2., 0), 4); k++){
+                    tilesProbabilities[previousTilesCounter+k][0] = i;
+                    tilesProbabilities[previousTilesCounter+k][1] = j;
+                }
+                previousTilesCounter += k;
+            }
+        }
+
+
+        System.out.println("Longest straight line to center: " + longest_distance);
+        System.out.println("Array length: " + sumOfProbabilities);
 
         val grid = new int[height][width];
         for (int i = 0; i < width; i++) {
@@ -24,12 +53,15 @@ public class CityGenerator {
         }
         grid[height / 4 * 2 + 1][width / 4 * 2 - 1] = 9;
 
-        for (int iter = 0; iter < crossingAmount; iter++) {
+        int crossingCounter = 0;
+        while(crossingCounter < crossingAmount){
             int x = width / 4 * 2 - 1;
             int y = height / 4 * 2 + 1;
             while (grid[y][x] == 9 || grid[y][x] == 1) {
-                x = 2 * generateRandomInt(0, (width + 1) / 2 - 2) + 1;
-                y = 2 * generateRandomInt(0, (height + 1) / 2 - 2) + 1;
+//                x = 2 * generateRandomInt(0, (width + 1) / 2 - 2) + 1;
+                x = 2 * tilesProbabilities[(int) (tilesProbabilities.length*Math.random())][0] + 1;
+//                y = 2 * generateRandomInt(0, (height + 1) / 2 - 2) + 1;
+                y = 2 * tilesProbabilities[(int) (tilesProbabilities.length*Math.random())][1] + 1;
             }
             grid[y][x] = 9;
             potentialCrossingsCoordinates.add(new Point(x, y));
@@ -84,12 +116,20 @@ public class CityGenerator {
                     break;
                 }
             }
+
+            crossingCounter = 0;
+            for(int i=1; i<grid.length; i+=2){
+                for(int j=1; j<grid[0].length; j+=2){
+                    if(grid[i][j] == 9){
+                        crossingCounter++;
+                    }
+                }
+            }
         }
 
         for(Point point: potentialCrossingsCoordinates){
             grid[point.y][point.x] = checkIfShouldStayCrossing(grid, point.y, point.x);
         }
-
         return grid;
     }
 
