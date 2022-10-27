@@ -34,7 +34,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //        Crossing amount < 300 -> *4
 //        Crossing amount < 600 -> *6
         int gridMultiplier = 2;
-        int crossingAmount = 5;
+        int crossingAmount = 50;
         city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount);
         new CityGraph().generate(city);
         System.out.println("Quantity of Crossings: " + city.getCrossings().size());
@@ -47,7 +47,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         simulation.numberOfCrossings = city.getCrossings().size();
         simulation.mutationScale = 50;
         simulation.initialDeltaRange = 1000;
-//        simulation.startSimulation();
+        simulation.startSimulation();
 
         for (Road road : city.getRoads()) {
             System.out.println("ROAD LENGTH: " + road.getLength() + " Speed: " + road.getSpeedLimit());
@@ -67,7 +67,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
 
         for (Crossing crossing : city.getCrossings()) {
-            drawCircle(crossing.getX(), crossing.getY(), NODE_CIRCLE_RADIUS * crossing.getId(), Color.BLUE);
+            drawCircle(crossing.getX(), crossing.getY(), NODE_CIRCLE_RADIUS, Color.WHITE);
         }
 
         //Draw roads where max speed
