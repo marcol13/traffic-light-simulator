@@ -43,39 +43,39 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         System.out.println("Quantity of Crossings: " + city.getCrossings().size());
         System.out.println("Quantity of Roads: " + city.getRoads().size());
 
-        List<Crossing> crossings = new ArrayList<Crossing>(Arrays.asList(new Crossing(1, 0, 200, new ArrayList<>()), new Crossing(2, 0,  0, new ArrayList<>()), new Crossing(3, 0, 400, new ArrayList<>()), new Crossing(4, 200, 200, new ArrayList<>())));
-        List<Road> roads = new ArrayList<Road>(
-                Arrays.asList(
-                        new Road(200,
-                                new ArrayList<Lane>(Arrays.asList(
-                                        new Lane(1, crossings.get(1), crossings.get(0), new ArrayList<Direction>()),
-                                        new Lane(1, crossings.get(0), crossings.get(1), new ArrayList<Direction>()))),
-                                new ArrayList<Node>(Arrays.asList(
-                                        new Node(0, 0),
-                                        new Node(0, 100),
-                                        new Node(0, 200)))),
-                        new Road(200,
-                                new ArrayList<Lane>(Arrays.asList(
-                                        new Lane(1, crossings.get(0), crossings.get(2), new ArrayList<Direction>()),
-                                        new Lane(4, crossings.get(2), crossings.get(0), new ArrayList<Direction>()))),
-                                new ArrayList<Node>(Arrays.asList(
-                                        new Node(0, 200),
-                                        new Node(0, 300),
-                                        new Node(0, 400)))),
-                        new Road(200,
-                                new ArrayList<Lane>(Arrays.asList(
-                                        new Lane(5, crossings.get(0), crossings.get(3), new ArrayList<Direction>()),
-                                        new Lane(6, crossings.get(3), crossings.get(0), new ArrayList<Direction>()))),
-                                new ArrayList<Node>(Arrays.asList(
-                                        new Node(0, 200),
-                                        new Node(100, 200),
-                                        new Node(200, 200)
-                                )))
-                        ));
-
-        city = new City(crossings, roads);
-
-        car = new Car(new Node(0, 0), new Node(200, 200), new ArrayList<Node>(Arrays.asList(new Node(0, 0), new Node(0, 100), new Node(0, 200), new Node(100, 200), new Node(200, 200))));
+//        List<Crossing> crossings = new ArrayList<Crossing>(Arrays.asList(new Crossing(1, 0, 200, new ArrayList<>()), new Crossing(2, 0,  0, new ArrayList<>()), new Crossing(3, 0, 400, new ArrayList<>()), new Crossing(4, 200, 200, new ArrayList<>())));
+//        List<Road> roads = new ArrayList<Road>(
+//                Arrays.asList(
+//                        new Road(200,
+//                                new ArrayList<Lane>(Arrays.asList(
+//                                        new Lane(1, crossings.get(1), crossings.get(0), new ArrayList<Direction>()),
+//                                        new Lane(1, crossings.get(0), crossings.get(1), new ArrayList<Direction>()))),
+//                                new ArrayList<Node>(Arrays.asList(
+//                                        new Node(0, 0),
+//                                        new Node(0, 100),
+//                                        new Node(0, 200)))),
+//                        new Road(200,
+//                                new ArrayList<Lane>(Arrays.asList(
+//                                        new Lane(1, crossings.get(0), crossings.get(2), new ArrayList<Direction>()),
+//                                        new Lane(4, crossings.get(2), crossings.get(0), new ArrayList<Direction>()))),
+//                                new ArrayList<Node>(Arrays.asList(
+//                                        new Node(0, 200),
+//                                        new Node(0, 300),
+//                                        new Node(0, 400)))),
+//                        new Road(200,
+//                                new ArrayList<Lane>(Arrays.asList(
+//                                        new Lane(5, crossings.get(0), crossings.get(3), new ArrayList<Direction>()),
+//                                        new Lane(6, crossings.get(3), crossings.get(0), new ArrayList<Direction>()))),
+//                                new ArrayList<Node>(Arrays.asList(
+//                                        new Node(0, 200),
+//                                        new Node(100, 200),
+//                                        new Node(200, 200)
+//                                )))
+//                        ));
+//
+//        city = new City(crossings, roads);
+//
+//        car = new Car(new Node(0, 0), new Node(200, 200), new ArrayList<Node>(Arrays.asList(new Node(0, 0), new Node(0, 100), new Node(0, 200), new Node(100, 200), new Node(200, 200))));
 
         SimulationCore simulation = new SimulationCore();
         simulation.city = city;
@@ -143,7 +143,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             }
         }
 
-        drawCircle(car.getXPos(), car.getYPos(), 10, Color.YELLOW);
+//        drawCircle(car.getXPos(), car.getYPos(), 10, Color.YELLOW);
     }
 
     public void moveCamera() {
@@ -155,12 +155,12 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             ((OrthographicCamera) extendViewport.getCamera()).zoom -= .5f * delta;
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-            car.moveCar();
-            System.out.println(car.getXPos());
-            System.out.println(car.getYPos());
-            drawCircle(car.getXPos(), car.getYPos(), 10, Color.YELLOW);
-        }
+//        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+//            car.moveCar();
+//            System.out.println(car.getXPos());
+//            System.out.println(car.getYPos());
+//            drawCircle(car.getXPos(), car.getYPos(), 10, Color.YELLOW);
+//        }
 
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
