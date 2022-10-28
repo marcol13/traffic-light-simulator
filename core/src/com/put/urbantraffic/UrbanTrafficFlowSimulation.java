@@ -5,14 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import lombok.val;
-
-import java.util.*;
 
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
@@ -27,6 +22,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private static final int NODE_CIRCLE_RADIUS = 15;
     private static final int CORNER_CIRCLE_RADIUS = 7;
     private static final int NODE_OFFSET_LANE = 4;
+    CityGraph.PathWithTime[][] paths;
 
     @Override
     public void create() {
@@ -39,7 +35,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         int gridMultiplier = 2;
         int crossingAmount = 50;
         city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount);
-        new CityGraph().generate(city);
+        paths = new CityGraph().generate(city);
+
         System.out.println("Quantity of Crossings: " + city.getCrossings().size());
         System.out.println("Quantity of Roads: " + city.getRoads().size());
 
@@ -177,6 +174,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
         extendViewport.getCamera().position.set(playerX, playerY, 0);
 
+
     }
 
     public void drawLanes(int startX, int startY, int endX, int endY, int lanesAmount, Color color) {
@@ -205,6 +203,18 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.circle(x, y, radius);
         shapeRenderer.end();
+    }
+
+    private void drawPath(CityGraph.PathWithTime pathWithTime ) {
+        for (Crossing crossing : pathWithTime.crossings) {
+            drawCircle(crossing.getX(), crossing.getY(), 20, Color.BLUE);
+        }
+        drawCircle(pathWithTime.crossings.get(0).getX(), pathWithTime.crossings.get(0).getY(), 20, Color.RED);
+        drawCircle(pathWithTime.crossings.get(pathWithTime.crossings.size()-1).getX(), pathWithTime.crossings.get(pathWithTime.crossings.size()-1).getY(), 20, Color.RED);
+        for (Road road : pathWithTime.roads) {
+            Lane lane = road.getLaneList().get(0);
+            drawLanes(lane.getStartCrossing().getX(), lane.getStartCrossing().getY(), lane.getEndCrossing().getX(), lane.getEndCrossing().getY(), 1, Color.LIME);
+        }
     }
 
     @Override
