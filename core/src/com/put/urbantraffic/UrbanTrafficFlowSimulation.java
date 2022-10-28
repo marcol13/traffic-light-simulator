@@ -205,6 +205,18 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         shapeRenderer.end();
     }
 
+    private void drawPath(CityGraph.PathWithTime pathWithTime ) {
+        for (Crossing crossing : pathWithTime.crossings) {
+            drawCircle(crossing.getX(), crossing.getY(), 20, Color.BLUE);
+        }
+        drawCircle(pathWithTime.crossings.get(0).getX(), pathWithTime.crossings.get(0).getY(), 20, Color.RED);
+        drawCircle(pathWithTime.crossings.get(pathWithTime.crossings.size()-1).getX(), pathWithTime.crossings.get(pathWithTime.crossings.size()-1).getY(), 20, Color.RED);
+        for (Road road : pathWithTime.roads) {
+            Lane lane = road.getLaneList().get(0);
+            drawLanes(lane.getStartCrossing().getX(), lane.getStartCrossing().getY(), lane.getEndCrossing().getX(), lane.getEndCrossing().getY(), 1, Color.LIME);
+        }
+    }
+
     @Override
     public void resize(int width, int height) {
         extendViewport.update(width, height);
