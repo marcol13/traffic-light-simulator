@@ -107,9 +107,11 @@ public class SimulationCore {
 
     private int returnTournamentSelection(SimulatorChild[] individuals) {
         int[] indexes = new int[tournamentSelectionContestants];
-        Arrays.fill(indexes, -1);
+        Arrays.fill(indexes, Integer.MAX_VALUE);
         int tryIndex;
         boolean flag;
+        float min = Integer.MAX_VALUE;
+        int finalIndex = -10;
         for(int index=0; index<tournamentSelectionContestants; index++){
             do{
                 flag=false;
@@ -122,23 +124,19 @@ public class SimulationCore {
                 }
             }while(flag);
             indexes[index] = tryIndex;
-
-        }
-
-        float min = individuals[indexes[0]].valueOfGoalFunction;
-        int index = indexes[0];
-        for (int i=1; i<tournamentSelectionContestants; i++){
-            if(individuals[indexes[i]].valueOfGoalFunction < min){
-                min = individuals[indexes[i]].valueOfGoalFunction;
-                index = indexes[i];
+            if(individuals[tryIndex].valueOfGoalFunction < min){
+                min = individuals[tryIndex].valueOfGoalFunction;
+                finalIndex = tryIndex;
             }
+
         }
-        System.out.println("Child:");
-        for(int i=0; i<tournamentSelectionContestants; i++){
-            System.out.println(indexes[i] + " " + individuals[indexes[i]].valueOfGoalFunction);
-        }
-        System.out.println("Wybrano:" + index + " " + min);
-        return index;
+//
+//        System.out.println("Child:");
+//        for(int i=0; i<tournamentSelectionContestants; i++){
+//            System.out.println(indexes[i] + " " + individuals[indexes[i]].valueOfGoalFunction);
+//        }
+//        System.out.println("Wybrano:" + finalIndex + " " + min);
+        return finalIndex;
     }
 
 
