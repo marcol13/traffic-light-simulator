@@ -6,6 +6,7 @@ import lombok.val;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CityGraph {
     PathWithTime[][] generate(City city) {
@@ -29,7 +30,29 @@ public class CityGraph {
             result[i] = convertIntoCityRepresentation(dijkstra(crossingsAmount, neighboursLists, i), crossingsMap, roadMap);
         }
 
-        return result;
+        int roadsSize = roads.size();
+        final PathWithTime[][] resultConvertedToRoads = new PathWithTime[roadsSize][roadsSize];
+        for (int i = 0; i < roadsSize; i++) {
+            for (int j = 0; j < roadsSize; j++) {
+                if (i == j) continue; // there's no path from road to road
+
+                val startingLane = roads.get(i).getLaneList().get(0);
+                val endingLane = roads.get(j).getLaneList().get(0);
+                val startingCrossing1 = startingLane.getStartCrossing().getId();
+                val startingCrossing2 = startingLane.getEndCrossing().getId();
+                val endingCrossing1 = endingLane.getStartCrossing().getId();
+                val endingCrossing2 = endingLane.getEndCrossing().getId();
+                val best = Stream.of(
+                        result[startingCrossing1][endingCrossing1],
+                        result[startingCrossing1][endingCrossing2],
+                        result[startingCrossing2][endingCrossing1],
+                        result[startingCrossing2][endingCrossing2]
+                        ).max((a, b) -> Float.compare(a.time, b.time)).get();
+                resultConvertedToRoads[i][j] = best;
+             }
+        }
+
+        return resultConvertedToRoads;
     }
 
     private List<List<CrossingWithTime>> getNeighboursLists(List<Road> roads, int crossingsAmount) {

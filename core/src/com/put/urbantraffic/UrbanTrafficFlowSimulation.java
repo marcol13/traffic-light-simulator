@@ -5,14 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import lombok.val;
-
-import java.util.*;
 
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
@@ -27,6 +22,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private static final int NODE_CIRCLE_RADIUS = 15;
     private static final int CORNER_CIRCLE_RADIUS = 7;
     private static final int NODE_OFFSET_LANE = 4;
+    CityGraph.PathWithTime[][] paths;
 
     @Override
     public void create() {
@@ -39,7 +35,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         int gridMultiplier = 2;
         int crossingAmount = 50;
         city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount);
-        new CityGraph().generate(city);
+        paths = new CityGraph().generate(city);
+
         System.out.println("Quantity of Crossings: " + city.getCrossings().size());
         System.out.println("Quantity of Roads: " + city.getRoads().size());
 
@@ -176,6 +173,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
 
         extendViewport.getCamera().position.set(playerX, playerY, 0);
+
 
     }
 
