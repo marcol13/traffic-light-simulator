@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
+import java.util.Date;
+
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
     private float playerX;
@@ -74,6 +76,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //
 //        car = new Car(new Node(0, 0), new Node(200, 200), new ArrayList<Node>(Arrays.asList(new Node(0, 0), new Node(0, 100), new Node(0, 200), new Node(100, 200), new Node(200, 200))));
 
+        val startTime = new Date();
         SimulationCore simulation = new SimulationCore();
         simulation.city = city;
         simulation.epochs = 40;
@@ -82,6 +85,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         simulation.mutationScale = 50;
         simulation.initialDeltaRange = 1000;
         simulation.startSimulation();
+        System.out.println();
+        System.out.println("TOTAL TIME: " + (new Date().getTime() - startTime.getTime()));
 
         for (Road road : city.getRoads()) {
             System.out.println("ROAD LENGTH: " + road.getLength() + " Speed: " + road.getSpeedLimit());

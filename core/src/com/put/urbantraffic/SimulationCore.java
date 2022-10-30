@@ -2,9 +2,13 @@ package com.put.urbantraffic;
 
 import lombok.val;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
@@ -50,18 +54,11 @@ public class SimulationCore {
         for(int epoch=0; epoch < epochs; epoch++){
             System.out.println();
             System.out.println("Epoka: " + epoch);
-            for(int child=0; child<numberOfChildren;child++){
-                children[child].start();
-            }
 
-
-
-
+            val executorService = Executors.newFixedThreadPool(children.length);
 
             try {
-                for(int child=0; child<numberOfChildren;child++){
-                    children[child].join();
-                }
+                executorService.invokeAll(Arrays.stream(children).map(Executors::callable).collect(Collectors.toList()));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
