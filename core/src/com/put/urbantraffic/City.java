@@ -24,12 +24,12 @@ public class City {
         {
             for (int y : x)
             {
-                System.out.print(y + " ");
+//                System.out.print(y + " ");
                 if(y == 8){
                     counter++;
                 }
             }
-            System.out.println();
+//            System.out.println();
         }
         System.out.println("Quantity of Turns: " + counter);
         crossings = new ArrayList<>();

@@ -77,10 +77,10 @@ public class CityGraph {
 
         final List<List<Integer>> paths = getIdPaths(prev);
 
-        System.out.println("=== VERTEX " + crossingId + " =====");
-        System.out.println(Arrays.toString(dist));
-        System.out.println(Arrays.toString(prev));
-        System.out.println(paths);
+//        System.out.println("=== VERTEX " + crossingId + " =====");
+//        System.out.println(Arrays.toString(dist));
+//        System.out.println(Arrays.toString(prev));
+//        System.out.println(paths);
 
         return new Pair<>(dist, paths);
     }
