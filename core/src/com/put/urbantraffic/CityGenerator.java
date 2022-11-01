@@ -41,9 +41,6 @@ public class CityGenerator {
         }
 
 
-        System.out.println("Longest straight line to center: " + longest_distance);
-        System.out.println("Array length: " + sumOfProbabilities);
-
         val grid = new int[height][width];
         for (int i = 0; i < width; i++) {
             grid[height / 4 * 2 + 1][i] = 1;

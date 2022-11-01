@@ -76,16 +76,17 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
         SimulationCore simulation = new SimulationCore();
         simulation.city = city;
-        simulation.epochs = 40;
-        simulation.numberOfChildren = 10;
+        simulation.epochs = 600;
+        simulation.population = 100;
         simulation.numberOfCrossings = city.getCrossings().size();
-        simulation.mutationScale = 50;
+        simulation.mutationScale = 100;
         simulation.initialDeltaRange = 1000;
+        simulation.tournamentSelectionContestants = 2;
         simulation.startSimulation();
 
-        for (Road road : city.getRoads()) {
-            System.out.println("ROAD LENGTH: " + road.getLength() + " Speed: " + road.getSpeedLimit());
-        }
+//        for (Road road : city.getRoads()) {
+//            System.out.println("ROAD LENGTH: " + road.getLength() + " Speed: " + road.getSpeedLimit());
+//        }
 
     }
 

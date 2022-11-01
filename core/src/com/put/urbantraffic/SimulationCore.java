@@ -1,123 +1,133 @@
 package com.put.urbantraffic;
 
-import lombok.val;
-
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Random;
-
-import static java.lang.Math.abs;
-import static java.lang.Math.max;
 
 public class SimulationCore {
     City city;
     int epochs;
-    int numberOfChildren;
+    int population;
     int numberOfCrossings;
     int mutationScale;
     int initialDeltaRange;
-    SimulatorChild[] children;
-    SimulatorChild[] parents;
+    int tournamentSelectionContestants;
+    SimulatorChild[] individuals;
 
 
     public void startSimulation(){
-        children = new SimulatorChild[numberOfChildren];
-        parents = new SimulatorChild[numberOfChildren];
-        int initialParentCounter;
-        for(int i=0; i<numberOfChildren; i++) {
+        individuals = new SimulatorChild[population];
+        for(int i=0; i<population; i++) {
             int[] lightDeltas = new int[numberOfCrossings];
             for (int j = 0; j < numberOfCrossings; j++) {
                 lightDeltas[j] = (int) (Math.random() * initialDeltaRange);
             }
 
-            children[i] = new SimulatorChild();
-            children[i].lightDeltas = lightDeltas;
-
+            individuals[i] = new SimulatorChild();
+            individuals[i].lightDeltas = lightDeltas;
         }
-        for(int i=0; i<numberOfChildren; i++) {
-            initialParentCounter=0;
-            int[] lightDeltas = new int[numberOfCrossings];
-            for(int j=0; j<numberOfCrossings; j++){
-                lightDeltas[j] = (int)(Math.random()*initialDeltaRange);
-                initialParentCounter+=lightDeltas[j];
-            }
-            parents[i] = new SimulatorChild();
-            parents[i].lightDeltas = lightDeltas;
-            parents[i].valueOfGoalFunction = initialParentCounter;
-        }
+        simulateChildren(individuals);
+//        Ascending order!
+        Arrays.sort(individuals, Comparator.comparing(p -> p.valueOfGoalFunction));
 
 
         for(int epoch=0; epoch < epochs; epoch++){
-            System.out.println();
-            System.out.println("Epoka: " + epoch);
-            for(int child=0; child<numberOfChildren;child++){
-                children[child].start();
-            }
 
 
-
-
-
-            try {
-                for(int child=0; child<numberOfChildren;child++){
-                    children[child].join();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            SimulatorChild[] temp= new SimulatorChild[2*numberOfChildren];
-            for(int child=0; child<numberOfChildren;child++){
-                temp[2*child] = parents[child];
-                temp[2*child+1] = children[child];
-            }
-            SimulatorChild[][] parentsAndChildren = createChildren(temp);
-            parents = parentsAndChildren[0];
-            children = parentsAndChildren[1];
+            createNewIndividuals(individuals);
+            System.out.println("Best in Epoch " + epoch + " : " + individuals[0].valueOfGoalFunction);
         }
     }
 
 
-    private SimulatorChild[][] createChildren(SimulatorChild[] individuals) {
-//        Ascending order!
-        Arrays.sort(individuals, Comparator.comparing(p -> p.valueOfGoalFunction));
-        System.out.println("Individuals (parents + children):");
-        for (SimulatorChild individual : individuals) {
-            System.out.print(individual.valueOfGoalFunction + " ");
-        }
-
-        SimulatorChild[] newChildren = new SimulatorChild[numberOfChildren];
-        SimulatorChild[] newParents = new SimulatorChild[numberOfChildren];
-        Random r = new Random();
+    private void createNewIndividuals(SimulatorChild[] individuals) {
+        SimulatorChild[] children = new SimulatorChild[population/2];
         int index;
         int index2;
-        for(int child=0; child<numberOfChildren;child++){
-            index = (int)(abs(r.nextGaussian()) * numberOfChildren / 5);
-            do{
-                index2 = (int)(abs(r.nextGaussian()) * numberOfChildren / 5);
-            }while(index == index2);
-            newChildren[child] = new SimulatorChild();
-            newChildren[child].lightDeltas = makeNewGenotype(individuals[index].lightDeltas,individuals[index2].lightDeltas);
+        for(int child=0; child<population/2;child++){
+//            index = returnGaussian();
+//            index2 = returnGaussian();
+            index = returnTournamentSelection(individuals);
+            index2 = returnTournamentSelection(individuals);
+            children[child] = new SimulatorChild();
+            children[child].lightDeltas = makeNewGenotype(individuals[index].lightDeltas,individuals[index2].lightDeltas);
         }
+        simulateChildren(children);
 
-        for(int parent=0; parent<numberOfChildren;parent++){
-            newParents[parent] = individuals[parent];
-        }
-        return new SimulatorChild[][]{newParents, newChildren};
+        System.arraycopy(children, 0, individuals, population/2, population/2);
+
+//        Ascending order!
+        Arrays.sort(individuals, Comparator.comparing(p -> p.valueOfGoalFunction));
+
+
     }
+
+    private void simulateChildren(SimulatorChild[] children) {
+
+        for (SimulatorChild child : children) {
+            child.start();
+        }
+        try {
+            for (SimulatorChild child : children) {
+                child.join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int returnTournamentSelection(SimulatorChild[] individuals) {
+        int[] indexes = new int[tournamentSelectionContestants];
+        Arrays.fill(indexes, Integer.MAX_VALUE);
+        int tryIndex;
+        boolean flag;
+        float min = Integer.MAX_VALUE;
+        int finalIndex = -10;
+        for(int index=0; index<tournamentSelectionContestants; index++){
+            do{
+                flag=false;
+                tryIndex = (int) (Math.random() * individuals.length / 2);
+                for(int i=0; i<index; i++){
+                    if(indexes[i] == tryIndex){
+                        flag = true;
+                        break;
+                    }
+                }
+            }while(flag);
+            indexes[index] = tryIndex;
+            if(individuals[tryIndex].valueOfGoalFunction < min){
+                min = individuals[tryIndex].valueOfGoalFunction;
+                finalIndex = tryIndex;
+            }
+
+        }
+        return finalIndex;
+    }
+
+
+//    private int returnGaussian() {
+//        Random r = new Random();
+//        int gaussNumber =(int) (abs(r.nextGaussian()) / 3 * population / 2);
+//        while (gaussNumber >= population/2) {
+//            gaussNumber = (int) (abs(r.nextGaussian()) / 3 * population / 2);
+//        }
+//        return gaussNumber;
+//    }
 
     private int[] makeNewGenotype(int[] genotypeMother, int[] genotypeFather) {
         int[] newGenotype = new int[genotypeMother.length];
-        double mutation;
-        for(int numberDelta=0; numberDelta<genotypeMother.length; numberDelta++){
-            mutation = Math.random()*mutationScale - mutationScale/2.;
-            if(Math.random() < .5){
-                newGenotype[numberDelta] = max((int)(genotypeMother[numberDelta] + mutation), 0);
-            }
-            else{
-                newGenotype[numberDelta] = max((int)(genotypeFather[numberDelta] + mutation), 0);
-            }
-        }
+        int border = (int) (Math.random()*genotypeMother.length);
+
+        System.arraycopy(genotypeMother, 0, newGenotype, 0, border);
+        System.arraycopy(genotypeFather, border, newGenotype, border, genotypeMother.length - border);
+
+        int whichDeltaMutated = (int)(Math.random()*genotypeMother.length);
+        int mutation;
+        do{
+            mutation = (int)(Math.random()*mutationScale - mutationScale/2);
+        }while(newGenotype[whichDeltaMutated] + mutation < 0 || newGenotype[whichDeltaMutated] + mutation > initialDeltaRange);
+
+        newGenotype[whichDeltaMutated] += mutation;
+
         return newGenotype;
     }
 
