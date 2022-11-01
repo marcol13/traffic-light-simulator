@@ -152,16 +152,17 @@ public class SimulationCore {
     private int[] makeNewGenotype(int[] genotypeMother, int[] genotypeFather) {
         int[] newGenotype = new int[genotypeMother.length];
         int border = (int) (Math.random()*genotypeMother.length);
-        double mutation;
 
-        for(int numberDelta = 0; numberDelta<border; numberDelta++){
-            mutation = Math.random()*mutationScale - mutationScale/2.;
-            newGenotype[numberDelta] =  max((int)(genotypeMother[numberDelta] + mutation), 0);
-        }
-        for(int numberDelta = 0; numberDelta<border; numberDelta++){
-            mutation = Math.random()*mutationScale - mutationScale/2.;
-            newGenotype[numberDelta] =  max((int)(genotypeFather[numberDelta] + mutation), 0);
-        }
+        System.arraycopy(genotypeMother, 0, newGenotype, 0, border);
+        System.arraycopy(genotypeFather, border, newGenotype, border, genotypeMother.length - border);
+
+        int whichDeltaMutated = (int)(Math.random()*genotypeMother.length);
+        int mutation;
+        do{
+            mutation = (int)(Math.random()*mutationScale - mutationScale/2);
+        }while(newGenotype[whichDeltaMutated] + mutation < 0 || newGenotype[whichDeltaMutated] + mutation > initialDeltaRange);
+
+        newGenotype[whichDeltaMutated] += mutation;
 
         return newGenotype;
     }
