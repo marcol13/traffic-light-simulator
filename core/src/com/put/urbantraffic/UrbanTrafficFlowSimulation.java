@@ -80,10 +80,9 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         SimulationCore simulation = new SimulationCore();
         simulation.city = city;
         simulation.epochs = 600;
-        simulation.numberOfChildren = 50;
-        simulation.population = 50;
+        simulation.population = 100;
         simulation.numberOfCrossings = city.getCrossings().size();
-        simulation.mutationScale = 10;
+        simulation.mutationScale = 100;
         simulation.initialDeltaRange = 1000;
         simulation.tournamentSelectionContestants = 2;
         simulation.startSimulation();
