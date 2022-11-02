@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
+import java.util.Arrays;
+
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
     private float playerX;
@@ -22,7 +24,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private static final int NODE_CIRCLE_RADIUS = 15;
     private static final int CORNER_CIRCLE_RADIUS = 7;
     private static final int NODE_OFFSET_LANE = 4;
-    CityGraph.PathWithTime[][] paths;
+    static CityGraph.PathWithTime[][] paths;
 
     @Override
     public void create() {
@@ -36,6 +38,12 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         int crossingAmount = 50;
         city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount);
         paths = new CityGraph().generate(city);
+//        for(CityGraph.PathWithTime[] path: paths){
+//            System.out.println(Arrays.toString(path) + "\n");
+//            System.out.println(Arrays.toString(path));
+//        }
+//        System.out.println(paths[1][3]);
+
 
         System.out.println("Quantity of Crossings: " + city.getCrossings().size());
         System.out.println("Quantity of Roads: " + city.getRoads().size());
@@ -74,6 +82,9 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //
 //        car = new Car(new Node(0, 0), new Node(200, 200), new ArrayList<Node>(Arrays.asList(new Node(0, 0), new Node(0, 100), new Node(0, 200), new Node(100, 200), new Node(200, 200))));
 
+        car = city.spawnCar();
+        System.out.println(car.getPath());
+
         SimulationCore simulation = new SimulationCore();
         simulation.city = city;
         simulation.epochs = 600;
@@ -104,6 +115,10 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         for (Crossing crossing : city.getCrossings()) {
             drawCircle(crossing.getX(), crossing.getY(), NODE_CIRCLE_RADIUS, Color.WHITE);
         }
+
+
+        drawCircle(car.getStartPoint().getX(), car.getStartPoint().getY(), 40, Color.GREEN);
+        drawCircle(car.getEndPoint().getX(), car.getEndPoint().getY(), 40, Color.RED);
 
         //Draw roads where max speed
         for (Road road : city.getRoads()) {
@@ -142,6 +157,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
 
 //        drawCircle(car.getXPos(), car.getYPos(), 10, Color.YELLOW);
+        drawCircle(car.getActualPoint().getX(), car.getActualPoint().getY(), 10, Color.YELLOW);
     }
 
     public void moveCamera() {
@@ -153,13 +169,22 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             ((OrthographicCamera) extendViewport.getCamera()).zoom -= .5f * delta;
         }
 
-//        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-//            car.moveCar();
-//            System.out.println(car.getXPos());
-//            System.out.println(car.getYPos());
-//            drawCircle(car.getXPos(), car.getYPos(), 10, Color.YELLOW);
-//        }
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+            car.moveCar();
+            System.out.println(car.getActualPoint());
+//            drawCircle(car.getActualPoint().getX(), car.getActualPoint().getY(), 10, Color.YELLOW);
+        }
 
+//        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+//
+//            car = city.spawnCar();
+//            System.out.println(car.getStartPoint());
+////            car.getStartPoint();
+////            System.out.println(car.getXPos());
+////            System.out.println(car.getYPos());
+//            drawCircle(car.getStartPoint().getX(), car.getStartPoint().getY(), 40, Color.YELLOW);
+//            drawCircle(car.getEndPoint().getX(), car.getEndPoint().getY(), 40, Color.GREEN);
+//        }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             playerX -= MOVE_SPEED * delta;
