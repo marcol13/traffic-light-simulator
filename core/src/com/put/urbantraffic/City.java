@@ -103,7 +103,7 @@ public class City {
                                     break;
                                 }
                             }
-                            roads.add(new Road(roads.size(), Math.abs(nodes.get(0).getX() - nodes.get(nodes.size()-1).getX()),Arrays.asList(new Lane(laneId, startCrossing, endCrossing, new ArrayList<Direction>()), new Lane(laneId + 1, endCrossing, startCrossing, new ArrayList<Direction>())), nodes));
+                            addNewRoad(laneId, nodes, startCrossing, endCrossing);
                             laneId += 2;
                             x--;
                         }
@@ -145,7 +145,7 @@ public class City {
                                     break;
                                 }
                             }
-                            roads.add(new Road(roads.size(), Math.abs(nodes.get(0).getY() - nodes.get(nodes.size()-1).getY()) , Arrays.asList(new Lane(laneId, startCrossing, endCrossing, new ArrayList<Direction>()), new Lane(laneId + 1, endCrossing, startCrossing, new ArrayList<Direction>())), nodes));
+                            addNewRoad(laneId, nodes, startCrossing, endCrossing);
                             laneId += 2;
                             y--;
                         }
@@ -202,7 +202,7 @@ public class City {
                                     break;
                                 }
                             }
-                            roads.add(new Road(roads.size(), Math.abs(nodes.get(0).getX() - nodes.get(nodes.size()-1).getX()) + Math.abs(nodes.get(0).getY() - nodes.get(nodes.size()-1).getY()) , Arrays.asList(new Lane(laneId, startCrossing, endCrossing, new ArrayList<Direction>()), new Lane(laneId + 1, endCrossing, startCrossing, new ArrayList<Direction>())), nodes));
+                            addNewRoad(laneId, nodes, startCrossing, endCrossing);
                             laneId += 2;
                         }
                     }
@@ -259,8 +259,8 @@ public class City {
                                     break;
                                 }
                             }
-                            
-                            roads.add(new Road(roads.size(), Math.abs(nodes.get(0).getX() - nodes.get(nodes.size()-1).getX()) + Math.abs(nodes.get(0).getY() - nodes.get(nodes.size()-1).getY()), Arrays.asList(new Lane(laneId, startCrossing, endCrossing, new ArrayList<Direction>()), new Lane(laneId + 1, endCrossing, startCrossing, new ArrayList<Direction>())), nodes));
+
+                            addNewRoad(laneId, nodes, startCrossing, endCrossing);
                             laneId += 2;
                         }
                     }
@@ -293,10 +293,16 @@ public class City {
         nodes.add(new Node(x * MESH_OFFSET, y * MESH_OFFSET));
         for (Crossing crossing : crossings) {
             if (crossing.getX() == x * MESH_OFFSET && crossing.getY() == y * MESH_OFFSET) {
-                roads.add(new Road(roads.size(), Math.abs(nodes.get(0).getX() - nodes.get(nodes.size()-1).getX()) + Math.abs(nodes.get(0).getY() - nodes.get(nodes.size()-1).getY()), Arrays.asList(new Lane(laneId, crossing2, crossing, new ArrayList<Direction>()), new Lane(laneId + 1, crossing, crossing2, new ArrayList<Direction>())), nodes));
+                addNewRoad(laneId, nodes, crossing2, crossing);
                 break;
             }
         }
+    }
+
+    private static void addNewRoad(int laneId, List<Node> nodes, Crossing crossing2, Crossing crossing) {
+        int length = Math.abs(nodes.get(0).getX() - nodes.get(nodes.size() - 1).getX()) + Math.abs(nodes.get(0).getY() - nodes.get(nodes.size() - 1).getY());
+        List<Lane> laneList = Arrays.asList(new Lane(laneId, crossing2, crossing, new ArrayList<>()), new Lane(laneId + 1, crossing, crossing2, new ArrayList<>()));
+        roads.add(new Road(roads.size(), length, laneList, nodes));
     }
 
     private void calculateRoadSpeedLimit(){
