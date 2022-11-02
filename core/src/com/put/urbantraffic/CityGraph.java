@@ -12,7 +12,7 @@ public class CityGraph {
     PathWithTime[][] generate(City city) {
         val crossings = city.getCrossings();
         val crossingsAmount = crossings.size();
-        val roads = city.getRoads();
+        val roads = city.getRoads().stream().sorted(Comparator.comparingLong(Road::getId)).collect(Collectors.toList());
         val crossingsMap = crossings.stream()
                 .collect(Collectors.toMap(Crossing::getId, item -> item));
         final Map<Pair<Integer, Integer>, Road> roadMap = roads.stream()
