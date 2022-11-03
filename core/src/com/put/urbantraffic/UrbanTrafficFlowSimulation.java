@@ -9,7 +9,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
@@ -18,7 +20,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     ExtendViewport extendViewport;
 
     private City city;
-    private Car car;
+    private final List<Car> cars = new ArrayList<Car>();
 
     private static final float MOVE_SPEED = 150f;
     private static final int NODE_CIRCLE_RADIUS = 15;
@@ -36,6 +38,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //        Crossing amount < 600 -> *6
         int gridMultiplier = 2;
         int crossingAmount = 50;
+        int amountOfCars = 10;
         city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount);
         paths = new CityGraph().generate(city);
 //        for(CityGraph.PathWithTime[] path: paths){
@@ -82,8 +85,11 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //
 //        car = new Car(new Node(0, 0), new Node(200, 200), new ArrayList<Node>(Arrays.asList(new Node(0, 0), new Node(0, 100), new Node(0, 200), new Node(100, 200), new Node(200, 200))));
 
-        car = city.spawnCar();
-        System.out.println(car.getPath());
+        for(int i = 0; i < amountOfCars; i++){
+            cars.add(city.spawnCar());
+        }
+//        car = city.spawnCar();
+//        System.out.println(car.getPath());
 
         SimulationCore simulation = new SimulationCore();
         simulation.city = city;
@@ -117,8 +123,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
 
 
-        drawCircle(car.getStartPoint().getX(), car.getStartPoint().getY(), 40, Color.GREEN);
-        drawCircle(car.getEndPoint().getX(), car.getEndPoint().getY(), 40, Color.RED);
+//        drawCircle(car.getStartPoint().getX(), car.getStartPoint().getY(), 40, Color.GREEN);
+//        drawCircle(car.getEndPoint().getX(), car.getEndPoint().getY(), 40, Color.RED);
 
         //Draw roads where max speed
         for (Road road : city.getRoads()) {
@@ -156,8 +162,30 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             }
         }
 
+//        for(Crossing cross: car.getCrossingList()){
+//            drawCircle(cross.getX(), cross.getY(), 10, Color.BLUE);
+//        }
+
 //        drawCircle(car.getXPos(), car.getYPos(), 10, Color.YELLOW);
-        drawCircle(car.getActualPoint().getX(), car.getActualPoint().getY(), 10, Color.YELLOW);
+        for(Car car: cars){
+            drawCircle(car.getActualPoint().getX(), car.getActualPoint().getY(), 10, Color.YELLOW);
+        }
+
+//        drawPath(car.calculatedPath);
+//        Road road = city.getRoads().get(0);
+//        Lane lane = road.getLaneList().get(0);
+//        int X1 = (lane.getStartCrossing().getX() + lane.getEndCrossing().getX()) / 2;
+//        int Y1 = (lane.getStartCrossing().getY() + lane.getEndCrossing().getY()) / 2;
+//
+//        Road road1 = city.getRoads().get(paths.length - 1);
+//        Lane lane2 = road1.getLaneList().get(0);
+//        int X2 = (lane2.getStartCrossing().getX() + lane2.getEndCrossing().getX()) / 2;
+//        int Y2 = (lane2.getStartCrossing().getY() + lane2.getEndCrossing().getY()) / 2;
+//
+//        drawCircle(X1, Y1, 10, Color.CORAL);
+//        drawCircle(X2, Y2, 10, Color.CORAL);
+//        drawPath(paths[road.getId()][road1.getId()]);
+//        System.out.println("URBAN "+ (paths.length - 1));
     }
 
     public void moveCamera() {
@@ -170,8 +198,10 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-            car.moveCar();
-            System.out.println(car.getActualPoint());
+            for(Car car: cars){
+                car.moveCar();
+            }
+
 //            drawCircle(car.getActualPoint().getX(), car.getActualPoint().getY(), 10, Color.YELLOW);
         }
 

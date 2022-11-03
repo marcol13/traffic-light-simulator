@@ -44,6 +44,9 @@ public class City {
         while(startIndex == endIndex){
             startIndex = rand.nextInt(roads.size());
             endIndex = rand.nextInt(roads.size());
+            if(roads.get(startIndex).getNodeList().size() > 2 || roads.get(endIndex).getNodeList().size() > 2){
+                startIndex = endIndex;
+            }
         }
         Road startRode = roads.get(startIndex);
         Road endRode = roads.get(endIndex);
