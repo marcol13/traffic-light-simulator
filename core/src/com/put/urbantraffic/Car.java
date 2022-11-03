@@ -59,11 +59,13 @@ public class Car {
         List<Node> path = new ArrayList<>(Collections.singletonList(this.startPoint));
         System.out.println("CROSSINGS: " + calculatedPath.crossings.size() + " ROADS: " + calculatedPath.roads.size());
 
+        int i = 0;
         if(checkIfIsInMiddle(calculatedPath.crossings.get(0), calculatedPath.crossings.get(1), this.startPoint)){
             path.add(new Node(calculatedPath.crossings.get(0).getX(), calculatedPath.crossings.get(0).getY()));
+            i++;
         }
 
-        for(int i = 1; i < calculatedPath.crossings.size() - 1; i++){
+        for(; i < calculatedPath.crossings.size() - 1; i++){
             if(calculatedPath.roads.get(i).getNodeList().size() > 2){
                 System.out.println(calculatedPath.crossings.get(i));
                 List<Node> temp = new ArrayList<>();
@@ -116,9 +118,10 @@ public class Car {
 
     private boolean checkIfIsInMiddle(Crossing firstCrossing, Crossing secondCrossing, Node checkPoint){
         return ((firstCrossing.getX() + secondCrossing.getX()) / 2 != checkPoint.getX() ||
-                (firstCrossing.getY() + secondCrossing.getY()) / 2 != checkPoint.getY()) &&
-                ((firstCrossing.getX() != checkPoint.getX() && secondCrossing.getX() != checkPoint.getX()) ||
-                (firstCrossing.getY() != checkPoint.getY() && secondCrossing.getY() != checkPoint.getY()));
+                (firstCrossing.getY() + secondCrossing.getY()) / 2 != checkPoint.getY());
+//                &&
+//                ((firstCrossing.getX() != checkPoint.getX() && secondCrossing.getX() != checkPoint.getX()) ||
+//                (firstCrossing.getY() != checkPoint.getY() && secondCrossing.getY() != checkPoint.getY()));
     }
 
     public void moveCar(){
