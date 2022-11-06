@@ -1,7 +1,5 @@
 package com.put.urbantraffic;
 
-import lombok.Data;
-
 import java.util.*;
 
 public class City {
@@ -266,15 +264,14 @@ public class City {
 //        Adding driveways
         int x = 0;
         int y = grid.length / 4 * 2 + 1;
-        addDriveway(grid, -1, grid.length / 4 * 2 + 1, 1, 0, crossingId, laneId);
-        addDriveway(grid, grid[0].length, grid.length / 4 * 2 + 1, -1, 0, crossingId + 1, laneId + 2);
-        addDriveway(grid, grid[0].length / 4 * 2 - 1, -1, 0, 1, crossingId + 2, laneId + 4);
-        addDriveway(grid, grid[0].length / 4 * 2 - 1, grid.length, 0, -1, crossingId + 3, laneId + 6);
+        addDriveway(grid, -1, grid.length / 4 * 2 + 1, 1, 0, crossingId);
+        addDriveway(grid, grid[0].length, grid.length / 4 * 2 + 1, -1, 0, crossingId + 1);
+        addDriveway(grid, grid[0].length / 4 * 2 - 1, -1, 0, 1, crossingId + 2);
+        addDriveway(grid, grid[0].length / 4 * 2 - 1, grid.length, 0, -1, crossingId + 3);
         crossingId += 4;
-        laneId += 8;
     }
 
-    private void addDriveway(int[][] grid, int x, int y, int addX, int addY, int crossingId, int laneId){
+    private void addDriveway(int[][] grid, int x, int y, int addX, int addY, int crossingId){
         List<Node> nodes = new ArrayList<>();
         Crossing crossing2 = new Crossing(crossingId, x * MESH_OFFSET, y * MESH_OFFSET,  new ArrayList<Light>());
         crossings.add(crossing2);
@@ -295,9 +292,8 @@ public class City {
     }
 
     private void addNewRoad(List<Node> nodes, Crossing crossing2, Crossing crossing) {
-        int length = Math.abs(nodes.get(0).getX() - nodes.get(nodes.size() - 1).getX()) + Math.abs(nodes.get(0).getY() - nodes.get(nodes.size() - 1).getY());
         List<Lane> laneList = Arrays.asList(new Lane(laneId, crossing2, crossing, new ArrayList<>()), new Lane(laneId + 1, crossing, crossing2, new ArrayList<>()));
-        roads.add(new Road(roads.size(), length, laneList, nodes));
+        roads.add(new Road(roads.size(), laneList, nodes));
         laneId += 2;
     }
 
