@@ -4,16 +4,16 @@ import lombok.Data;
 
 import java.util.*;
 
-@Data
 public class City {
-    private static List<Crossing> crossings;
-    private static List<Road> roads;
+    private final List<Crossing> crossings;
+    private final List<Road> roads;
+    private int laneId = 0;
 
     private static final int MESH_OFFSET = 100;
 
     public City(List<Crossing> crossings, List<Road> roads){
-        City.crossings = crossings;
-        City.roads = roads;
+        this.crossings = crossings;
+        this.roads = roads;
     }
 
     public City(int width, int height, int crossingAmount){
@@ -58,7 +58,7 @@ public class City {
     }
 
 
-    private static void parseGridToClasses(int[][] grid) {
+    private void parseGridToClasses(int[][] grid) {
         int crossingId = 0;
         for (int y = 1; y < grid.length; y+=2) {
             for (int x = 1; x < grid[0].length; x+=2) {
@@ -69,7 +69,6 @@ public class City {
             }
         }
 
-        int laneId = 0;
 
 //        Checking horizontal roads
         for (int y = 0; y < grid.length; y++) {
@@ -103,8 +102,7 @@ public class City {
                                     break;
                                 }
                             }
-                            addNewRoad(laneId, nodes, startCrossing, endCrossing);
-                            laneId += 2;
+                            addNewRoad(nodes, startCrossing, endCrossing);
                             x--;
                         }
                     }
@@ -145,8 +143,7 @@ public class City {
                                     break;
                                 }
                             }
-                            addNewRoad(laneId, nodes, startCrossing, endCrossing);
-                            laneId += 2;
+                            addNewRoad(nodes, startCrossing, endCrossing);
                             y--;
                         }
                     }
@@ -202,8 +199,7 @@ public class City {
                                     break;
                                 }
                             }
-                            addNewRoad(laneId, nodes, startCrossing, endCrossing);
-                            laneId += 2;
+                            addNewRoad(nodes, startCrossing, endCrossing);
                         }
                     }
                 }
@@ -260,8 +256,7 @@ public class City {
                                 }
                             }
 
-                            addNewRoad(laneId, nodes, startCrossing, endCrossing);
-                            laneId += 2;
+                            addNewRoad(nodes, startCrossing, endCrossing);
                         }
                     }
                 }
@@ -279,7 +274,7 @@ public class City {
         laneId += 8;
     }
 
-    private static void addDriveway(int[][] grid, int x, int y, int addX, int addY, int crossingId, int laneId){
+    private void addDriveway(int[][] grid, int x, int y, int addX, int addY, int crossingId, int laneId){
         List<Node> nodes = new ArrayList<>();
         Crossing crossing2 = new Crossing(crossingId, x * MESH_OFFSET, y * MESH_OFFSET,  new ArrayList<Light>());
         crossings.add(crossing2);
@@ -293,16 +288,17 @@ public class City {
         nodes.add(new Node(x * MESH_OFFSET, y * MESH_OFFSET));
         for (Crossing crossing : crossings) {
             if (crossing.getX() == x * MESH_OFFSET && crossing.getY() == y * MESH_OFFSET) {
-                addNewRoad(laneId, nodes, crossing2, crossing);
+                addNewRoad(nodes, crossing2, crossing);
                 break;
             }
         }
     }
 
-    private static void addNewRoad(int laneId, List<Node> nodes, Crossing crossing2, Crossing crossing) {
+    private void addNewRoad(List<Node> nodes, Crossing crossing2, Crossing crossing) {
         int length = Math.abs(nodes.get(0).getX() - nodes.get(nodes.size() - 1).getX()) + Math.abs(nodes.get(0).getY() - nodes.get(nodes.size() - 1).getY());
         List<Lane> laneList = Arrays.asList(new Lane(laneId, crossing2, crossing, new ArrayList<>()), new Lane(laneId + 1, crossing, crossing2, new ArrayList<>()));
         roads.add(new Road(roads.size(), length, laneList, nodes));
+        laneId += 2;
     }
 
     private void calculateRoadSpeedLimit(){
