@@ -1,6 +1,9 @@
 package com.put.urbantraffic;
 
+import lombok.val;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class City {
     private final List<Crossing> crossings;
@@ -297,28 +300,21 @@ public class City {
         laneId += 2;
     }
 
-    private void calculateRoadSpeedLimit(){
-        roads.sort(Comparator.comparing(Road::getLength));
-
-        int i = 0;
-
-       do{
-            roads.get(i).setSpeedLimit(40);
-            i++;
-        }while((i < (roads.size() * 3/10)) ||  roads.get(i-1).getLength() == roads.get(i).getLength());
-//        }while((i < (roads.size() * 3/10)));
-
-
-        while((i < (roads.size() * 9/10)) ||  roads.get(i-1).getLength() == roads.get(i).getLength()){
-            roads.get(i).setSpeedLimit(50);
-            i++;
+    private void calculateRoadSpeedLimit() {
+        val roadsLengths = roads.stream().map(Road::getLength).sorted().collect(Collectors.toList());
+        val lowerBoundFraction = 3.0 / 10;
+        val upperBoundFraction = 9.0 / 10;
+        val lowerBoundLength = roadsLengths.get((int) (roadsLengths.size() * lowerBoundFraction));
+        val upperBoundLength = roadsLengths.get((int) (roadsLengths.size() * upperBoundFraction));
+        for (Road road : roads) {
+            if (road.getLength() <= lowerBoundLength) {
+                road.setSpeedLimit(40);
+            } else if (road.getLength() <= upperBoundLength) {
+                road.setSpeedLimit(50);
+            } else {
+                road.setSpeedLimit(70);
+            }
         }
-
-        while(i < roads.size()){
-            roads.get(i).setSpeedLimit(70);
-            i++;
-        }
-
     }
 
     public List<Crossing> getCrossings() {
