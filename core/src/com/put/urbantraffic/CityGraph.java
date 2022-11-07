@@ -156,7 +156,8 @@ public class CityGraph {
     }
 
     private static float getTime(Road road) {
-        return road.getLength() / (float) road.getSpeedLimit();
+        Lane lane = road.getLaneList().get(0);
+        return lane.getLength() / (float) lane.getSpeedLimit();
     }
 
     @Data

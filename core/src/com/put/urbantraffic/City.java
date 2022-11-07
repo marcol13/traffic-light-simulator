@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public class City {
     private final List<Crossing> crossings;
     private final List<Road> roads;
-    private int laneId = 0;
+    private final List<Lane> lanes = new ArrayList<>();
 
     private static final int MESH_OFFSET = 100;
 
@@ -46,8 +46,8 @@ public class City {
         }
         Road startRode = roads.get(startIndex);
         Road endRode = roads.get(endIndex);
-        Node startNode = getRandomListElement(startRode.getNodeList(), rand);
-        Node endNode = getRandomListElement(endRode.getNodeList(), rand);
+//        Node startNode = getRandomListElement(startRode.getNodeList(), rand);
+//        Node endNode = getRandomListElement(endRode.getNodeList(), rand);
 
 //        return new Car(startNode, endNode);
     }
@@ -290,25 +290,36 @@ public class City {
         }
     }
 
-    private void addNewRoad(List<Node> nodes, Crossing crossing2, Crossing crossing) {
-        List<Lane> laneList = Arrays.asList(new Lane(laneId, crossing2, crossing, new ArrayList<>()), new Lane(laneId + 1, crossing, crossing2, new ArrayList<>()));
-        roads.add(new Road(roads.size(), laneList, nodes));
-        laneId += 2;
+    private void addNewRoad(List<Node> nodes, Crossing crossing1, Crossing crossing2) {
+        if (nodes.get(0).getX() == crossing2.getX() && nodes.get(0).getY() == crossing2.getY()) {
+            Collections.reverse(nodes);
+        }
+
+        Lane lane1 = new Lane(lanes.size(), crossing1, crossing2, new ArrayList<>(), nodes);
+        lanes.add(lane1);
+
+        ArrayList<Node> reversedNodes = new ArrayList<>(nodes);
+        Collections.reverse(reversedNodes);
+        Lane lane2 = new Lane(lanes.size(), crossing1, crossing2, new ArrayList<>(), reversedNodes);
+        lanes.add(lane2);
+
+        List<Lane> laneList = Arrays.asList(lane1, lane2);
+        roads.add(new Road(roads.size(), laneList));
     }
 
     private void calculateRoadSpeedLimit() {
-        val roadsLengths = roads.stream().map(Road::getLength).sorted().collect(Collectors.toList());
+        val roadsLengths = lanes.stream().map(Lane::getLength).sorted().collect(Collectors.toList());
         val lowerBoundFraction = 3.0 / 10;
         val upperBoundFraction = 9.0 / 10;
         val lowerBoundLength = roadsLengths.get((int) (roadsLengths.size() * lowerBoundFraction));
         val upperBoundLength = roadsLengths.get((int) (roadsLengths.size() * upperBoundFraction));
-        for (Road road : roads) {
-            if (road.getLength() <= lowerBoundLength) {
-                road.setSpeedLimit(40);
-            } else if (road.getLength() <= upperBoundLength) {
-                road.setSpeedLimit(50);
+        for (Lane lane : lanes) {
+            if (lane.getLength() <= lowerBoundLength) {
+                lane.setSpeedLimit(40);
+            } else if (lane.getLength() <= upperBoundLength) {
+                lane.setSpeedLimit(50);
             } else {
-                road.setSpeedLimit(70);
+                lane.setSpeedLimit(70);
             }
         }
     }
