@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import lombok.val;
 
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
@@ -36,6 +37,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         int crossingAmount = 50;
         city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount);
         paths = new CityGraph().generate(city);
+
+        setupInitialCameraPositionAndZoom(gridMultiplier);
 
         System.out.println("Quantity of Crossings: " + city.getCrossings().size());
         System.out.println("Quantity of Roads: " + city.getRoads().size());
@@ -88,6 +91,17 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //            System.out.println("ROAD LENGTH: " + road.getLength() + " Speed: " + road.getSpeedLimit());
 //        }
 
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    private void setupInitialCameraPositionAndZoom(int gridMultiplier) {
+        val minX = city.getCrossings().stream().map(Crossing::getX).min(Integer::compareTo).get();
+        val minY = city.getCrossings().stream().map(Crossing::getY).min(Integer::compareTo).get();
+        val maxX = city.getCrossings().stream().map(Crossing::getX).max(Integer::compareTo).get();
+        val maxY = city.getCrossings().stream().map(Crossing::getY).max(Integer::compareTo).get();
+        playerX = (minX + maxX) / 2.0f;
+        playerY = (minY + maxY) / 2.0f;
+        ((OrthographicCamera) extendViewport.getCamera()).zoom = gridMultiplier + 0.5f;
     }
 
     @Override
