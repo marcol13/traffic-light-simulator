@@ -18,7 +18,7 @@ public class Car {
     private int nodePercentage = 0;
     private RideStatus status = RideStatus.WAITING;
 
-    public Car(Node startNode, Node endNode, List<Node> path){
+    public Car(Node startNode, Node endNode, List<Node> path) {
         this.startNode = startNode;
         this.endNode = endNode;
         this.path = path;
@@ -28,19 +28,18 @@ public class Car {
         this.yPos = startNode.getY();
     }
 
-    public void moveCar(){
-        if(status != RideStatus.FINISH){
+    public void moveCar() {
+        if (status != RideStatus.FINISH) {
             nodePercentage += 1;
 
-            if(nodePercentage >= 100){
+            if (nodePercentage >= 100) {
                 nodePercentage %= 100;
                 path.remove(0);
-                if(path.size() > 1){
+                if (path.size() > 1) {
                     currentNode = path.get(0);
                     nextNode = path.get(1);
 
-                }
-                else{
+                } else {
                     status = RideStatus.FINISH;
                     xPos = nextNode.getX();
                     yPos = nextNode.getY();
