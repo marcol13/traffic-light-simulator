@@ -130,12 +130,11 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             for (Node node : road.getNodeList()) {
                 if (node.getX() != startX && node.getY() != startY) {
                     drawCircle(endX, endY, CORNER_CIRCLE_RADIUS, Color.WHITE);
-                    if(road.getSpeedLimit() == 40){
+                    if (road.getSpeedLimit() == 40) {
                         drawLanes(startX, startY, endX, endY, lanesAmount, Color.DARK_GRAY);
-                    }else if(road.getSpeedLimit() == 50){
+                    } else if (road.getSpeedLimit() == 50) {
                         drawLanes(startX, startY, endX, endY, lanesAmount, Color.LIGHT_GRAY);
-                    }
-                    else{
+                    } else {
                         drawLanes(startX, startY, endX, endY, lanesAmount, Color.RED);
                     }
 
@@ -145,12 +144,11 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 endX = node.getX();
                 endY = node.getY();
             }
-            if(road.getSpeedLimit() == 40){
+            if (road.getSpeedLimit() == 40) {
                 drawLanes(startX, startY, endX, endY, lanesAmount, Color.DARK_GRAY);
-            }else if(road.getSpeedLimit() == 50){
+            } else if (road.getSpeedLimit() == 50) {
                 drawLanes(startX, startY, endX, endY, lanesAmount, Color.LIGHT_GRAY);
-            }
-            else{
+            } else {
                 drawLanes(startX, startY, endX, endY, lanesAmount, Color.RED);
             }
         }
@@ -220,12 +218,12 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         shapeRenderer.end();
     }
 
-    private void drawPath(CityGraph.PathWithTime pathWithTime ) {
+    private void drawPath(CityGraph.PathWithTime pathWithTime) {
         for (Crossing crossing : pathWithTime.crossings) {
             drawCircle(crossing.getX(), crossing.getY(), 20, Color.BLUE);
         }
         drawCircle(pathWithTime.crossings.get(0).getX(), pathWithTime.crossings.get(0).getY(), 20, Color.RED);
-        drawCircle(pathWithTime.crossings.get(pathWithTime.crossings.size()-1).getX(), pathWithTime.crossings.get(pathWithTime.crossings.size()-1).getY(), 20, Color.RED);
+        drawCircle(pathWithTime.crossings.get(pathWithTime.crossings.size() - 1).getX(), pathWithTime.crossings.get(pathWithTime.crossings.size() - 1).getY(), 20, Color.RED);
         for (Road road : pathWithTime.roads) {
             Lane lane = road.getLaneList().get(0);
             drawLanes(lane.getStartCrossing().getX(), lane.getStartCrossing().getY(), lane.getEndCrossing().getX(), lane.getEndCrossing().getY(), 1, Color.LIME);

@@ -14,9 +14,9 @@ public class SimulationCore {
     SimulatorChild[] individuals;
 
 
-    public void startSimulation(){
+    public void startSimulation() {
         individuals = new SimulatorChild[population];
-        for(int i=0; i<population; i++) {
+        for (int i = 0; i < population; i++) {
             int[] lightDeltas = new int[numberOfCrossings];
             for (int j = 0; j < numberOfCrossings; j++) {
                 lightDeltas[j] = (int) (Math.random() * initialDeltaRange);
@@ -30,7 +30,7 @@ public class SimulationCore {
         Arrays.sort(individuals, Comparator.comparing(p -> p.valueOfGoalFunction));
 
 
-        for(int epoch=0; epoch < epochs; epoch++){
+        for (int epoch = 0; epoch < epochs; epoch++) {
 
 
             createNewIndividuals(individuals);
@@ -40,20 +40,20 @@ public class SimulationCore {
 
 
     private void createNewIndividuals(SimulatorChild[] individuals) {
-        SimulatorChild[] children = new SimulatorChild[population/2];
+        SimulatorChild[] children = new SimulatorChild[population / 2];
         int index;
         int index2;
-        for(int child=0; child<population/2;child++){
+        for (int child = 0; child < population / 2; child++) {
 //            index = returnGaussian();
 //            index2 = returnGaussian();
             index = returnTournamentSelection(individuals);
             index2 = returnTournamentSelection(individuals);
             children[child] = new SimulatorChild();
-            children[child].lightDeltas = makeNewGenotype(individuals[index].lightDeltas,individuals[index2].lightDeltas);
+            children[child].lightDeltas = makeNewGenotype(individuals[index].lightDeltas, individuals[index2].lightDeltas);
         }
         simulateChildren(children);
 
-        System.arraycopy(children, 0, individuals, population/2, population/2);
+        System.arraycopy(children, 0, individuals, population / 2, population / 2);
 
 //        Ascending order!
         Arrays.sort(individuals, Comparator.comparing(p -> p.valueOfGoalFunction));
@@ -82,19 +82,19 @@ public class SimulationCore {
         boolean flag;
         float min = Integer.MAX_VALUE;
         int finalIndex = -10;
-        for(int index=0; index<tournamentSelectionContestants; index++){
-            do{
-                flag=false;
+        for (int index = 0; index < tournamentSelectionContestants; index++) {
+            do {
+                flag = false;
                 tryIndex = (int) (Math.random() * individuals.length / 2);
-                for(int i=0; i<index; i++){
-                    if(indexes[i] == tryIndex){
+                for (int i = 0; i < index; i++) {
+                    if (indexes[i] == tryIndex) {
                         flag = true;
                         break;
                     }
                 }
-            }while(flag);
+            } while (flag);
             indexes[index] = tryIndex;
-            if(individuals[tryIndex].valueOfGoalFunction < min){
+            if (individuals[tryIndex].valueOfGoalFunction < min) {
                 min = individuals[tryIndex].valueOfGoalFunction;
                 finalIndex = tryIndex;
             }
@@ -115,16 +115,16 @@ public class SimulationCore {
 
     private int[] makeNewGenotype(int[] genotypeMother, int[] genotypeFather) {
         int[] newGenotype = new int[genotypeMother.length];
-        int border = (int) (Math.random()*genotypeMother.length);
+        int border = (int) (Math.random() * genotypeMother.length);
 
         System.arraycopy(genotypeMother, 0, newGenotype, 0, border);
         System.arraycopy(genotypeFather, border, newGenotype, border, genotypeMother.length - border);
 
-        int whichDeltaMutated = (int)(Math.random()*genotypeMother.length);
+        int whichDeltaMutated = (int) (Math.random() * genotypeMother.length);
         int mutation;
-        do{
-            mutation = (int)(Math.random()*mutationScale - mutationScale/2);
-        }while(newGenotype[whichDeltaMutated] + mutation < 0 || newGenotype[whichDeltaMutated] + mutation > initialDeltaRange);
+        do {
+            mutation = (int) (Math.random() * mutationScale - mutationScale / 2);
+        } while (newGenotype[whichDeltaMutated] + mutation < 0 || newGenotype[whichDeltaMutated] + mutation > initialDeltaRange);
 
         newGenotype[whichDeltaMutated] += mutation;
 

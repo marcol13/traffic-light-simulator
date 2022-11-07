@@ -12,21 +12,19 @@ public class City {
 
     private static final int MESH_OFFSET = 100;
 
-    public City(List<Crossing> crossings, List<Road> roads){
+    public City(List<Crossing> crossings, List<Road> roads) {
         this.crossings = crossings;
         this.roads = roads;
     }
 
-    public City(int width, int height, int crossingAmount){
+    public City(int width, int height, int crossingAmount) {
 
         int[][] grid = new CityGenerator().generate(width, height, crossingAmount);
         int counter = 0;
-        for (int[] x : grid)
-        {
-            for (int y : x)
-            {
+        for (int[] x : grid) {
+            for (int y : x) {
 //                System.out.print(y + " ");
-                if(y == 8){
+                if (y == 8) {
                     counter++;
                 }
             }
@@ -39,10 +37,10 @@ public class City {
         calculateRoadSpeedLimit();
     }
 
-    public void spawnCar(){
+    public void spawnCar() {
         Random rand = new Random();
         int startIndex = 0, endIndex = 0;
-        while(startIndex == endIndex){
+        while (startIndex == endIndex) {
             startIndex = rand.nextInt(roads.size());
             endIndex = rand.nextInt(roads.size());
         }
@@ -54,15 +52,15 @@ public class City {
 //        return new Car(startNode, endNode);
     }
 
-    private <T> T getRandomListElement(List<T> elementsList, Random rand){
+    private <T> T getRandomListElement(List<T> elementsList, Random rand) {
         return elementsList.get(rand.nextInt(elementsList.size()));
     }
 
 
     private void parseGridToClasses(int[][] grid) {
         int crossingId = 0;
-        for (int y = 1; y < grid.length; y+=2) {
-            for (int x = 1; x < grid[0].length; x+=2) {
+        for (int y = 1; y < grid.length; y += 2) {
+            for (int x = 1; x < grid[0].length; x += 2) {
                 if (grid[y][x] == 9) {
                     crossings.add(new Crossing(crossingId, x * MESH_OFFSET, y * MESH_OFFSET, new ArrayList<Light>()));
                     crossingId++;
@@ -88,7 +86,7 @@ public class City {
                         x += 2;
                         while (grid[y][x] == 1) {
                             x++;
-                            if(x == grid[0].length){
+                            if (x == grid[0].length) {
                                 x--;
                                 break;
                             }
@@ -129,7 +127,7 @@ public class City {
                         y += 2;
                         while (grid[y][x] == 1) {
                             y++;
-                            if(y == grid.length){
+                            if (y == grid.length) {
                                 y--;
                                 break;
                             }
@@ -153,10 +151,9 @@ public class City {
         }
 
 
-
 //        Checking Right up/down
-        for (int y = 1; y < grid.length; y+=2) {
-            for (int x = 1; x < grid[0].length; x+=2) {
+        for (int y = 1; y < grid.length; y += 2) {
+            for (int x = 1; x < grid[0].length; x += 2) {
                 int tempx = x;
                 int tempy = y;
                 if (grid[tempy][tempx] == 9) {
@@ -173,7 +170,7 @@ public class City {
                         tempx += 2;
                         while (grid[tempy][tempx] == 1) {
                             tempx++;
-                            if(tempx == grid[0].length){
+                            if (tempx == grid[0].length) {
                                 tempx--;
                                 break;
                             }
@@ -182,9 +179,9 @@ public class City {
                         if (grid[tempy][tempx] == 8) {
                             nodes.add(new Node(tempx * MESH_OFFSET, tempy * MESH_OFFSET));
                             int directionAfterTurn;
-                            if(grid[tempy + 1][tempx] == 1) {
+                            if (grid[tempy + 1][tempx] == 1) {
                                 directionAfterTurn = 1;
-                            }else{
+                            } else {
                                 directionAfterTurn = -1;
                             }
                             tempy += directionAfterTurn;
@@ -208,10 +205,9 @@ public class City {
         }
 
 
-
 //        Checking Left up/down
-        for (int y = 1; y < grid.length; y+=2) {
-            for (int x = 1; x < grid[0].length; x+=2) {
+        for (int y = 1; y < grid.length; y += 2) {
+            for (int x = 1; x < grid[0].length; x += 2) {
                 int tempx = x;
                 int tempy = y;
                 if (grid[tempy][tempx] == 9) {
@@ -223,13 +219,13 @@ public class City {
                                 break;
                             }
                         }
-                        
+
                         List<Node> nodes = new ArrayList<>();
                         nodes.add(new Node(tempx * MESH_OFFSET, tempy * MESH_OFFSET));
                         tempx--;
                         while (grid[tempy][tempx] == 1) {
                             tempx--;
-                            if(tempx < 0){
+                            if (tempx < 0) {
                                 tempx++;
                                 break;
                             }
@@ -238,9 +234,9 @@ public class City {
                         if (grid[tempy][tempx] == 8) {
                             nodes.add(new Node(tempx * MESH_OFFSET, tempy * MESH_OFFSET));
                             int directionAfterTurn;
-                            if(grid[tempy + 1][tempx] == 1) {
+                            if (grid[tempy + 1][tempx] == 1) {
                                 directionAfterTurn = 1;
-                            }else{
+                            } else {
                                 directionAfterTurn = -1;
                             }
                             tempy += directionAfterTurn;
@@ -274,16 +270,16 @@ public class City {
         crossingId += 4;
     }
 
-    private void addDriveway(int[][] grid, int x, int y, int addX, int addY, int crossingId){
+    private void addDriveway(int[][] grid, int x, int y, int addX, int addY, int crossingId) {
         List<Node> nodes = new ArrayList<>();
-        Crossing crossing2 = new Crossing(crossingId, x * MESH_OFFSET, y * MESH_OFFSET,  new ArrayList<Light>());
+        Crossing crossing2 = new Crossing(crossingId, x * MESH_OFFSET, y * MESH_OFFSET, new ArrayList<Light>());
         crossings.add(crossing2);
         nodes.add(new Node(x * MESH_OFFSET, y * MESH_OFFSET));
-        x+=addX;
-        y+=addY;
-        while(grid[y][x] == 1){
-            x+=addX;
-            y+=addY;
+        x += addX;
+        y += addY;
+        while (grid[y][x] == 1) {
+            x += addX;
+            y += addY;
         }
         nodes.add(new Node(x * MESH_OFFSET, y * MESH_OFFSET));
         for (Crossing crossing : crossings) {
@@ -320,6 +316,7 @@ public class City {
     public List<Crossing> getCrossings() {
         return crossings;
     }
+
     public List<Road> getRoads() {
         return roads;
     }
