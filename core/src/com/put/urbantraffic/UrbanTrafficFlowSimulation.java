@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.put.urbantraffic.util.ObjectSerializationHelper;
 import lombok.val;
 
 import java.util.List;
@@ -37,7 +38,19 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //        Crossing amount < 600 -> *6
         int gridMultiplier = 2;
         int crossingAmount = 50;
-        city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount);
+
+        boolean shouldReadCity = true;
+        boolean shouldSaveCity = false;
+        if (shouldReadCity) {
+            city = (City) ObjectSerializationHelper.readObject("city.txt");
+            assert city != null;
+        } else {
+            city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount);
+        }
+        if (shouldSaveCity) {
+            ObjectSerializationHelper.saveObject(city, "city.txt");
+        }
+
         paths = new CityGraph().generate(city);
 
         setupInitialCameraPositionAndZoom(gridMultiplier);

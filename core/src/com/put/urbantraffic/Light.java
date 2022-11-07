@@ -1,5 +1,7 @@
 package com.put.urbantraffic;
 
-public enum Light {
+import java.io.Serializable;
+
+public enum Light implements Serializable {
     GREEN, YELLOW, RED
 }

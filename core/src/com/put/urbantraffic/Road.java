@@ -2,10 +2,11 @@ package com.put.urbantraffic;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class Road {
+public class Road implements Serializable {
     private final int id;
     private final List<Lane> laneList;
 

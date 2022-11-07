@@ -1,10 +1,11 @@
 package com.put.urbantraffic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Lane {
+public class Lane implements Serializable {
     private static final double AVERAGE_CAR_LENGTH = 2.5;
     private static final double DISTANCE_BETWEEN_CARS = 0.5;
 

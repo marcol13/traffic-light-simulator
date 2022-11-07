@@ -2,10 +2,11 @@ package com.put.urbantraffic;
 
 import lombok.val;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class City {
+public class City implements Serializable {
     private final List<Crossing> crossings;
     private final List<Road> roads;
     private final List<Lane> lanes = new ArrayList<>();
