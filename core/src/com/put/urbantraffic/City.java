@@ -300,7 +300,7 @@ public class City {
 
         ArrayList<Node> reversedNodes = new ArrayList<>(nodes);
         Collections.reverse(reversedNodes);
-        Lane lane2 = new Lane(lanes.size(), crossing1, crossing2, new ArrayList<>(), reversedNodes);
+        Lane lane2 = new Lane(lanes.size(), crossing2, crossing1, new ArrayList<>(), reversedNodes);
         lanes.add(lane2);
 
         List<Lane> laneList = Arrays.asList(lane1, lane2);
@@ -330,5 +330,9 @@ public class City {
 
     public List<Road> getRoads() {
         return roads;
+    }
+
+    public List<Lane> getLanes() {
+        return lanes;
     }
 }
