@@ -10,6 +10,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import lombok.val;
 
+import java.util.List;
+
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
     private float playerX;
@@ -122,38 +124,37 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         //Draw roads where max speed
         for (Road road : city.getRoads()) {
             int lanesAmount = road.getLaneList().size();
-            int startX = road.getNodeList().get(0).getX();
-            int startY = road.getNodeList().get(0).getY();
-            int endX = road.getNodeList().get(0).getX();
-            int endY = road.getNodeList().get(0).getY();
+            Lane lane = road.getLaneList().get(0);
+            List<Node> nodeList = lane.getNodeList();
+            int startX = nodeList.get(0).getX();
+            int startY = nodeList.get(0).getY();
+            int endX = nodeList.get(0).getX();
+            int endY = nodeList.get(0).getY();
 
-            for (Node node : road.getNodeList()) {
+            for (Node node : nodeList) {
                 if (node.getX() != startX && node.getY() != startY) {
                     drawCircle(endX, endY, CORNER_CIRCLE_RADIUS, Color.WHITE);
-                    if (road.getSpeedLimit() == 40) {
-                        drawLanes(startX, startY, endX, endY, lanesAmount, Color.DARK_GRAY);
-                    } else if (road.getSpeedLimit() == 50) {
-                        drawLanes(startX, startY, endX, endY, lanesAmount, Color.LIGHT_GRAY);
-                    } else {
-                        drawLanes(startX, startY, endX, endY, lanesAmount, Color.RED);
-                    }
-
+                    drawLaneWithSpeedLimit(lanesAmount, lane, startX, startY, endX, endY);
                     startX = endX;
                     startY = endY;
                 }
                 endX = node.getX();
                 endY = node.getY();
             }
-            if (road.getSpeedLimit() == 40) {
-                drawLanes(startX, startY, endX, endY, lanesAmount, Color.DARK_GRAY);
-            } else if (road.getSpeedLimit() == 50) {
-                drawLanes(startX, startY, endX, endY, lanesAmount, Color.LIGHT_GRAY);
-            } else {
-                drawLanes(startX, startY, endX, endY, lanesAmount, Color.RED);
-            }
+            drawLaneWithSpeedLimit(lanesAmount, lane, startX, startY, endX, endY);
         }
 
 //        drawCircle(car.getXPos(), car.getYPos(), 10, Color.YELLOW);
+    }
+
+    private void drawLaneWithSpeedLimit(int lanesAmount, Lane lane, int startX, int startY, int endX, int endY) {
+        if (lane.getSpeedLimit() == 40) {
+            drawLanes(startX, startY, endX, endY, lanesAmount, Color.DARK_GRAY);
+        } else if (lane.getSpeedLimit() == 50) {
+            drawLanes(startX, startY, endX, endY, lanesAmount, Color.LIGHT_GRAY);
+        } else {
+            drawLanes(startX, startY, endX, endY, lanesAmount, Color.RED);
+        }
     }
 
     public void moveCamera() {

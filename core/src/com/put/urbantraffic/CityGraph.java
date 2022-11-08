@@ -55,21 +55,8 @@ public class CityGraph {
         return resultConvertedToRoads;
     }
 
-    private List<List<CrossingWithTime>> getNeighboursLists(List<Road> roads, int crossingsAmount) {
-        val neighbours = new ArrayList<List<CrossingWithTime>>(crossingsAmount);
-        for (int i = 0; i < crossingsAmount; i++) {
-            neighbours.add(new ArrayList<>());
-        }
-
-        for (val road : roads) {
-            for (val lane : road.getLaneList()) {
-                val startCrossingId = lane.getStartCrossing().getId();
-                val endCrossing = lane.getEndCrossing();
-                float time = getTime(road);
-                neighbours.get(startCrossingId).add(new CrossingWithTime(endCrossing.getId(), time));
-            }
-        }
-        return neighbours;
+    private static float getTime(Lane lane) {
+        return lane.getLength() / (float) lane.getSpeedLimit();
     }
 
     Pair<float[], List<List<Integer>>> dijkstra(int graphSize, List<List<CrossingWithTime>> neighbours, int crossingId) {
@@ -155,8 +142,21 @@ public class CityGraph {
         return result;
     }
 
-    private static float getTime(Road road) {
-        return road.getLength() / (float) road.getSpeedLimit();
+    private List<List<CrossingWithTime>> getNeighboursLists(List<Road> roads, int crossingsAmount) {
+        val neighbours = new ArrayList<List<CrossingWithTime>>(crossingsAmount);
+        for (int i = 0; i < crossingsAmount; i++) {
+            neighbours.add(new ArrayList<>());
+        }
+
+        for (val road : roads) {
+            for (val lane : road.getLaneList()) {
+                val startCrossingId = lane.getStartCrossing().getId();
+                val endCrossing = lane.getEndCrossing();
+                float time = getTime(lane);
+                neighbours.get(startCrossingId).add(new CrossingWithTime(endCrossing.getId(), time));
+            }
+        }
+        return neighbours;
     }
 
     @Data
