@@ -8,7 +8,7 @@ public class Lane {
     private static final double AVERAGE_CAR_LENGTH = 2.5;
     private static final double DISTANCE_BETWEEN_CARS = 0.5;
 
-    private final long id;
+    private final int id;
     private final Crossing startCrossing;
     private final Crossing endCrossing;
     private final List<Direction> directions;
@@ -16,7 +16,7 @@ public class Lane {
     private final int length;
     private int speedLimit;
 
-    public Lane(long id, Crossing startCrossing, Crossing endCrossing, List<Direction> directions, List<Node> nodeList) {
+    public Lane(int id, Crossing startCrossing, Crossing endCrossing, List<Direction> directions, List<Node> nodeList) {
         this.id = id;
         this.startCrossing = startCrossing;
         this.endCrossing = endCrossing;
@@ -39,7 +39,7 @@ public class Lane {
 //                            Math.pow(startCrossing.getY() - endCrossing.getY(), 2))
 //                    / (AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS));
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
