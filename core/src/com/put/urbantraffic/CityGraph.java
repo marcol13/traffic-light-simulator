@@ -47,7 +47,7 @@ public class CityGraph {
                         result[startingCrossing1][endingCrossing2],
                         result[startingCrossing2][endingCrossing1],
                         result[startingCrossing2][endingCrossing2]
-                ).max((a, b) -> Float.compare(a.time, b.time)).get();
+                ).min((a, b) -> Float.compare(a.time, b.time)).get();
                 resultConvertedToRoads[i][j] = best;
             }
         }
