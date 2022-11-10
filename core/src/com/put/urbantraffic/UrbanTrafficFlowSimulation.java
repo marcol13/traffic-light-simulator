@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import lombok.val;
+
+import java.util.List;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +51,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //        System.out.println(paths[1][3]);
 
 
+        setupInitialCameraPositionAndZoom(gridMultiplier);
+
         System.out.println("Quantity of Crossings: " + city.getCrossings().size());
         System.out.println("Quantity of Roads: " + city.getRoads().size());
 
@@ -85,9 +90,9 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //
 //        car = new Car(new Node(0, 0), new Node(200, 200), new ArrayList<Node>(Arrays.asList(new Node(0, 0), new Node(0, 100), new Node(0, 200), new Node(100, 200), new Node(200, 200))));
 
-        for(int i = 0; i < amountOfCars; i++){
-            cars.add(city.spawnCar());
-        }
+//        for(int i = 0; i < amountOfCars; i++){
+//            cars.add(city.spawnCar());
+//        }
 //        car = city.spawnCar();
 //        System.out.println(car.getPath());
 
@@ -105,6 +110,17 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //            System.out.println("ROAD LENGTH: " + road.getLength() + " Speed: " + road.getSpeedLimit());
 //        }
 
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    private void setupInitialCameraPositionAndZoom(int gridMultiplier) {
+        val minX = city.getCrossings().stream().map(Crossing::getX).min(Integer::compareTo).get();
+        val minY = city.getCrossings().stream().map(Crossing::getY).min(Integer::compareTo).get();
+        val maxX = city.getCrossings().stream().map(Crossing::getX).max(Integer::compareTo).get();
+        val maxY = city.getCrossings().stream().map(Crossing::getY).max(Integer::compareTo).get();
+        playerX = (minX + maxX) / 2.0f;
+        playerY = (minY + maxY) / 2.0f;
+        ((OrthographicCamera) extendViewport.getCamera()).zoom = gridMultiplier + 0.5f;
     }
 
     @Override
@@ -129,63 +145,35 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         //Draw roads where max speed
         for (Road road : city.getRoads()) {
             int lanesAmount = road.getLaneList().size();
-            int startX = road.getNodeList().get(0).getX();
-            int startY = road.getNodeList().get(0).getY();
-            int endX = road.getNodeList().get(0).getX();
-            int endY = road.getNodeList().get(0).getY();
+            Lane lane = road.getLaneList().get(0);
+            List<Node> nodeList = lane.getNodeList();
+            int startX = nodeList.get(0).getX();
+            int startY = nodeList.get(0).getY();
+            int endX = nodeList.get(0).getX();
+            int endY = nodeList.get(0).getY();
 
-            for (Node node : road.getNodeList()) {
+            for (Node node : nodeList) {
                 if (node.getX() != startX && node.getY() != startY) {
                     drawCircle(endX, endY, CORNER_CIRCLE_RADIUS, Color.WHITE);
-                    if(road.getSpeedLimit() == 40){
-                        drawLanes(startX, startY, endX, endY, lanesAmount, Color.DARK_GRAY);
-                    }else if(road.getSpeedLimit() == 50){
-                        drawLanes(startX, startY, endX, endY, lanesAmount, Color.LIGHT_GRAY);
-                    }
-                    else{
-                        drawLanes(startX, startY, endX, endY, lanesAmount, Color.RED);
-                    }
-
+                    drawLaneWithSpeedLimit(lanesAmount, lane, startX, startY, endX, endY);
                     startX = endX;
                     startY = endY;
                 }
                 endX = node.getX();
                 endY = node.getY();
             }
-            if(road.getSpeedLimit() == 40){
-                drawLanes(startX, startY, endX, endY, lanesAmount, Color.DARK_GRAY);
-            }else if(road.getSpeedLimit() == 50){
-                drawLanes(startX, startY, endX, endY, lanesAmount, Color.LIGHT_GRAY);
-            }
-            else{
-                drawLanes(startX, startY, endX, endY, lanesAmount, Color.RED);
-            }
+            drawLaneWithSpeedLimit(lanesAmount, lane, startX, startY, endX, endY);
         }
+    }
 
-//        for(Crossing cross: car.getCrossingList()){
-//            drawCircle(cross.getX(), cross.getY(), 10, Color.BLUE);
-//        }
-
-//        drawCircle(car.getXPos(), car.getYPos(), 10, Color.YELLOW);
-        for(Car car: cars){
-            drawCircle(car.getActualPoint().getX(), car.getActualPoint().getY(), 10, Color.YELLOW);
+    private void drawLaneWithSpeedLimit(int lanesAmount, Lane lane, int startX, int startY, int endX, int endY) {
+        if (lane.getSpeedLimit() == 40) {
+            drawLanes(startX, startY, endX, endY, lanesAmount, Color.DARK_GRAY);
+        } else if (lane.getSpeedLimit() == 50) {
+            drawLanes(startX, startY, endX, endY, lanesAmount, Color.LIGHT_GRAY);
+        } else {
+            drawLanes(startX, startY, endX, endY, lanesAmount, Color.RED);
         }
-
-//        drawPath(car.calculatedPath);
-//        Road road = city.getRoads().get(0);
-//        Lane lane = road.getLaneList().get(0);
-//        int X1 = (lane.getStartCrossing().getX() + lane.getEndCrossing().getX()) / 2;
-//        int Y1 = (lane.getStartCrossing().getY() + lane.getEndCrossing().getY()) / 2;
-//
-//        Road road1 = city.getRoads().get(paths.length - 1);
-//        Lane lane2 = road1.getLaneList().get(0);
-//        int X2 = (lane2.getStartCrossing().getX() + lane2.getEndCrossing().getX()) / 2;
-//        int Y2 = (lane2.getStartCrossing().getY() + lane2.getEndCrossing().getY()) / 2;
-//
-//        drawCircle(X1, Y1, 10, Color.CORAL);
-//        drawCircle(X2, Y2, 10, Color.CORAL);
-//        drawPath(paths[road.getId()][road1.getId()]);
-//        System.out.println("URBAN "+ (paths.length - 1));
     }
 
     public void moveCamera() {
@@ -261,14 +249,30 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         shapeRenderer.end();
     }
 
-    private void drawPath(CityGraph.PathWithTime pathWithTime ) {
-        for (Crossing crossing : pathWithTime.crossings) {
+    /**
+     * draws path between two lanes with given id
+     * green is road
+     * magenta is start and end line
+     */
+    private void drawPathFor2LanesId(int id1, int id2) {
+        List<Lane> lanes = city.getLanes();
+        Lane startLane = lanes.get(id1);
+        Lane endLane = lanes.get(id2);
+        drawPath(paths[startLane.getId()][endLane.getId()]);
+        drawLanes(startLane.getStartCrossing().getX(), startLane.getStartCrossing().getY(), startLane.getEndCrossing().getX(), startLane.getEndCrossing().getY(), 1, Color.MAGENTA);
+        drawLanes(endLane.getStartCrossing().getX(), endLane.getStartCrossing().getY(), endLane.getEndCrossing().getX(), endLane.getEndCrossing().getY(), 1, Color.MAGENTA);
+    }
+
+    /**
+     * draws path for given CityGraph#PathWithTime
+     */
+    private void drawPath(CityGraph.PathWithTime pathWithTime) {
+        for (Crossing crossing : pathWithTime.getCrossings()) {
             drawCircle(crossing.getX(), crossing.getY(), 20, Color.BLUE);
         }
-        drawCircle(pathWithTime.crossings.get(0).getX(), pathWithTime.crossings.get(0).getY(), 20, Color.RED);
-        drawCircle(pathWithTime.crossings.get(pathWithTime.crossings.size()-1).getX(), pathWithTime.crossings.get(pathWithTime.crossings.size()-1).getY(), 20, Color.RED);
-        for (Road road : pathWithTime.roads) {
-            Lane lane = road.getLaneList().get(0);
+        drawCircle(pathWithTime.getCrossings().get(0).getX(), pathWithTime.getCrossings().get(0).getY(), 20, Color.RED);
+        drawCircle(pathWithTime.getCrossings().get(pathWithTime.getCrossings().size() - 1).getX(), pathWithTime.getCrossings().get(pathWithTime.getCrossings().size() - 1).getY(), 20, Color.RED);
+        for (Lane lane : pathWithTime.getLanes()) {
             drawLanes(lane.getStartCrossing().getX(), lane.getStartCrossing().getY(), lane.getEndCrossing().getX(), lane.getEndCrossing().getY(), 1, Color.LIME);
         }
     }

@@ -1,31 +1,30 @@
 package com.put.urbantraffic;
 
-import lombok.Data;
+import lombok.val;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-@Data
 public class City {
-    private static List<Crossing> crossings;
-    private static List<Road> roads;
+    private final List<Crossing> crossings;
+    private final List<Road> roads;
+    private final List<Lane> lanes = new ArrayList<>();
 
     private static final int MESH_OFFSET = 100;
 
-    public City(List<Crossing> crossings, List<Road> roads){
-        City.crossings = crossings;
-        City.roads = roads;
+    public City(List<Crossing> crossings, List<Road> roads) {
+        this.crossings = crossings;
+        this.roads = roads;
     }
 
-    public City(int width, int height, int crossingAmount){
+    public City(int width, int height, int crossingAmount) {
 
         int[][] grid = new CityGenerator().generate(width, height, crossingAmount);
         int counter = 0;
-        for (int[] x : grid)
-        {
-            for (int y : x)
-            {
+        for (int[] x : grid) {
+            for (int y : x) {
 //                System.out.print(y + " ");
-                if(y == 8){
+                if (y == 8) {
                     counter++;
                 }
             }
@@ -38,31 +37,33 @@ public class City {
         calculateRoadSpeedLimit();
     }
 
-    public Car spawnCar(){
+    public void spawnCar(){
         Random rand = new Random();
         int startIndex = 0, endIndex = 0;
-        while(startIndex == endIndex){
-            startIndex = rand.nextInt(roads.size());
-            endIndex = rand.nextInt(roads.size());
-            if(roads.get(startIndex).getNodeList().size() > 2 || roads.get(endIndex).getNodeList().size() > 2){
-                startIndex = endIndex;
-            }
-        }
+//        while (startIndex == endIndex) {
+//            startIndex = rand.nextInt(roads.size());
+//            endIndex = rand.nextInt(roads.size());
+//            if(roads.get(startIndex).getNodeList().size() > 2 || roads.get(endIndex).getNodeList().size() > 2){
+//                startIndex = endIndex;
+//            }
+//        }
         Road startRode = roads.get(startIndex);
         Road endRode = roads.get(endIndex);
+//        Node startNode = getRandomListElement(startRode.getNodeList(), rand);
+//        Node endNode = getRandomListElement(endRode.getNodeList(), rand);
 
-        return new Car(startRode, endRode);
+//        return new Car(startRode, endRode);
     }
 
-    private <T> T getRandomListElement(List<T> elementsList, Random rand){
+    private <T> T getRandomListElement(List<T> elementsList, Random rand) {
         return elementsList.get(rand.nextInt(elementsList.size()));
     }
 
 
-    private static void parseGridToClasses(int[][] grid) {
+    private void parseGridToClasses(int[][] grid) {
         int crossingId = 0;
-        for (int y = 1; y < grid.length; y+=2) {
-            for (int x = 1; x < grid[0].length; x+=2) {
+        for (int y = 1; y < grid.length; y += 2) {
+            for (int x = 1; x < grid[0].length; x += 2) {
                 if (grid[y][x] == 9) {
                     crossings.add(new Crossing(crossingId, x * MESH_OFFSET, y * MESH_OFFSET, new ArrayList<Light>()));
                     crossingId++;
@@ -70,7 +71,6 @@ public class City {
             }
         }
 
-        int laneId = 0;
 
 //        Checking horizontal roads
         for (int y = 0; y < grid.length; y++) {
@@ -89,7 +89,7 @@ public class City {
                         x += 2;
                         while (grid[y][x] == 1) {
                             x++;
-                            if(x == grid[0].length){
+                            if (x == grid[0].length) {
                                 x--;
                                 break;
                             }
@@ -104,8 +104,7 @@ public class City {
                                     break;
                                 }
                             }
-                            roads.add(new Road(roads.size(), Math.abs(nodes.get(0).getX() - nodes.get(nodes.size()-1).getX()),Arrays.asList(new Lane(laneId, startCrossing, endCrossing, new ArrayList<Direction>()), new Lane(laneId + 1, endCrossing, startCrossing, new ArrayList<Direction>())), nodes));
-                            laneId += 2;
+                            addNewRoad(nodes, startCrossing, endCrossing);
                             x--;
                         }
                     }
@@ -131,7 +130,7 @@ public class City {
                         y += 2;
                         while (grid[y][x] == 1) {
                             y++;
-                            if(y == grid.length){
+                            if (y == grid.length) {
                                 y--;
                                 break;
                             }
@@ -146,8 +145,7 @@ public class City {
                                     break;
                                 }
                             }
-                            roads.add(new Road(roads.size(), Math.abs(nodes.get(0).getY() - nodes.get(nodes.size()-1).getY()) , Arrays.asList(new Lane(laneId, startCrossing, endCrossing, new ArrayList<Direction>()), new Lane(laneId + 1, endCrossing, startCrossing, new ArrayList<Direction>())), nodes));
-                            laneId += 2;
+                            addNewRoad(nodes, startCrossing, endCrossing);
                             y--;
                         }
                     }
@@ -156,10 +154,9 @@ public class City {
         }
 
 
-
 //        Checking Right up/down
-        for (int y = 1; y < grid.length; y+=2) {
-            for (int x = 1; x < grid[0].length; x+=2) {
+        for (int y = 1; y < grid.length; y += 2) {
+            for (int x = 1; x < grid[0].length; x += 2) {
                 int tempx = x;
                 int tempy = y;
                 if (grid[tempy][tempx] == 9) {
@@ -176,7 +173,7 @@ public class City {
                         tempx += 2;
                         while (grid[tempy][tempx] == 1) {
                             tempx++;
-                            if(tempx == grid[0].length){
+                            if (tempx == grid[0].length) {
                                 tempx--;
                                 break;
                             }
@@ -185,9 +182,9 @@ public class City {
                         if (grid[tempy][tempx] == 8) {
                             nodes.add(new Node(tempx * MESH_OFFSET, tempy * MESH_OFFSET));
                             int directionAfterTurn;
-                            if(grid[tempy + 1][tempx] == 1) {
+                            if (grid[tempy + 1][tempx] == 1) {
                                 directionAfterTurn = 1;
-                            }else{
+                            } else {
                                 directionAfterTurn = -1;
                             }
                             tempy += directionAfterTurn;
@@ -203,8 +200,7 @@ public class City {
                                     break;
                                 }
                             }
-                            roads.add(new Road(roads.size(), Math.abs(nodes.get(0).getX() - nodes.get(nodes.size()-1).getX()) + Math.abs(nodes.get(0).getY() - nodes.get(nodes.size()-1).getY()) , Arrays.asList(new Lane(laneId, startCrossing, endCrossing, new ArrayList<Direction>()), new Lane(laneId + 1, endCrossing, startCrossing, new ArrayList<Direction>())), nodes));
-                            laneId += 2;
+                            addNewRoad(nodes, startCrossing, endCrossing);
                         }
                     }
                 }
@@ -212,10 +208,9 @@ public class City {
         }
 
 
-
 //        Checking Left up/down
-        for (int y = 1; y < grid.length; y+=2) {
-            for (int x = 1; x < grid[0].length; x+=2) {
+        for (int y = 1; y < grid.length; y += 2) {
+            for (int x = 1; x < grid[0].length; x += 2) {
                 int tempx = x;
                 int tempy = y;
                 if (grid[tempy][tempx] == 9) {
@@ -227,13 +222,13 @@ public class City {
                                 break;
                             }
                         }
-                        
+
                         List<Node> nodes = new ArrayList<>();
                         nodes.add(new Node(tempx * MESH_OFFSET, tempy * MESH_OFFSET));
                         tempx--;
                         while (grid[tempy][tempx] == 1) {
                             tempx--;
-                            if(tempx < 0){
+                            if (tempx < 0) {
                                 tempx++;
                                 break;
                             }
@@ -242,9 +237,9 @@ public class City {
                         if (grid[tempy][tempx] == 8) {
                             nodes.add(new Node(tempx * MESH_OFFSET, tempy * MESH_OFFSET));
                             int directionAfterTurn;
-                            if(grid[tempy + 1][tempx] == 1) {
+                            if (grid[tempy + 1][tempx] == 1) {
                                 directionAfterTurn = 1;
-                            }else{
+                            } else {
                                 directionAfterTurn = -1;
                             }
                             tempy += directionAfterTurn;
@@ -260,9 +255,8 @@ public class City {
                                     break;
                                 }
                             }
-                            
-                            roads.add(new Road(roads.size(), Math.abs(nodes.get(0).getX() - nodes.get(nodes.size()-1).getX()) + Math.abs(nodes.get(0).getY() - nodes.get(nodes.size()-1).getY()), Arrays.asList(new Lane(laneId, startCrossing, endCrossing, new ArrayList<Direction>()), new Lane(laneId + 1, endCrossing, startCrossing, new ArrayList<Direction>())), nodes));
-                            laneId += 2;
+
+                            addNewRoad(nodes, startCrossing, endCrossing);
                         }
                     }
                 }
@@ -272,62 +266,76 @@ public class City {
 //        Adding driveways
         int x = 0;
         int y = grid.length / 4 * 2 + 1;
-        addDriveway(grid, -1, grid.length / 4 * 2 + 1, 1, 0, crossingId, laneId);
-        addDriveway(grid, grid[0].length, grid.length / 4 * 2 + 1, -1, 0, crossingId + 1, laneId + 2);
-        addDriveway(grid, grid[0].length / 4 * 2 - 1, -1, 0, 1, crossingId + 2, laneId + 4);
-        addDriveway(grid, grid[0].length / 4 * 2 - 1, grid.length, 0, -1, crossingId + 3, laneId + 6);
+        addDriveway(grid, -1, grid.length / 4 * 2 + 1, 1, 0, crossingId);
+        addDriveway(grid, grid[0].length, grid.length / 4 * 2 + 1, -1, 0, crossingId + 1);
+        addDriveway(grid, grid[0].length / 4 * 2 - 1, -1, 0, 1, crossingId + 2);
+        addDriveway(grid, grid[0].length / 4 * 2 - 1, grid.length, 0, -1, crossingId + 3);
         crossingId += 4;
-        laneId += 8;
     }
 
-    private static void addDriveway(int[][] grid, int x, int y, int addX, int addY, int crossingId, int laneId){
+    private void addDriveway(int[][] grid, int x, int y, int addX, int addY, int crossingId) {
         List<Node> nodes = new ArrayList<>();
-        Crossing crossing2 = new Crossing(crossingId, x * MESH_OFFSET, y * MESH_OFFSET,  new ArrayList<Light>());
+        Crossing crossing2 = new Crossing(crossingId, x * MESH_OFFSET, y * MESH_OFFSET, new ArrayList<Light>());
         crossings.add(crossing2);
         nodes.add(new Node(x * MESH_OFFSET, y * MESH_OFFSET));
-        x+=addX;
-        y+=addY;
-        while(grid[y][x] == 1){
-            x+=addX;
-            y+=addY;
+        x += addX;
+        y += addY;
+        while (grid[y][x] == 1) {
+            x += addX;
+            y += addY;
         }
         nodes.add(new Node(x * MESH_OFFSET, y * MESH_OFFSET));
         for (Crossing crossing : crossings) {
             if (crossing.getX() == x * MESH_OFFSET && crossing.getY() == y * MESH_OFFSET) {
-                roads.add(new Road(roads.size(), Math.abs(nodes.get(0).getX() - nodes.get(nodes.size()-1).getX()) + Math.abs(nodes.get(0).getY() - nodes.get(nodes.size()-1).getY()), Arrays.asList(new Lane(laneId, crossing2, crossing, new ArrayList<Direction>()), new Lane(laneId + 1, crossing, crossing2, new ArrayList<Direction>())), nodes));
+                addNewRoad(nodes, crossing2, crossing);
                 break;
             }
         }
     }
 
-    private void calculateRoadSpeedLimit(){
-        roads.sort(Comparator.comparing(Road::getLength));
-
-        int i = 0;
-
-       do{
-            roads.get(i).setSpeedLimit(40);
-            i++;
-        }while((i < (roads.size() * 3/10)) ||  roads.get(i-1).getLength() == roads.get(i).getLength());
-//        }while((i < (roads.size() * 3/10)));
-
-
-        while((i < (roads.size() * 9/10)) ||  roads.get(i-1).getLength() == roads.get(i).getLength()){
-            roads.get(i).setSpeedLimit(50);
-            i++;
+    private void addNewRoad(List<Node> nodes, Crossing crossing1, Crossing crossing2) {
+        if (nodes.get(0).getX() == crossing2.getX() && nodes.get(0).getY() == crossing2.getY()) {
+            Collections.reverse(nodes);
         }
 
-        while(i < roads.size()){
-            roads.get(i).setSpeedLimit(70);
-            i++;
-        }
+        Lane lane1 = new Lane(lanes.size(), crossing1, crossing2, new ArrayList<>(), nodes);
+        lanes.add(lane1);
 
+        ArrayList<Node> reversedNodes = new ArrayList<>(nodes);
+        Collections.reverse(reversedNodes);
+        Lane lane2 = new Lane(lanes.size(), crossing2, crossing1, new ArrayList<>(), reversedNodes);
+        lanes.add(lane2);
+
+        List<Lane> laneList = Arrays.asList(lane1, lane2);
+        roads.add(new Road(roads.size(), laneList));
+    }
+
+    private void calculateRoadSpeedLimit() {
+        val roadsLengths = lanes.stream().map(Lane::getLength).sorted().collect(Collectors.toList());
+        val lowerBoundFraction = 3.0 / 10;
+        val upperBoundFraction = 9.0 / 10;
+        val lowerBoundLength = roadsLengths.get((int) (roadsLengths.size() * lowerBoundFraction));
+        val upperBoundLength = roadsLengths.get((int) (roadsLengths.size() * upperBoundFraction));
+        for (Lane lane : lanes) {
+            if (lane.getLength() <= lowerBoundLength) {
+                lane.setSpeedLimit(40);
+            } else if (lane.getLength() <= upperBoundLength) {
+                lane.setSpeedLimit(50);
+            } else {
+                lane.setSpeedLimit(70);
+            }
+        }
     }
 
     public List<Crossing> getCrossings() {
         return crossings;
     }
+
     public List<Road> getRoads() {
         return roads;
+    }
+
+    public List<Lane> getLanes() {
+        return lanes;
     }
 }

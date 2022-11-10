@@ -11,8 +11,8 @@ import java.util.Objects;
 public class Car {
 //    private final Node startNode;
 //    private final Node endNode;
-    private final Road startRode;
-    private final Road endRode;
+    private final Lane startLane;
+    private final Lane endLane;
     private Node startPoint;
     private Node endPoint;
     private List<Node> path;
@@ -24,58 +24,63 @@ public class Car {
     private List<Crossing> crossingList;
     CityGraph.PathWithTime calculatedPath;
 
-    public Car(Road startRode, Road endRode){
-        this.startRode = startRode;
-        this.endRode = endRode;
+    public Car(Lane startLane, Lane endLane) {
+        this.startLane = startLane;
+        this.endLane = endLane;
 
-        this.startPoint = this.startRode.getMiddlePoint();
-        this.endPoint = this.endRode.getMiddlePoint();
+        this.startPoint = this.startLane.getMiddlePoint();
+        this.endPoint = this.endLane.getMiddlePoint();
 
-        this.path = generatePath(startRode, endRode);
+        this.path = generatePath(startLane, endLane);
 
         System.out.println(this.path);
 
-        this.currentNode = path.get(0);
-        this.nextNode = path.get(1);
-        this.actualPoint = path.get(0);
-
-
-//        return new ArrayList<Node>(Arrays.asList(this.startPoint, this.endPoint));
+//    public Car(Node startNode, Node endNode, List<Node> path) {
+//        this.startNode = startNode;
+//        this.endNode = endNode;
 //        this.path = path;
 //        this.currentNode = path.get(0);
 //        this.nextNode = path.get(1);
-//        this.xPos = startNode.getX();
-//        this.yPos = startNode.getY();
+//        this.actualPoint = path.get(0);
+//
+//
+////        return new ArrayList<Node>(Arrays.asList(this.startPoint, this.endPoint));
+////        this.path = path;
+////        this.currentNode = path.get(0);
+////        this.nextNode = path.get(1);
+////        this.xPos = startNode.getX();
+////        this.yPos = startNode.getY();
+//    }
+
     }
+    private List<Node> generatePath(Lane startLane, Lane endLane){
 
-    private List<Node> generatePath(Road startRode, Road endRode){
-
-        calculatedPath = UrbanTrafficFlowSimulation.paths[startRode.getId()][endRode.getId()];
+        calculatedPath = UrbanTrafficFlowSimulation.paths[startLane.getId()][endLane.getId()];
         this.crossingList = calculatedPath.getCrossings();
-        int pathSize = calculatedPath.crossings.size() - 1;
-        System.out.println(startRode.getId());
-        System.out.println(endRode.getId());
+        int pathSize = crossingList.size() - 1;
+        System.out.println(startLane.getId());
+        System.out.println(endLane.getId());
         System.out.println(calculatedPath);
         List<Node> path = new ArrayList<>(Collections.singletonList(this.startPoint));
-        System.out.println("CROSSINGS: " + calculatedPath.crossings.size() + " ROADS: " + calculatedPath.roads.size());
+        System.out.println("CROSSINGS: " + crossingList.size() + " ROADS: " + calculatedPath.getLanes().size());
 
         int i = 0;
-        if(checkIfIsInMiddle(calculatedPath.crossings.get(0), calculatedPath.crossings.get(1), this.startPoint)){
-            path.add(new Node(calculatedPath.crossings.get(0).getX(), calculatedPath.crossings.get(0).getY()));
+        if(checkIfIsInMiddle(crossingList.get(0), crossingList.get(1), this.startPoint)){
+            path.add(new Node(crossingList.get(0).getX(), crossingList.get(0).getY()));
             i++;
         }
 
-        for(; i < calculatedPath.crossings.size() - 1; i++){
-            if(calculatedPath.roads.get(i).getNodeList().size() > 2){
-                System.out.println(calculatedPath.crossings.get(i));
+        for(; i < crossingList.size() - 1; i++){
+            if(calculatedPath.getLanes().get(i).getNodeList().size() > 2){
+                System.out.println(crossingList.get(i));
                 List<Node> temp = new ArrayList<>();
-                for(Node node: calculatedPath.roads.get(i).getNodeList()){
+                for(Node node: calculatedPath.getLanes().get(i).getNodeList()){
                     System.out.println(node);
-                    if(node.getX() != calculatedPath.crossings.get(i).getX() || node.getY() != calculatedPath.crossings.get(i).getY()){
+                    if(node.getX() != crossingList.get(i).getX() || node.getY() != crossingList.get(i).getY()){
                         temp.add(node);
                     }
                 }
-                Node tempNode = new Node(calculatedPath.crossings.get(i).getX(), calculatedPath.crossings.get(i).getY());
+                Node tempNode = new Node(crossingList.get(i).getX(), crossingList.get(i).getY());
                 if(!Objects.equals(tempNode,path.get(path.size() - 1)))
                     path.add(tempNode);
                 if(tempNode.getX() == temp.get(0).getX() || tempNode.getY() == temp.get(0).getY()){
@@ -91,15 +96,15 @@ public class Car {
                 }
             }
             else{
-                Node tempNode = new Node(calculatedPath.crossings.get(i).getX(), calculatedPath.crossings.get(i).getY());
+                Node tempNode = new Node(crossingList.get(i).getX(), crossingList.get(i).getY());
                 if(!Objects.equals(tempNode,path.get(path.size() - 1)))
                     path.add(tempNode);
             }
 
         }
 
-        if(checkIfIsInMiddle(calculatedPath.crossings.get(pathSize - 1), calculatedPath.crossings.get(pathSize), this.endPoint)){
-            path.add(new Node(calculatedPath.crossings.get(pathSize).getX(), calculatedPath.crossings.get(pathSize).getY()));
+        if(checkIfIsInMiddle(crossingList.get(pathSize - 1), crossingList.get(pathSize), this.endPoint)){
+            path.add(new Node(crossingList.get(pathSize).getX(), crossingList.get(pathSize).getY()));
         }
 
 //        for(Road road: calculatedPath.roads){
@@ -124,18 +129,18 @@ public class Car {
 //                (firstCrossing.getY() != checkPoint.getY() && secondCrossing.getY() != checkPoint.getY()));
     }
 
-    public void moveCar(){
-        if(status != RideStatus.FINISH){
+    public void moveCar() {
+        if (status != RideStatus.FINISH) {
             nodePercentage += 1;
 
-            if(nodePercentage >= 100){
+            if (nodePercentage >= 100) {
                 nodePercentage %= 100;
                 path.remove(0);
-                if(path.size() > 1){
-                    currentNode = new Node(path.get(0).getX(), path.get(0).getY());
-                    nextNode = new Node(path.get(1).getX(), path.get(1).getY());
-                }
-                else{
+                if (path.size() > 1) {
+                    currentNode = path.get(0);
+                    nextNode = path.get(1);
+
+                } else {
                     status = RideStatus.FINISH;
                     actualPoint = nextNode;
                     return;

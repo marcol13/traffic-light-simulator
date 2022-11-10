@@ -10,31 +10,32 @@ import java.util.concurrent.ThreadLocalRandom;
 import static java.lang.Math.max;
 
 public class CityGenerator {
-    private List<Point> potentialCrossingsCoordinates = new ArrayList<Point>(); ;
+    private List<Point> potentialCrossingsCoordinates = new ArrayList<Point>();
+    ;
 
     int[][] generate(int width, int height, int crossingAmount) {
 //        Creating array for randomizing numbers with weights
-        int scaler=10;
+        int scaler = 10;
 
-        int longest_distance = (int)Math.sqrt(Math.pow(((width + 1) / 2. - 2)/2, 2) + Math.pow(((height + 1) / 2. - 2)/2, 2));
+        int longest_distance = (int) Math.sqrt(Math.pow(((width + 1) / 2. - 2) / 2, 2) + Math.pow(((height + 1) / 2. - 2) / 2, 2));
         int sumOfProbabilities = 0;
-        for(int i=0; i<((width + 1) / 2. - 2) ; i++){
-            for(int j=0; j<((height + 1) / 2. - 2); j++){
-                sumOfProbabilities += Math.pow(max((longest_distance - (int)Math.sqrt(Math.pow(((width + 1) / 2. - 2)/2 - i, 2) + Math.pow(((height + 1) / 2. - 2)/2 - j, 2))) - longest_distance*0/2., 0) , 4);
+        for (int i = 0; i < ((width + 1) / 2. - 2); i++) {
+            for (int j = 0; j < ((height + 1) / 2. - 2); j++) {
+                sumOfProbabilities += Math.pow(max((longest_distance - (int) Math.sqrt(Math.pow(((width + 1) / 2. - 2) / 2 - i, 2) + Math.pow(((height + 1) / 2. - 2) / 2 - j, 2))) - longest_distance * 0 / 2., 0), 4);
 //                System.out.print(Math.pow(max((longest_distance - (int)Math.sqrt(Math.pow(((width + 1) / 2. - 2)/2 - i, 2) + Math.pow(((height + 1) / 2. - 2)/2 - j, 2))) - longest_distance*0/2., 0), 4) + " ");
             }
 //            System.out.println();
         }
 
 
-        int[][] tilesProbabilities= new int[sumOfProbabilities][2];
-        int previousTilesCounter=0;
-        for(int i=0; i<((width + 1) / 2. - 2); i++){
-            for(int j=0; j<((height + 1) / 2. - 2); j++){
+        int[][] tilesProbabilities = new int[sumOfProbabilities][2];
+        int previousTilesCounter = 0;
+        for (int i = 0; i < ((width + 1) / 2. - 2); i++) {
+            for (int j = 0; j < ((height + 1) / 2. - 2); j++) {
                 int k;
-                for(k=0; k < Math.pow(max(longest_distance - (int)Math.sqrt(Math.pow(((width + 1) / 2. - 2)/2 - i, 2) + Math.pow(((height + 1) / 2. - 2)/2 - j, 2)) - longest_distance*0/2., 0), 4); k++){
-                    tilesProbabilities[previousTilesCounter+k][0] = i;
-                    tilesProbabilities[previousTilesCounter+k][1] = j;
+                for (k = 0; k < Math.pow(max(longest_distance - (int) Math.sqrt(Math.pow(((width + 1) / 2. - 2) / 2 - i, 2) + Math.pow(((height + 1) / 2. - 2) / 2 - j, 2)) - longest_distance * 0 / 2., 0), 4); k++) {
+                    tilesProbabilities[previousTilesCounter + k][0] = i;
+                    tilesProbabilities[previousTilesCounter + k][1] = j;
                 }
                 previousTilesCounter += k;
             }
@@ -51,14 +52,14 @@ public class CityGenerator {
         grid[height / 4 * 2 + 1][width / 4 * 2 - 1] = 9;
 
         int crossingCounter = 0;
-        while(crossingCounter < crossingAmount){
+        while (crossingCounter < crossingAmount) {
             int x = width / 4 * 2 - 1;
             int y = height / 4 * 2 + 1;
             while (grid[y][x] == 9 || grid[y][x] == 1) {
 //                x = 2 * generateRandomInt(0, (width + 1) / 2 - 2) + 1;
-                x = 2 * tilesProbabilities[(int) (tilesProbabilities.length*Math.random())][0] + 1;
+                x = 2 * tilesProbabilities[(int) (tilesProbabilities.length * Math.random())][0] + 1;
 //                y = 2 * generateRandomInt(0, (height + 1) / 2 - 2) + 1;
-                y = 2 * tilesProbabilities[(int) (tilesProbabilities.length*Math.random())][1] + 1;
+                y = 2 * tilesProbabilities[(int) (tilesProbabilities.length * Math.random())][1] + 1;
             }
             grid[y][x] = 9;
             potentialCrossingsCoordinates.add(new Point(x, y));
@@ -67,7 +68,7 @@ public class CityGenerator {
             for (int i = x + 1; i < width; i++) {
                 if (grid[y][i] == 1 || grid[y][i] == 9) {
                     fillArray(grid[y], x + 1, i, 1);
-                    if (grid[y][i] != 9){
+                    if (grid[y][i] != 9) {
                         grid[y][i] = 9;
                         potentialCrossingsCoordinates.add(new Point(i, y));
                     }
@@ -78,7 +79,7 @@ public class CityGenerator {
             for (int i = x - 1; i > -1; i--) {
                 if (grid[y][i] == 1 || grid[y][i] == 9) {
                     fillArray(grid[y], i + 1, x, 1);
-                    if (grid[y][i] != 9){
+                    if (grid[y][i] != 9) {
                         grid[y][i] = 9;
                         potentialCrossingsCoordinates.add(new Point(i, y));
                     }
@@ -92,7 +93,7 @@ public class CityGenerator {
                     for (int j = y + 1; j < i; j++) {
                         grid[j][x] = 1;
                     }
-                    if (grid[i][x] != 9){
+                    if (grid[i][x] != 9) {
                         grid[i][x] = 9;
                         potentialCrossingsCoordinates.add(new Point(x, i));
                     }
@@ -106,7 +107,7 @@ public class CityGenerator {
                     for (int j = i + 1; j < y; j++) {
                         grid[j][x] = 1;
                     }
-                    if (grid[i][x] != 9){
+                    if (grid[i][x] != 9) {
                         grid[i][x] = 9;
                         potentialCrossingsCoordinates.add(new Point(x, i));
                     }
@@ -115,16 +116,16 @@ public class CityGenerator {
             }
 
             crossingCounter = 0;
-            for(int i=1; i<grid.length; i+=2){
-                for(int j=1; j<grid[0].length; j+=2){
-                    if(grid[i][j] == 9){
+            for (int i = 1; i < grid.length; i += 2) {
+                for (int j = 1; j < grid[0].length; j += 2) {
+                    if (grid[i][j] == 9) {
                         crossingCounter++;
                     }
                 }
             }
         }
 
-        for(Point point: potentialCrossingsCoordinates){
+        for (Point point : potentialCrossingsCoordinates) {
             grid[point.y][point.x] = checkIfShouldStayCrossing(grid, point.y, point.x);
         }
         return grid;
