@@ -29,6 +29,11 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private static final int NODE_CIRCLE_RADIUS = 15;
     private static final int CORNER_CIRCLE_RADIUS = 7;
     private static final int NODE_OFFSET_LANE = 4;
+
+    private static final int CAR_CIRCLE_RADIUS = 10;
+    private static final Color CAR_CIRCLE_COLOR = Color.YELLOW;
+
+
     static CityGraph.PathWithTime[][] paths;
 
     @Override
@@ -90,11 +95,9 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //
 //        car = new Car(new Node(0, 0), new Node(200, 200), new ArrayList<Node>(Arrays.asList(new Node(0, 0), new Node(0, 100), new Node(0, 200), new Node(100, 200), new Node(200, 200))));
 
-//        for(int i = 0; i < amountOfCars; i++){
-//            cars.add(city.spawnCar());
-//        }
-//        car = city.spawnCar();
-//        System.out.println(car.getPath());
+        for(int i = 0; i < amountOfCars; i++){
+            cars.add(city.spawnCar());
+        }
 
         SimulationCore simulation = new SimulationCore();
         simulation.city = city;
@@ -105,11 +108,6 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         simulation.initialDeltaRange = 1000;
         simulation.tournamentSelectionContestants = 2;
         simulation.startSimulation();
-
-//        for (Road road : city.getRoads()) {
-//            System.out.println("ROAD LENGTH: " + road.getLength() + " Speed: " + road.getSpeedLimit());
-//        }
-
     }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
@@ -163,6 +161,12 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 endY = node.getY();
             }
             drawLaneWithSpeedLimit(lanesAmount, lane, startX, startY, endX, endY);
+        }
+
+        //Draw cars
+        for(Car car: cars){
+            Node carNode = car.getActualNode();
+            drawCircle(carNode.getX(), carNode.getY(), CAR_CIRCLE_RADIUS, CAR_CIRCLE_COLOR);
         }
     }
 
