@@ -201,11 +201,18 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+            List<Car> removeCars = new ArrayList<>();
             for(Car car: cars){
+                if(car.getStatus() == RideStatus.FINISH){
+                    removeCars.add(car);
+                    continue;
+                }
                 car.moveCar();
             }
 
-//            drawCircle(car.getActualPoint().getX(), car.getActualPoint().getY(), 10, Color.YELLOW);
+            for(Car removeCar: removeCars){
+                cars.remove(removeCar);
+            }
         }
 
 //        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
