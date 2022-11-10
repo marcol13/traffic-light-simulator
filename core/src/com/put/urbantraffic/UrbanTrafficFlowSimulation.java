@@ -165,8 +165,19 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
         //Draw cars
         for(Car car: cars){
+            int offsetX = 0, offsetY = 0;
             Node carNode = car.getActualNode();
-            drawCircle(carNode.getX(), carNode.getY(), CAR_CIRCLE_RADIUS, CAR_CIRCLE_COLOR);
+
+            if(car.getWay() == Car.Way.TOP)
+                offsetX = NODE_OFFSET_LANE;
+            if(car.getWay() == Car.Way.BOTTOM)
+                offsetX = -NODE_OFFSET_LANE;
+            if(car.getWay() == Car.Way.LEFT)
+                offsetY = NODE_OFFSET_LANE;
+            if(car.getWay() == Car.Way.RIGHT)
+                offsetY = -NODE_OFFSET_LANE;
+
+            drawCircle(carNode.getX() + offsetX, carNode.getY() + offsetY, CAR_CIRCLE_RADIUS, CAR_CIRCLE_COLOR);
         }
     }
 
