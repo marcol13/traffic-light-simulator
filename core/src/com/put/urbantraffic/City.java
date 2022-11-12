@@ -49,8 +49,6 @@ public class City {
         }
         Lane startLane = lanes.get(startIndex);
         Lane endLane = lanes.get(endIndex);
-//        Node startNode = getRandomListElement(startRode.getNodeList(), rand);
-//        Node endNode = getRandomListElement(endRode.getNodeList(), rand);
 
         return new Car(startLane, endLane);
     }

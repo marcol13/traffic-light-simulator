@@ -49,12 +49,6 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         int amountOfCars = 10;
         city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount);
         paths = new CityGraph().generate(city);
-//        for(CityGraph.PathWithTime[] path: paths){
-//            System.out.println(Arrays.toString(path) + "\n");
-//            System.out.println(Arrays.toString(path));
-//        }
-//        System.out.println(paths[1][3]);
-
 
         setupInitialCameraPositionAndZoom(gridMultiplier);
 
@@ -137,9 +131,6 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
 
 
-//        drawCircle(car.getStartPoint().getX(), car.getStartPoint().getY(), 40, Color.GREEN);
-//        drawCircle(car.getEndPoint().getX(), car.getEndPoint().getY(), 40, Color.RED);
-
         //Draw roads where max speed
         for (Road road : city.getRoads()) {
             int lanesAmount = road.getLaneList().size();
@@ -214,17 +205,6 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 cars.remove(removeCar);
             }
         }
-
-//        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-//
-//            car = city.spawnCar();
-//            System.out.println(car.getStartPoint());
-////            car.getStartPoint();
-////            System.out.println(car.getXPos());
-////            System.out.println(car.getYPos());
-//            drawCircle(car.getStartPoint().getX(), car.getStartPoint().getY(), 40, Color.YELLOW);
-//            drawCircle(car.getEndPoint().getX(), car.getEndPoint().getY(), 40, Color.GREEN);
-//        }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             playerX -= MOVE_SPEED * delta;

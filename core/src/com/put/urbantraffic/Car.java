@@ -61,12 +61,10 @@ public class Car {
         this.lanesList.addAll(calculatedPath.getLanes());
         this.lanesList.add(endLane);
 
-        System.out.println(calculatedPath);
-
         List<Node> path = new ArrayList<>(Collections.singletonList(this.startNode));
-        if (this.crossingList.size() == 1)
+        if (this.crossingList.size() == 1) {
             path.add(new Node(this.crossingList.get(0).getX(), this.crossingList.get(0).getY()));
-        else
+        } else {
             for (Lane lane : calculatedPath.getLanes()) {
                 for (Node node : lane.getNodeList()) {
                     if (!node.equals(path.get(path.size() - 1))) {
@@ -74,22 +72,23 @@ public class Car {
                     }
                 }
             }
+        }
+
         path.add(this.endNode);
 
-        System.out.println("NODES: " + path.size() + " ROADS: " + this.lanesList.size());
         return path;
     }
 
     public void moveCar() {
         if (status != RideStatus.FINISH) {
-            ArrayList<Node> nodeList = new ArrayList<>(currentLane.getNodeList());
-            float speed = (float)currentLane.getSpeedLimit() / (float)getNodeLength(currentNode, nextNode);
+            List<Node> nodeList = currentLane.getNodeList();
+            float speed = (float) currentLane.getSpeedLimit() / (float) getNodeLength(currentNode, nextNode);
 
             int xVector = nextNode.getX() - currentNode.getX();
             int yVector = nextNode.getY() - currentNode.getY();
 
-            if(currentNode.equals(startNode) || nextNode.equals(endNode)){
-                speed = (float)currentLane.getSpeedLimit() / (float)getNodeLength(nodeList.get(0), nodeList.get(nodeList.size() - 1));
+            if (currentNode.equals(startNode) || nextNode.equals(endNode)) {
+                speed = (float) currentLane.getSpeedLimit() / (float) getNodeLength(nodeList.get(0), nodeList.get(nodeList.size() - 1));
                 speed *= 2;
             }
 
@@ -99,7 +98,7 @@ public class Car {
                 nodePercentage %= 100;
                 path.remove(0);
 
-                if(currentLane.getNodeList().size() == 2 || currentLane.getNodeList().size() > 2 && currentNode == currentLane.getNodeList().get(2)){
+                if (currentLane.getNodeList().size() == 2 || currentLane.getNodeList().size() > 2 && currentNode == currentLane.getNodeList().get(2)) {
                     lanesList.remove(0);
                 }
 
@@ -119,7 +118,7 @@ public class Car {
         }
     }
 
-    private int getNodeLength(Node currentNode, Node nextNode){
+    private int getNodeLength(Node currentNode, Node nextNode) {
         return Math.abs(currentNode.getX() - nextNode.getX()) + Math.abs(currentNode.getY() - nextNode.getY());
     }
 
