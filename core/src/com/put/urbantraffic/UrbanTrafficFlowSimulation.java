@@ -12,6 +12,10 @@ import lombok.val;
 
 import java.util.List;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
     private float playerX;
@@ -19,13 +23,18 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     ExtendViewport extendViewport;
 
     private City city;
-    private Car car;
+    private final List<Car> cars = new ArrayList<Car>();
 
     private static final float MOVE_SPEED = 150f;
     private static final int NODE_CIRCLE_RADIUS = 15;
     private static final int CORNER_CIRCLE_RADIUS = 7;
     private static final int NODE_OFFSET_LANE = 4;
-    CityGraph.PathWithTime[][] paths;
+
+    private static final int CAR_CIRCLE_RADIUS = 10;
+    private static final Color CAR_CIRCLE_COLOR = Color.YELLOW;
+
+
+    static CityGraph.PathWithTime[][] paths;
 
     @Override
     public void create() {
@@ -37,6 +46,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //        Crossing amount < 600 -> *6
         int gridMultiplier = 2;
         int crossingAmount = 50;
+        int amountOfCars = 10;
         city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount);
         paths = new CityGraph().generate(city);
 
@@ -79,6 +89,10 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //
 //        car = new Car(new Node(0, 0), new Node(200, 200), new ArrayList<Node>(Arrays.asList(new Node(0, 0), new Node(0, 100), new Node(0, 200), new Node(100, 200), new Node(200, 200))));
 
+        for(int i = 0; i < amountOfCars; i++){
+            cars.add(city.spawnCar());
+        }
+
         SimulationCore simulation = new SimulationCore();
         simulation.city = city;
         simulation.epochs = 600;
@@ -88,11 +102,6 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         simulation.initialDeltaRange = 1000;
         simulation.tournamentSelectionContestants = 2;
         simulation.startSimulation();
-
-//        for (Road road : city.getRoads()) {
-//            System.out.println("ROAD LENGTH: " + road.getLength() + " Speed: " + road.getSpeedLimit());
-//        }
-
     }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
@@ -121,6 +130,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             drawCircle(crossing.getX(), crossing.getY(), NODE_CIRCLE_RADIUS, Color.WHITE);
         }
 
+
         //Draw roads where max speed
         for (Road road : city.getRoads()) {
             int lanesAmount = road.getLaneList().size();
@@ -144,7 +154,22 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             drawLaneWithSpeedLimit(lanesAmount, lane, startX, startY, endX, endY);
         }
 
-        //        drawCircle(car.getXPos(), car.getYPos(), 10, Color.YELLOW);
+        //Draw cars
+        for(Car car: cars){
+            int offsetX = 0, offsetY = 0;
+            Node carNode = car.getActualNode();
+
+            if(car.getWay() == Car.Way.TOP)
+                offsetX = NODE_OFFSET_LANE;
+            if(car.getWay() == Car.Way.BOTTOM)
+                offsetX = -NODE_OFFSET_LANE;
+            if(car.getWay() == Car.Way.LEFT)
+                offsetY = NODE_OFFSET_LANE;
+            if(car.getWay() == Car.Way.RIGHT)
+                offsetY = -NODE_OFFSET_LANE;
+
+            drawCircle(carNode.getX() + offsetX, carNode.getY() + offsetY, CAR_CIRCLE_RADIUS, CAR_CIRCLE_COLOR);
+        }
     }
 
     private void drawLaneWithSpeedLimit(int lanesAmount, Lane lane, int startX, int startY, int endX, int endY) {
@@ -166,13 +191,20 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             ((OrthographicCamera) extendViewport.getCamera()).zoom -= .5f * delta;
         }
 
-//        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-//            car.moveCar();
-//            System.out.println(car.getXPos());
-//            System.out.println(car.getYPos());
-//            drawCircle(car.getXPos(), car.getYPos(), 10, Color.YELLOW);
-//        }
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+            List<Car> removeCars = new ArrayList<>();
+            for(Car car: cars){
+                if(car.getStatus() == RideStatus.FINISH){
+                    removeCars.add(car);
+                    continue;
+                }
+                car.moveCar();
+            }
 
+            for(Car removeCar: removeCars){
+                cars.remove(removeCar);
+            }
+        }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             playerX -= MOVE_SPEED * delta;

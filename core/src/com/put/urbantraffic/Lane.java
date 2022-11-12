@@ -39,6 +39,14 @@ public class Lane {
 //                            Math.pow(startCrossing.getY() - endCrossing.getY(), 2))
 //                    / (AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS));
 
+    public Node getMiddlePoint() {
+        if (nodeList.size() > 2) {
+            return nodeList.get(1);
+        }
+        return new Node((nodeList.get(0).getX() + nodeList.get(1).getX()) / 2,
+                (nodeList.get(0).getY() + nodeList.get(1).getY()) / 2);
+    }
+
     public int getId() {
         return id;
     }

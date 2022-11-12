@@ -37,19 +37,20 @@ public class City {
         calculateRoadSpeedLimit();
     }
 
-    public void spawnCar() {
+    public Car spawnCar(){
         Random rand = new Random();
         int startIndex = 0, endIndex = 0;
         while (startIndex == endIndex) {
-            startIndex = rand.nextInt(roads.size());
-            endIndex = rand.nextInt(roads.size());
+            startIndex = rand.nextInt(lanes.size());
+            endIndex = rand.nextInt(lanes.size());
+            if(lanes.get(startIndex).getNodeList().size() > 2 || lanes.get(endIndex).getNodeList().size() > 2){
+                startIndex = endIndex;
+            }
         }
-        Road startRode = roads.get(startIndex);
-        Road endRode = roads.get(endIndex);
-//        Node startNode = getRandomListElement(startRode.getNodeList(), rand);
-//        Node endNode = getRandomListElement(endRode.getNodeList(), rand);
+        Lane startLane = lanes.get(startIndex);
+        Lane endLane = lanes.get(endIndex);
 
-//        return new Car(startNode, endNode);
+        return new Car(startLane, endLane);
     }
 
     private <T> T getRandomListElement(List<T> elementsList, Random rand) {
