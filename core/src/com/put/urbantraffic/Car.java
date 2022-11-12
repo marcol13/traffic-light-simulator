@@ -83,13 +83,15 @@ public class Car {
     public void moveCar() {
         if (status != RideStatus.FINISH) {
             ArrayList<Node> nodeList = new ArrayList<>(currentLane.getNodeList());
-            float speed = (float)currentLane.getSpeedLimit() / (float)getNodeLength(nodeList.get(0), nodeList.get(nodeList.size() - 1));
+            float speed = (float)currentLane.getSpeedLimit() / (float)getNodeLength(currentNode, nextNode);
 
             int xVector = nextNode.getX() - currentNode.getX();
             int yVector = nextNode.getY() - currentNode.getY();
 
-            if(currentNode.equals(startNode) || nextNode.equals(endNode))
+            if(currentNode.equals(startNode) || nextNode.equals(endNode)){
+                speed = (float)currentLane.getSpeedLimit() / (float)getNodeLength(nodeList.get(0), nodeList.get(nodeList.size() - 1));
                 speed *= 2;
+            }
 
             nodePercentage += speed;
 
