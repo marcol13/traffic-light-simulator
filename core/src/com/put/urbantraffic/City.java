@@ -63,7 +63,7 @@ public class City {
         for (int y = 1; y < grid.length; y += 2) {
             for (int x = 1; x < grid[0].length; x += 2) {
                 if (grid[y][x] == 9) {
-                    crossings.add(new Crossing(crossingId, x * MESH_OFFSET, y * MESH_OFFSET, new ArrayList<Light>()));
+                    crossings.add(new Crossing(crossingId, x * MESH_OFFSET, y * MESH_OFFSET));
                     crossingId++;
                 }
             }
@@ -273,7 +273,7 @@ public class City {
 
     private void addDriveway(int[][] grid, int x, int y, int addX, int addY, int crossingId) {
         List<Node> nodes = new ArrayList<>();
-        Crossing crossing2 = new Crossing(crossingId, x * MESH_OFFSET, y * MESH_OFFSET, new ArrayList<Light>());
+        Crossing crossing2 = new Crossing(crossingId, x * MESH_OFFSET, y * MESH_OFFSET);
         crossings.add(crossing2);
         nodes.add(new Node(x * MESH_OFFSET, y * MESH_OFFSET));
         x += addX;
@@ -306,6 +306,24 @@ public class City {
 
         List<Lane> laneList = Arrays.asList(lane1, lane2);
         roads.add(new Road(roads.size(), laneList));
+
+        //Creation TrafficLight
+        if(crossing1.getX() < crossing2.getX()){
+            crossing1.getTrfficLightsSupervisor().setRightTrafficLight(new TrafficLight(lane2, Light.RED));
+            crossing2.getTrfficLightsSupervisor().setLeftTrafficLight(new TrafficLight(lane1, Light.RED));
+        }
+        else if(crossing1.getX() > crossing2.getX()) {
+            crossing2.getTrfficLightsSupervisor().setRightTrafficLight(new TrafficLight(lane1, Light.RED));
+            crossing1.getTrfficLightsSupervisor().setLeftTrafficLight(new TrafficLight(lane2, Light.RED));
+        }
+        else if(crossing1.getY() < crossing2.getY()){
+            crossing1.getTrfficLightsSupervisor().setTopTrafficLight(new TrafficLight(lane2, Light.RED));
+            crossing2.getTrfficLightsSupervisor().setBottomTrafficLight(new TrafficLight(lane1, Light.RED));
+        }
+        else{
+            crossing2.getTrfficLightsSupervisor().setTopTrafficLight(new TrafficLight(lane1, Light.RED));
+            crossing1.getTrfficLightsSupervisor().setBottomTrafficLight(new TrafficLight(lane2, Light.RED));
+        }
     }
 
     private void calculateRoadSpeedLimit() {
