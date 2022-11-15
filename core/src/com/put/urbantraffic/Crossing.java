@@ -2,8 +2,6 @@ package com.put.urbantraffic;
 
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 public class Crossing {
     private final int id;
@@ -13,5 +11,28 @@ public class Crossing {
     private boolean bottomCardField = true;
     private boolean leftCardField = true;
     private boolean rightCardField = true;
-    private TrafficLightsSupervisor trfficLightsSupervisor = new TrafficLightsSupervisor();
+    private TrafficLightsSupervisor trafficLightsSupervisor = new TrafficLightsSupervisor();
+
+    boolean canIRide(int carX, int carY){
+
+        System.out.println("Crossings:" + x +" "+ y + " Car X Y: " + carX  + " "+ carY);
+
+        if(x < carX){
+            return trafficLightsSupervisor.getRightTrafficLight().getCurrentColor() == Light.GREEN;
+        }
+
+        if( x > carX){
+            return trafficLightsSupervisor.getLeftTrafficLight().getCurrentColor() == Light.GREEN;
+        }
+
+        if(y < carY){
+            return trafficLightsSupervisor.getTopTrafficLight().getCurrentColor() == Light.GREEN;
+        }
+
+        if(y > carY){
+            return trafficLightsSupervisor.getBottomTrafficLight().getCurrentColor() == Light.GREEN;
+        }
+
+        return false;
+    }
 }

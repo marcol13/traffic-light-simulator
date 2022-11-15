@@ -6,7 +6,7 @@ import java.util.Random;
 
 @Data
 public class TrafficLightsSupervisor {
-    private static final int LIGHTS_DURATION = 5;
+    private static final int LIGHTS_DURATION = 120 * 2;
 
 
     private TrafficLight topTrafficLight = null;
@@ -20,10 +20,14 @@ public class TrafficLightsSupervisor {
         if(new Random().nextInt() % 2 == 0){
             changeLight(topTrafficLight, Light.GREEN);
             changeLight(bottomTrafficLight, Light.GREEN);
-        }
-        else{
             changeLight(leftTrafficLight, Light.RED);
             changeLight(rightTrafficLight, Light.RED);
+        }
+        else{
+            changeLight(topTrafficLight, Light.RED);
+            changeLight(bottomTrafficLight, Light.RED);
+            changeLight(leftTrafficLight, Light.GREEN);
+            changeLight(rightTrafficLight, Light.GREEN);
         }
     }
 

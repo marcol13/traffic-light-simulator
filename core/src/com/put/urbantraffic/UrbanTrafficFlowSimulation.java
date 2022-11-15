@@ -13,8 +13,6 @@ import lombok.val;
 import java.util.List;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
@@ -46,7 +44,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //        Crossing amount < 600 -> *6
         int gridMultiplier = 2;
         int crossingAmount = 50;
-        int amountOfCars = 10;
+        int amountOfCars = 1;
         city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount);
         paths = new CityGraph().generate(city);
 
@@ -57,7 +55,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
         for(Crossing crossing : city.getCrossings())
         {
-           crossing.getTrfficLightsSupervisor().turnOnLights();
+           crossing.getTrafficLightsSupervisor().turnOnLights();
         }
 //        List<Crossing> crossings = new ArrayList<Crossing>(Arrays.asList(new Crossing(1, 0, 200, new ArrayList<>()), new Crossing(2, 0,  0, new ArrayList<>()), new Crossing(3, 0, 400, new ArrayList<>()), new Crossing(4, 200, 200, new ArrayList<>())));
 //        List<Road> roads = new ArrayList<Road>(
@@ -133,27 +131,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         for (Crossing crossing : city.getCrossings()) {
 
             drawCircle(crossing.getX(), crossing.getY(), NODE_CIRCLE_RADIUS, Color.WHITE);
+            drawTrafficLight(crossing);
 
-            crossing.getTrfficLightsSupervisor().changeAllLights();
-            if(crossing.getTrfficLightsSupervisor().getTopTrafficLight() != null){
-                drawCircle(crossing.getX(), crossing.getY()+CAR_CIRCLE_RADIUS,
-                        CAR_CIRCLE_RADIUS/2, crossing.getTrfficLightsSupervisor().getTopTrafficLight().getCurrentColor() == Light.GREEN? Color.GREEN : Color.RED);
-            }
-
-            if(crossing.getTrfficLightsSupervisor().getBottomTrafficLight() != null) {
-                drawCircle(crossing.getX(), crossing.getY() - CAR_CIRCLE_RADIUS,
-                        CAR_CIRCLE_RADIUS/2, crossing.getTrfficLightsSupervisor().getBottomTrafficLight().getCurrentColor() == Light.GREEN ? Color.GREEN : Color.RED);
-            }
-
-            if(crossing.getTrfficLightsSupervisor().getRightTrafficLight() != null) {
-                drawCircle(crossing.getX() + CAR_CIRCLE_RADIUS, crossing.getY(),
-                        CAR_CIRCLE_RADIUS/2, crossing.getTrfficLightsSupervisor().getRightTrafficLight().getCurrentColor() == Light.GREEN ? Color.GREEN : Color.RED);
-            }
-
-            if(crossing.getTrfficLightsSupervisor().getLeftTrafficLight() != null){
-                drawCircle(crossing.getX() - CAR_CIRCLE_RADIUS, crossing.getY(),
-                        CAR_CIRCLE_RADIUS/2, crossing.getTrfficLightsSupervisor().getLeftTrafficLight().getCurrentColor() == Light.GREEN? Color.GREEN : Color.RED);
-            }
         }
 
 
@@ -194,7 +173,31 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             if(car.getWay() == Car.Way.RIGHT)
                 offsetY = -NODE_OFFSET_LANE;
 
+
             drawCircle(carNode.getX() + offsetX, carNode.getY() + offsetY, CAR_CIRCLE_RADIUS, CAR_CIRCLE_COLOR);
+        }
+    }
+
+    private void drawTrafficLight(Crossing crossing){
+        crossing.getTrafficLightsSupervisor().changeAllLights();
+        if(crossing.getTrafficLightsSupervisor().getTopTrafficLight() != null){
+            drawCircle(crossing.getX(), crossing.getY()+CAR_CIRCLE_RADIUS,
+                    CAR_CIRCLE_RADIUS/2, crossing.getTrafficLightsSupervisor().getTopTrafficLight().getCurrentColor() == Light.GREEN? Color.GREEN : Color.RED);
+        }
+
+        if(crossing.getTrafficLightsSupervisor().getBottomTrafficLight() != null) {
+            drawCircle(crossing.getX(), crossing.getY() - CAR_CIRCLE_RADIUS,
+                    CAR_CIRCLE_RADIUS/2, crossing.getTrafficLightsSupervisor().getBottomTrafficLight().getCurrentColor() == Light.GREEN ? Color.GREEN : Color.RED);
+        }
+
+        if(crossing.getTrafficLightsSupervisor().getRightTrafficLight() != null) {
+            drawCircle(crossing.getX() + CAR_CIRCLE_RADIUS, crossing.getY(),
+                    CAR_CIRCLE_RADIUS/2, crossing.getTrafficLightsSupervisor().getRightTrafficLight().getCurrentColor() == Light.GREEN ? Color.GREEN : Color.RED);
+        }
+
+        if(crossing.getTrafficLightsSupervisor().getLeftTrafficLight() != null){
+            drawCircle(crossing.getX() - CAR_CIRCLE_RADIUS, crossing.getY(),
+                    CAR_CIRCLE_RADIUS/2, crossing.getTrafficLightsSupervisor().getLeftTrafficLight().getCurrentColor() == Light.GREEN? Color.GREEN : Color.RED);
         }
     }
 
@@ -224,6 +227,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                     removeCars.add(car);
                     continue;
                 }
+
                 car.moveCar();
             }
 

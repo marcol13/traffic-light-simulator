@@ -307,22 +307,25 @@ public class City {
         List<Lane> laneList = Arrays.asList(lane1, lane2);
         roads.add(new Road(roads.size(), laneList));
 
+
+        // TODO add with 3 nodes
+
         //Creation TrafficLight
         if(crossing1.getX() < crossing2.getX()){
-            crossing1.getTrfficLightsSupervisor().setRightTrafficLight(new TrafficLight(lane2, Light.RED));
-            crossing2.getTrfficLightsSupervisor().setLeftTrafficLight(new TrafficLight(lane1, Light.RED));
+            crossing1.getTrafficLightsSupervisor().setRightTrafficLight(new TrafficLight(lane2, Light.RED));
+            crossing2.getTrafficLightsSupervisor().setLeftTrafficLight(new TrafficLight(lane1, Light.RED));
         }
         else if(crossing1.getX() > crossing2.getX()) {
-            crossing2.getTrfficLightsSupervisor().setRightTrafficLight(new TrafficLight(lane1, Light.RED));
-            crossing1.getTrfficLightsSupervisor().setLeftTrafficLight(new TrafficLight(lane2, Light.RED));
+            crossing2.getTrafficLightsSupervisor().setRightTrafficLight(new TrafficLight(lane1, Light.RED));
+            crossing1.getTrafficLightsSupervisor().setLeftTrafficLight(new TrafficLight(lane2, Light.RED));
         }
         else if(crossing1.getY() < crossing2.getY()){
-            crossing1.getTrfficLightsSupervisor().setTopTrafficLight(new TrafficLight(lane2, Light.RED));
-            crossing2.getTrfficLightsSupervisor().setBottomTrafficLight(new TrafficLight(lane1, Light.RED));
+            crossing1.getTrafficLightsSupervisor().setTopTrafficLight(new TrafficLight(lane2, Light.RED));
+            crossing2.getTrafficLightsSupervisor().setBottomTrafficLight(new TrafficLight(lane1, Light.RED));
         }
         else{
-            crossing2.getTrfficLightsSupervisor().setTopTrafficLight(new TrafficLight(lane1, Light.RED));
-            crossing1.getTrfficLightsSupervisor().setBottomTrafficLight(new TrafficLight(lane2, Light.RED));
+            crossing2.getTrafficLightsSupervisor().setTopTrafficLight(new TrafficLight(lane1, Light.RED));
+            crossing1.getTrafficLightsSupervisor().setBottomTrafficLight(new TrafficLight(lane2, Light.RED));
         }
     }
 
