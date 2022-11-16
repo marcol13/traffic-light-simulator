@@ -49,7 +49,6 @@ public class City {
         }
         Lane startLane = lanes.get(startIndex);
         Lane endLane = lanes.get(endIndex);
-
         return new Car(startLane, endLane);
     }
 

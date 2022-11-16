@@ -30,6 +30,7 @@ public class Car {
     CityGraph.PathWithTime calculatedPath;
 
     private Way way;
+    private Way nextWay;
 
     private boolean onCrossing = false;
 
@@ -38,6 +39,7 @@ public class Car {
     }
 
     public Car(Lane startLane, Lane endLane) {
+
         this.startLane = startLane;
         this.endLane = endLane;
 
@@ -54,6 +56,12 @@ public class Car {
 
         this.way = calculateWay(this.currentNode, this.nextNode);
 
+        int laneCenter = (int)(startLane.getLength()/(Lane.AVERAGE_CAR_LENGTH + Lane.DISTANCE_BETWEEN_CARS))/2;
+        if(laneCenter > startLane.getCarsList().size()){
+            startLane.getCarsList().add(this);
+        } else{
+            startLane.getCarsList().add(laneCenter, this);
+        }
 //        System.out.println(this.path);
     }
 
@@ -104,20 +112,38 @@ public class Car {
 
             if (nodePercentage >= 100) {
 
-//                Crossing crossing = crossingList.stream().filter(c ->
-//                        Math.abs(c.getX() - actualNode.getX()) < (xVector * nodePercentage / 100) &&
-//                                Math.abs(c.getY() - actualNode.getY()) < (yVector * nodePercentage / 100)
-//                ).findFirst().get();
-
-
-
                 if(status == RideStatus.RIDING){
 
                     nodePercentage %= 100;
                     path.remove(0);
                     onCrossing = false;
+
+                    if (path.size() > 1) {
+                        currentNode = path.get(0);
+                        currentLane = lanesList.get(0);
+                        nextNode = path.get(1);
+                        nextWay = calculateWay(currentNode, nextNode);
+                        if(crossingList.get(0).mayTurnLeft(way,nextWay)){
+                            way = nextWay;
+                        }else{
+                            status = RideStatus.WAITING;
+                            return;
+                        }
+                    } else {
+                        status = RideStatus.FINISH;
+                        actualNode = nextNode;
+                        return;
+                    }
+
                     if (currentLane.getNodeList().size() == 2 || currentLane.getNodeList().size() > 2 && currentNode == currentLane.getNodeList().get(2)) {
+
+                        lanesList.get(0).getCarsList().remove(0);
                         lanesList.remove(0);
+
+                        nextCrossing.goOutFromCrossing(this);
+
+                        if(lanesList.size() > 0)
+                            lanesList.get(0).getCarsList().add(this);
 
                         if(crossingList.size() > 1){
                             crossingList.remove(0);
@@ -125,23 +151,11 @@ public class Car {
                         }
 
                     }
-
-
-                    if (path.size() > 1) {
-                        currentNode = path.get(0);
-                        currentLane = lanesList.get(0);
-                        nextNode = path.get(1);
-                        way = calculateWay(currentNode, nextNode);
-                    } else {
-                        status = RideStatus.FINISH;
-                        actualNode = nextNode;
-                        return;
-                    }
                 }
             }
-            else if (nodePercentage >= 90){
+            else if (nodePercentage >= 100 - 15 - (lanesList.get(0).getCarsList().indexOf(this) * (Lane.AVERAGE_CAR_LENGTH + Lane.DISTANCE_BETWEEN_CARS))){
                 if(nextNode.equals(new Node(nextCrossing.getX(),nextCrossing.getY()))){
-                    if(!nextCrossing.canIRide(actualNode.getX(),actualNode.getY()) && !onCrossing){
+                    if(!nextCrossing.mayEnterCrossing(this) && !onCrossing){
                         status = RideStatus.WAITING;
                         nodePercentage -= speed;
                     }
@@ -156,7 +170,7 @@ public class Car {
                 actualNode.setY((int) (currentNode.getY() + yVector * nodePercentage / 100));
             }
 
-            System.out.println("Car cords:" + actualNode.getX() + " " + actualNode.getY() + " Node percentage " + nodePercentage + " xVec " + xVector + " yVec " + yVector);
+//            System.out.println("Car cords:" + actualNode.getX() + " " + actualNode.getY() + " Node percentage " + nodePercentage + " xVec " + xVector + " yVec " + yVector);
 
         }
     }
