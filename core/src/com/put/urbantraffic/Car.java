@@ -111,9 +111,7 @@ public class Car {
                 speed *= 2;
             }
 
-            nodePercentage += speed;
 
-            int[] predictedPosition = predictXandYPosition(xVector, yVector);
 
             int carPositionInTrafficJam = currentLane.getCarsList().indexOf(this);
 
@@ -130,7 +128,7 @@ public class Car {
                     return;
                 }
             }
-            else if(carPositionInTrafficJam == 0){
+            else if(carPositionInTrafficJam == 0 && !onCrossing){
                 double distance = calculateDistance(carPosition.getX(),
                         carPosition.getY(),
                         nextCrossing.getX(),
@@ -142,6 +140,7 @@ public class Car {
                         Node nodeAfterCrossing = path.get(2);
                         nextWay = calculateWay(currentCrossing, nodeAfterCrossing);
                         direction = calculateDirection(way, nextWay);
+
                         if(crossingList.get(0).isGoOnCrossingPossible(this)){
                             onCrossing = true;
                         }
@@ -153,6 +152,9 @@ public class Car {
                     }
                 }
             }
+
+            nodePercentage += speed;
+            int[] predictedPosition = predictXandYPosition(xVector, yVector);
 
             if (nodePercentage >= 100) {
 
@@ -170,7 +172,9 @@ public class Car {
 
                     nodePercentage %= 100;
                     path.remove(0);
+
                     onCrossing = false;
+                    nextCrossing.goOutFromCrossing(this);
 
 
                     if (currentLane.getNodeList().size() == 2 || currentLane.getNodeList().size() > 2 && currentNode == currentLane.getNodeList().get(2)) {
@@ -178,7 +182,6 @@ public class Car {
                         lanesList.get(0).getCarsList().remove(0);
                         lanesList.remove(0);
 
-                        nextCrossing.goOutFromCrossing(this);
 
                         if(lanesList.size() > 0)
                             lanesList.get(0).getCarsList().add(this);

@@ -76,7 +76,7 @@ public class Crossing {
 
     public void goOutFromCrossing(Car car) {
 
-        switch (car.getNextWay()) {
+        switch (car.getWay()) {
             case TOP:
                 switch (car.getDirection()) {
                     case LEFT:
@@ -133,7 +133,7 @@ public class Crossing {
     }
 
     public boolean isGoOnCrossingPossible(Car car) {
-        Car.Way way = car.getNextWay();
+        Car.Way way = car.getWay();
         Direction direction = car.getDirection();
 
         if (way == Car.Way.TOP) {

@@ -8,7 +8,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Car.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Car.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Crossing.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Crossing.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Lane.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Lane.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/UrbanTrafficFlowSimulation.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/UrbanTrafficFlowSimulation.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -200,7 +199,7 @@
       <workItem from="1667242159673" duration="1131000" />
       <workItem from="1667305550275" duration="1451000" />
       <workItem from="1667327559977" duration="4522000" />
-      <workItem from="1668287091626" duration="51140000" />
+      <workItem from="1668287091626" duration="52669000" />
     </task>
     <servers />
   </component>
@@ -226,9 +225,14 @@
           <option name="timeStamp" value="3" />
         </breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/core/src/com/put/urbantraffic/Crossing.java</url>
-          <line>136</line>
-          <option name="timeStamp" value="13" />
+          <url>file://$PROJECT_DIR$/core/src/com/put/urbantraffic/Car.java</url>
+          <line>144</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core/src/com/put/urbantraffic/Car.java</url>
+          <line>147</line>
+          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
