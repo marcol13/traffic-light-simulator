@@ -139,6 +139,7 @@ public class Crossing {
         Direction direction = car.getDirection();
         System.out.println("Car " + car.getCarPosition() + " crossing " + x + " "+ y);
         System.out.println(" way " + way + " direction "+ direction);
+        System.out.println("LightSupervisor: " + trafficLightsSupervisor.toString());
         if (way == Car.Way.TOP) {
             System.out.println("Traffic Light" + trafficLightsSupervisor.getBottomTrafficLight().getCurrentColor());
             if(trafficLightsSupervisor.getBottomTrafficLight().getCurrentColor() == Light.GREEN){

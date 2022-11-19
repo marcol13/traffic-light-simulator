@@ -172,7 +172,15 @@ public class Car {
                         return;
                     }
                     else{
-                        status = RideStatus.RIDING;
+                        if(lanesList.size() > 1){
+                            if(!lanesList.get(1).isLaneFull()){
+                                status = RideStatus.RIDING;
+                            }
+                            else{
+                                status = RideStatus.WAITING;
+                                return;
+                            }
+                        }
                     }
                 }
 
@@ -242,7 +250,7 @@ public class Car {
             else if(destination == Way.BOTTOM){
                 return Direction.FORWARD;
             }
-            else{
+            else if(destination == Way.RIGHT || destination == Way.TOP){
                 return Direction.LEFT;
             }
         }
@@ -253,7 +261,7 @@ public class Car {
             else if(destination == Way.TOP){
                 return Direction.FORWARD;
             }
-            else{
+            else if(destination == Way.LEFT || destination == Way.BOTTOM){
                 return Direction.LEFT;
             }
         }
@@ -264,7 +272,7 @@ public class Car {
             else if(destination == Way.LEFT){
                 return Direction.FORWARD;
             }
-            else{
+            else if(destination == Way.BOTTOM || destination == Way.RIGHT){
                 return Direction.LEFT;
             }
         }
@@ -275,12 +283,13 @@ public class Car {
             else if(destination == Way.RIGHT){
                 return Direction.FORWARD;
             }
-            else{
-                return Direction.FORWARD;
+            else if(destination == Way.TOP || destination == Way.LEFT){
+                return Direction.LEFT;
             }
         }
-        return Direction.FORWARD;
+        return Direction.NONE;
     }
+
 
     private double calculateDistance(int x1 , int y1, int x2, int y2){
         return Math.sqrt(Math.pow((x1-x2),2) + Math.pow((y1-y2),2));

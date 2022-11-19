@@ -95,4 +95,8 @@ public class Lane {
     public int hashCode() {
         return Objects.hash(id, startCrossing, endCrossing, directions, speedLimit, nodeList, length, carsList);
     }
+
+    public boolean isLaneFull(){
+        return length - carsList.size()* (AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS) < AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS;
+    }
 }
