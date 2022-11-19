@@ -23,7 +23,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private City city;
     private final List<Car> cars = new ArrayList<Car>();
 
-    private static final float MOVE_SPEED = 150f;
+    private static final float MOVE_SPEED = 550f;
     private static final int NODE_CIRCLE_RADIUS = 15;
     private static final int CORNER_CIRCLE_RADIUS = 7;
     private static final int NODE_OFFSET_LANE = 4;

@@ -10,6 +10,14 @@ import java.util.List;
 
 @Data
 public class Car {
+
+    @Override
+    public String toString() {
+        return "Car{" +
+                "startLane=" + startLane +
+                '}';
+    }
+
     private final Lane startLane;
     private final Lane endLane;
     private Node startNode;
@@ -123,7 +131,7 @@ public class Car {
                 if(calculateDistance(carPosition.getX(),
                         carPosition.getY(),
                         previousCar.carPosition.getX(),
-                        previousCar.carPosition.getY()) <= Lane.DISTANCE_BETWEEN_CARS * 2 + Lane.AVERAGE_CAR_LENGTH){
+                        previousCar.carPosition.getY()) <= Lane.DISTANCE_BETWEEN_CARS + Lane.AVERAGE_CAR_LENGTH * 2){
                     status = RideStatus.WAITING;
                     return;
                 }
@@ -195,7 +203,6 @@ public class Car {
                     if (path.size() > 1) {
                         currentNode = path.get(0);
                         currentLane = lanesList.get(0);
-                        currentLane.getCarsList().add(this);
                         nextNode = path.get(1);
                         way = calculateWay(currentNode, nextNode);
                     } else {
@@ -230,46 +237,46 @@ public class Car {
 
         if(start == Way.BOTTOM ){
             if(destination == Way.LEFT){
-                return Direction.LEFT;
-            }
-            else if(destination == Way.TOP){
-                return Direction.FORWARD;
-            }
-            else{
                 return Direction.RIGHT;
-            }
-        }
-        else if(start == Way.TOP){
-            if(destination == Way.RIGHT){
-                return Direction.LEFT;
             }
             else if(destination == Way.BOTTOM){
                 return Direction.FORWARD;
             }
             else{
+                return Direction.LEFT;
+            }
+        }
+        else if(start == Way.TOP){
+            if(destination == Way.RIGHT){
                 return Direction.RIGHT;
+            }
+            else if(destination == Way.TOP){
+                return Direction.FORWARD;
+            }
+            else{
+                return Direction.LEFT;
             }
         }
         else if(start == Way.LEFT){
             if(destination == Way.TOP){
-                return Direction.LEFT;
-            }
-            else if(destination == Way.RIGHT){
-                return Direction.FORWARD;
-            }
-            else{
                 return Direction.RIGHT;
-            }
-        }
-        else if(start == Way.RIGHT){
-            if(destination == Way.BOTTOM){
-                return Direction.LEFT;
             }
             else if(destination == Way.LEFT){
                 return Direction.FORWARD;
             }
             else{
+                return Direction.LEFT;
+            }
+        }
+        else if(start == Way.RIGHT){
+            if(destination == Way.BOTTOM){
                 return Direction.RIGHT;
+            }
+            else if(destination == Way.RIGHT){
+                return Direction.FORWARD;
+            }
+            else{
+                return Direction.FORWARD;
             }
         }
         return Direction.FORWARD;

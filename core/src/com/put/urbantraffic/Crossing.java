@@ -11,6 +11,15 @@ public class Crossing {
     static final int NODE_CIRCLE_RADIUS = 15;
     private final int id;
     private final int x;
+
+    @Override
+    public String toString() {
+        return "Crossing{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
+
     private final int y;
 
     private final ArrayList<Car> forwardTopCardField = new ArrayList<Car>();
@@ -128,8 +137,10 @@ public class Crossing {
     public boolean isGoOnCrossingPossible(Car car) {
         Car.Way way = car.getWay();
         Direction direction = car.getDirection();
-
+        System.out.println("Car " + car.getCarPosition() + " crossing " + x + " "+ y);
+        System.out.println(" way " + way + " direction "+ direction);
         if (way == Car.Way.TOP) {
+            System.out.println("Traffic Light" + trafficLightsSupervisor.getBottomTrafficLight().getCurrentColor());
             if(trafficLightsSupervisor.getBottomTrafficLight().getCurrentColor() == Light.GREEN){
                 if (direction == Direction.FORWARD) {
                     if (forwardBottomCardField.size() == 0 && turnLeftBottomCardField.size() < 2) {
@@ -152,6 +163,8 @@ public class Crossing {
 
 
         else if (way == Car.Way.BOTTOM) {
+            System.out.println("Traffic Light" + trafficLightsSupervisor.getTopTrafficLight().getCurrentColor());
+
             if(trafficLightsSupervisor.getTopTrafficLight().getCurrentColor() == Light.GREEN) {
                 if (direction == Direction.FORWARD) {
                     if (forwardTopCardField.size() == 0 && turnLeftTopCardField.size() < 2) {
@@ -173,6 +186,8 @@ public class Crossing {
         }
 
         else if (way == Car.Way.LEFT) {
+            System.out.println("Traffic Light" + trafficLightsSupervisor.getRightTrafficLight().getCurrentColor());
+
             if(trafficLightsSupervisor.getRightTrafficLight().getCurrentColor() == Light.GREEN) {
                 if (direction == Direction.FORWARD) {
                     if (forwardRightCardField.size() == 0 && turnLeftRightCardField.size() < 2) {
@@ -195,6 +210,8 @@ public class Crossing {
 
 
         else if (way == Car.Way.RIGHT){
+            System.out.println("Traffic Light" + trafficLightsSupervisor.getLeftTrafficLight().getCurrentColor());
+
             if(trafficLightsSupervisor.getLeftTrafficLight().getCurrentColor() == Light.GREEN) {
                 if (direction == Direction.FORWARD) {
                     if (forwardLeftCardField.size() == 0 && turnLeftLeftCardField.size() < 2) {
@@ -217,62 +234,6 @@ public class Crossing {
 
         return false;
     }
-
-//    public boolean isGoForwardPossible(Car car) {
-//        if(car.getNextWay() == Car.Way.TOP)
-//            if(forwardBottomCardField.size() == 0 && turnLeftBottomCardField.size() < 2){
-//                forwardBottomCardField.add(car);
-//                return true;
-//            }
-//
-//        if(car.getNextWay() == Car.Way.BOTTOM)
-//            if(forwardTopCardField.size() == 0 && turnLeftTopCardField.size() < 2){
-//                forwardTopCardField.add(car);
-//                return true;
-//            }
-//
-//        if(car.getNextWay() == Car.Way.LEFT)
-//            if(forwardRightCardField.size() == 0 && turnLeftRightCardField.size() < 2){
-//                forwardRightCardField.add(car);
-//                return true;
-//            }
-//
-//        if(car.getNextWay() == Car.Way.RIGHT)
-//            if(forwardLeftCardField.size() == 0 && turnLeftLeftCardField.size() < 2){
-//                forwardLeftCardField.add(car);
-//                return true;
-//            }
-//
-//        return false;
-//    }
-//
-//    public boolean isTurnRightPossible(Car car) {
-//        if(car.getNextWay() == Car.Way.TOP)
-//            if(turnRightBottomCardField.size() == 0 && turnLeftBottomCardField.size() < 2){
-//                turnRightBottomCardField.add(car);
-//                return true;
-//            }
-//
-//        if(car.getNextWay() == Car.Way.BOTTOM)
-//            if(turnRightTopCardField.size() == 0 && turnLeftTopCardField.size() < 2){
-//                turnRightTopCardField.add(car);
-//                return true;
-//            }
-//
-//        if(car.getNextWay() == Car.Way.LEFT)
-//            if(turnRightRightCardField.size() == 0 && turnLeftRightCardField.size() < 2){
-//                turnRightTopCardField.add(car);
-//                return true;
-//            }
-//
-//        if(car.getNextWay() == Car.Way.RIGHT)
-//            if(turnRightLeftCardField.size() == 0 && turnLeftLeftCardField.size() < 2){
-//                turnRightTopCardField.add(car);
-//                return true;
-//            }
-//
-//        return false;
-//    }
 
     public boolean isTurnLeftPossible(Car car) {
         switch (car.getWay()){
