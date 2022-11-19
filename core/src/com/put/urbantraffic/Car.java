@@ -1,7 +1,9 @@
 package com.put.urbantraffic;
 
+import com.badlogic.gdx.utils.Array;
 import lombok.Data;
 
+import javax.sound.sampled.Line;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +19,7 @@ public class Car {
 
     private Node currentNode;
     private Node nextNode;
-    private Node actualNode;
+    private Node carPosition;
     private Lane currentLane;
     private float nodePercentage = 0.0f;
 
@@ -31,6 +33,8 @@ public class Car {
 
     private Way way;
     private Way nextWay;
+
+    private Direction direction;
 
     private boolean onCrossing = false;
 
@@ -50,7 +54,7 @@ public class Car {
 
         this.currentNode = new Node(path.get(0).getX(), path.get(0).getY());
         this.currentLane = lanesList.get(0);
-        this.actualNode = new Node(path.get(0).getX(), path.get(0).getY());
+        this.carPosition = new Node(path.get(0).getX(), path.get(0).getY());
         this.nextNode = path.get(1);
         this.nextCrossing = crossingList.get(0);
 
@@ -109,8 +113,58 @@ public class Car {
 
             nodePercentage += speed;
 
+            int[] predictedPosition = predictXandYPosition(xVector, yVector);
+
+            int carPositionInTrafficJam = currentLane.getCarsList().indexOf(this);
+
+            if(currentLane.getCarsList().size() > 1 && carPositionInTrafficJam != 0){
+
+                Car previousCar = currentLane.getCarsList().get(carPositionInTrafficJam-1);
+
+                //check, some car is in front of you
+                if(calculateDistance(carPosition.getX(),
+                        carPosition.getY(),
+                        previousCar.carPosition.getX(),
+                        previousCar.carPosition.getY()) <= Lane.DISTANCE_BETWEEN_CARS * 2 + Lane.AVERAGE_CAR_LENGTH){
+                    status = RideStatus.WAITING;
+                    return;
+                }
+            }
+            else if(carPositionInTrafficJam == 0){
+                double distance = calculateDistance(carPosition.getX(),
+                        carPosition.getY(),
+                        nextCrossing.getX(),
+                        nextCrossing.getY());
+                if(distance <= Crossing.NODE_CIRCLE_RADIUS + Lane.AVERAGE_CAR_LENGTH){
+
+                    if (path.size() > 2) {
+                        Node currentCrossing = path.get(1);
+                        Node nodeAfterCrossing = path.get(2);
+                        nextWay = calculateWay(currentCrossing, nodeAfterCrossing);
+                        direction = calculateDirection(way, nextWay);
+                        if(crossingList.get(0).isGoOnCrossingPossible(this)){
+                            onCrossing = true;
+                        }
+                        else{
+                            status = RideStatus.WAITING;
+                            return;
+                        }
+
+                    }
+                }
+            }
 
             if (nodePercentage >= 100) {
+
+                if(onCrossing && direction == Direction.LEFT){
+                    if(!crossingList.get(0).isTurnLeftPossible(this)){
+                        status = RideStatus.WAITING;
+                        return;
+                    }
+                    else{
+                        status = RideStatus.RIDING;
+                    }
+                }
 
                 if(status == RideStatus.RIDING){
 
@@ -118,22 +172,6 @@ public class Car {
                     path.remove(0);
                     onCrossing = false;
 
-                    if (path.size() > 1) {
-                        currentNode = path.get(0);
-                        currentLane = lanesList.get(0);
-                        nextNode = path.get(1);
-                        nextWay = calculateWay(currentNode, nextNode);
-                        if(crossingList.get(0).mayTurnLeft(way,nextWay)){
-                            way = nextWay;
-                        }else{
-                            status = RideStatus.WAITING;
-                            return;
-                        }
-                    } else {
-                        status = RideStatus.FINISH;
-                        actualNode = nextNode;
-                        return;
-                    }
 
                     if (currentLane.getNodeList().size() == 2 || currentLane.getNodeList().size() > 2 && currentNode == currentLane.getNodeList().get(2)) {
 
@@ -149,25 +187,24 @@ public class Car {
                             crossingList.remove(0);
                             nextCrossing = crossingList.get(0);
                         }
+                    }
 
-                    }
-                }
-            }
-            else if (nodePercentage >= 100 - 15 - (lanesList.get(0).getCarsList().indexOf(this) * (Lane.AVERAGE_CAR_LENGTH + Lane.DISTANCE_BETWEEN_CARS))){
-                if(nextNode.equals(new Node(nextCrossing.getX(),nextCrossing.getY()))){
-                    if(!nextCrossing.mayEnterCrossing(this) && !onCrossing){
-                        status = RideStatus.WAITING;
-                        nodePercentage -= speed;
-                    }
-                    else{
-                        onCrossing = true;
+                    if (path.size() > 1) {
+                        currentNode = path.get(0);
+                        currentLane = lanesList.get(0);
+                        nextNode = path.get(1);
+                        way = calculateWay(currentNode, nextNode);
+                    } else {
+                        status = RideStatus.FINISH;
+                        carPosition = nextNode;
+                        return;
                     }
                 }
             }
 
             if(status == RideStatus.RIDING || onCrossing) {
-                actualNode.setX((int) (currentNode.getX() + xVector * nodePercentage / 100));
-                actualNode.setY((int) (currentNode.getY() + yVector * nodePercentage / 100));
+                carPosition.setX((int) (currentNode.getX() + xVector * nodePercentage / 100));
+                carPosition.setY((int) (currentNode.getY() + yVector * nodePercentage / 100));
             }
 
 //            System.out.println("Car cords:" + actualNode.getX() + " " + actualNode.getY() + " Node percentage " + nodePercentage + " xVec " + xVector + " yVec " + yVector);
@@ -177,6 +214,65 @@ public class Car {
 
     private int getNodeLength(Node currentNode, Node nextNode) {
         return Math.abs(currentNode.getX() - nextNode.getX()) + Math.abs(currentNode.getY() - nextNode.getY());
+    }
+
+    private int[] predictXandYPosition(int xVector, int yVector){
+            int newX = (int) (currentNode.getX() + xVector * nodePercentage / 100);
+            int newY = (int) (currentNode.getY() + yVector * nodePercentage / 100);
+            return new int[] {newX,newY};
+    }
+
+    private Direction calculateDirection(Way start, Way destination){
+
+        if(start == Way.BOTTOM ){
+            if(destination == Way.LEFT){
+                return Direction.LEFT;
+            }
+            else if(destination == Way.TOP){
+                return Direction.FORWARD;
+            }
+            else{
+                return Direction.RIGHT;
+            }
+        }
+        else if(start == Way.TOP){
+            if(destination == Way.RIGHT){
+                return Direction.LEFT;
+            }
+            else if(destination == Way.BOTTOM){
+                return Direction.FORWARD;
+            }
+            else{
+                return Direction.RIGHT;
+            }
+        }
+        else if(start == Way.LEFT){
+            if(destination == Way.TOP){
+                return Direction.LEFT;
+            }
+            else if(destination == Way.RIGHT){
+                return Direction.FORWARD;
+            }
+            else{
+                return Direction.RIGHT;
+            }
+        }
+        else if(start == Way.RIGHT){
+            if(destination == Way.BOTTOM){
+                return Direction.LEFT;
+            }
+            else if(destination == Way.LEFT){
+                return Direction.FORWARD;
+            }
+            else{
+                return Direction.RIGHT;
+            }
+        }
+        return Direction.FORWARD;
+    }
+
+    private double calculateDistance(int x1 , int y1, int x2, int y2){
+        return Math.sqrt(Math.pow((x1-x2),2) + Math.pow((y1-y2),2));
     }
 
     private Way calculateWay(Node startNode, Node endNode) {

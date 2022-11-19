@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Lane {
-    public static final double AVERAGE_CAR_LENGTH = 3.5;
+    public static final double AVERAGE_CAR_LENGTH = 10;
     public static final double DISTANCE_BETWEEN_CARS = 0.5;
 
     private final int id;

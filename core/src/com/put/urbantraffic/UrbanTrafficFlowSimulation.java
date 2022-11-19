@@ -44,7 +44,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //        Crossing amount < 600 -> *6
         int gridMultiplier = 2;
         int crossingAmount = 50;
-        int amountOfCars = 100;
+        int amountOfCars = 10;
         city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount);
         paths = new CityGraph().generate(city);
 
@@ -162,7 +162,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         //Draw cars
         for(Car car: cars){
             int offsetX = 0, offsetY = 0;
-            Node carNode = car.getActualNode();
+            Node carNode = car.getCarPosition();
 
             if(car.getWay() == Car.Way.TOP)
                 offsetX = NODE_OFFSET_LANE;
