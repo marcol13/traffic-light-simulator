@@ -115,7 +115,7 @@ public class Car {
 
             int carPositionInTrafficJam = currentLane.getCarsList().indexOf(this);
 
-            if(currentLane.getCarsList().size() > 1 && carPositionInTrafficJam != 0){
+            if(currentLane.getCarsList().size() > 1 && carPositionInTrafficJam > 0){
 
                 Car previousCar = currentLane.getCarsList().get(carPositionInTrafficJam-1);
 
@@ -195,6 +195,7 @@ public class Car {
                     if (path.size() > 1) {
                         currentNode = path.get(0);
                         currentLane = lanesList.get(0);
+                        currentLane.getCarsList().add(this);
                         nextNode = path.get(1);
                         way = calculateWay(currentNode, nextNode);
                     } else {

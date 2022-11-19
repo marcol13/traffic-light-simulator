@@ -78,55 +78,48 @@ public class Crossing {
 
         switch (car.getWay()) {
             case TOP:
-                switch (car.getDirection()) {
-                    case LEFT:
-                        turnLeftBottomCardField.remove(car);
-                        break;
-                    case RIGHT:
-                        turnRightBottomCardField.remove(car);
-                        break;
-                    case FORWARD:
-                        forwardBottomCardField.remove(car);
-                        break;
+                if(turnLeftBottomCardField.contains(car)) {
+                    turnLeftBottomCardField.remove(car);
+                }
+                else if(turnRightBottomCardField.contains(car)) {
+                    turnRightBottomCardField.remove(car);
+                }
+                else if(forwardBottomCardField.contains(car)) {
+                    forwardBottomCardField.remove(car);
                 }
                 break;
             case RIGHT:
-                switch (car.getDirection()) {
-                    case LEFT:
+                if(turnLeftLeftCardField.contains(car)) {
                         turnLeftLeftCardField.remove(car);
-                        break;
-                    case RIGHT:
-                        turnRightLeftCardField.remove(car);
-                        break;
-                    case FORWARD:
+                }
+                else if(turnRightLeftCardField.contains(car)) {
+                    turnRightLeftCardField.remove(car);
+                }
+                else if(forwardLeftCardField.contains(car)) {
                         forwardLeftCardField.remove(car);
-                        break;
                 }
                 break;
             case BOTTOM:
-                switch (car.getDirection()) {
-                    case LEFT:
-                        turnLeftTopCardField.remove(car);
-                        break;
-                    case RIGHT:
-                        turnRightTopCardField.remove(car);
-                        break;
-                    case FORWARD:
+                if(turnLeftTopCardField.contains(car)) {
+                    turnLeftTopCardField.remove(car);
+                }
+                else if(turnRightTopCardField.contains(car)) {
+                    turnRightTopCardField.remove(car);
+                }
+                else if(forwardTopCardField.contains(car)) {
                         forwardTopCardField.remove(car);
-                        break;
                 }
                 break;
             case LEFT:
-                switch (car.getDirection()) {
-                    case LEFT:
-                        turnLeftRightCardField.remove(car);
-                        break;
-                    case RIGHT:
+                if(turnLeftRightCardField.contains(car)) {
+                    turnLeftRightCardField.remove(car);
+                }
+                else if(turnRightRightCardField.contains(car)) {
                         turnRightRightCardField.remove(car);
-                        break;
-                    case FORWARD:
+                }
+                else if(forwardRightCardField.contains(car)) {
                         forwardRightCardField.remove(car);
-                        break;
+
                 }
                 break;
         }
