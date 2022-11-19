@@ -63,9 +63,27 @@ public class TrafficLightsSupervisor {
         }
     }
 
+    private void switchYellow(TrafficLight trafficLight, boolean turnOn){
+        if(trafficLight != null){
+            trafficLight.setYellow(turnOn);
+        }
+    }
+
     void changeAllLights(){
         timeToChangeLights--;
-        if(timeToChangeLights == 0){
+        if(timeToChangeLights <  LIGHTS_DURATION/15 && timeToChangeLights != 0){
+            switchYellow(topTrafficLight, true);
+            switchYellow(bottomTrafficLight, true);
+            switchYellow(leftTrafficLight,true );
+            switchYellow(rightTrafficLight, true );
+        }
+        else if(timeToChangeLights == 0){
+
+            switchYellow(topTrafficLight, false);
+            switchYellow(bottomTrafficLight, false);
+            switchYellow(leftTrafficLight, false);
+            switchYellow(rightTrafficLight, false);
+
             changeLight(topTrafficLight);
             changeLight(bottomTrafficLight);
             changeLight(leftTrafficLight);

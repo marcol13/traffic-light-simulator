@@ -7,9 +7,8 @@
     <list default="true" id="dba55210-8f1e-4f56-8a7d-8e06ced278e9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Car.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Car.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Crossing.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Crossing.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Direction.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Direction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Lane.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/Lane.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/City.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/City.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/TrafficLight.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/TrafficLight.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/TrafficLightsSupervisor.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/TrafficLightsSupervisor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/put/urbantraffic/UrbanTrafficFlowSimulation.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/put/urbantraffic/UrbanTrafficFlowSimulation.java" afterDir="false" />
     </list>
@@ -202,7 +201,7 @@
       <workItem from="1667242159673" duration="1131000" />
       <workItem from="1667305550275" duration="1451000" />
       <workItem from="1667327559977" duration="4522000" />
-      <workItem from="1668287091626" duration="61803000" />
+      <workItem from="1668287091626" duration="65531000" />
     </task>
     <servers />
   </component>

@@ -162,7 +162,6 @@ public class Car {
             }
 
             nodePercentage += speed;
-            int[] predictedPosition = predictXandYPosition(xVector, yVector);
 
             if (nodePercentage >= 100) {
 
@@ -250,6 +249,7 @@ public class Car {
             else if(destination == Way.BOTTOM){
                 return Direction.FORWARD;
             }
+//            else if(destination == Way.RIGHT){
             else if(destination == Way.RIGHT || destination == Way.TOP){
                 return Direction.LEFT;
             }
@@ -261,6 +261,7 @@ public class Car {
             else if(destination == Way.TOP){
                 return Direction.FORWARD;
             }
+//            else if(destination == Way.LEFT){
             else if(destination == Way.LEFT || destination == Way.BOTTOM){
                 return Direction.LEFT;
             }
@@ -272,6 +273,7 @@ public class Car {
             else if(destination == Way.LEFT){
                 return Direction.FORWARD;
             }
+//            else if(destination == Way.BOTTOM){
             else if(destination == Way.BOTTOM || destination == Way.RIGHT){
                 return Direction.LEFT;
             }
@@ -283,6 +285,7 @@ public class Car {
             else if(destination == Way.RIGHT){
                 return Direction.FORWARD;
             }
+//            else if(destination == Way.TOP ){
             else if(destination == Way.TOP || destination == Way.LEFT){
                 return Direction.LEFT;
             }

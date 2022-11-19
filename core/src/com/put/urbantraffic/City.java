@@ -312,50 +312,50 @@ public class City {
         //Creation TrafficLight
         if(nodes.size() == 2){
             if(crossing1.getX() < crossing2.getX()){
-                crossing1.getTrafficLightsSupervisor().setRightTrafficLight(new TrafficLight(lane2, Light.RED));
-                crossing2.getTrafficLightsSupervisor().setLeftTrafficLight(new TrafficLight(lane1, Light.RED));
+                crossing1.getTrafficLightsSupervisor().setRightTrafficLight(new TrafficLight(lane2, Light.RED, false));
+                crossing2.getTrafficLightsSupervisor().setLeftTrafficLight(new TrafficLight(lane1, Light.RED, false));
             }
             else if(crossing1.getX() > crossing2.getX()) {
-                crossing2.getTrafficLightsSupervisor().setRightTrafficLight(new TrafficLight(lane1, Light.RED));
-                crossing1.getTrafficLightsSupervisor().setLeftTrafficLight(new TrafficLight(lane2, Light.RED));
+                crossing2.getTrafficLightsSupervisor().setRightTrafficLight(new TrafficLight(lane1, Light.RED, false));
+                crossing1.getTrafficLightsSupervisor().setLeftTrafficLight(new TrafficLight(lane2, Light.RED, false));
             }
             else if(crossing1.getY() < crossing2.getY()){
-                crossing1.getTrafficLightsSupervisor().setTopTrafficLight(new TrafficLight(lane2, Light.RED));
-                crossing2.getTrafficLightsSupervisor().setBottomTrafficLight(new TrafficLight(lane1, Light.RED));
+                crossing1.getTrafficLightsSupervisor().setTopTrafficLight(new TrafficLight(lane2, Light.RED, false));
+                crossing2.getTrafficLightsSupervisor().setBottomTrafficLight(new TrafficLight(lane1, Light.RED, false));
             }
             else{
-                crossing2.getTrafficLightsSupervisor().setTopTrafficLight(new TrafficLight(lane1, Light.RED));
-                crossing1.getTrafficLightsSupervisor().setBottomTrafficLight(new TrafficLight(lane2, Light.RED));
+                crossing2.getTrafficLightsSupervisor().setTopTrafficLight(new TrafficLight(lane1, Light.RED, false));
+                crossing1.getTrafficLightsSupervisor().setBottomTrafficLight(new TrafficLight(lane2, Light.RED, false));
             }
         } else{
             //first crossing to the curve
 
             if(crossing1.getX() < nodes.get(1).getX()){
-                crossing1.getTrafficLightsSupervisor().setRightTrafficLight(new TrafficLight(lane2, Light.RED));
+                crossing1.getTrafficLightsSupervisor().setRightTrafficLight(new TrafficLight(lane2, Light.RED, false));
             }
             else if(crossing1.getX() > nodes.get(1).getX()) {
-                crossing1.getTrafficLightsSupervisor().setLeftTrafficLight(new TrafficLight(lane2, Light.RED));
+                crossing1.getTrafficLightsSupervisor().setLeftTrafficLight(new TrafficLight(lane2, Light.RED, false));
             }
             else if(crossing1.getY() < nodes.get(1).getY()){
-                crossing1.getTrafficLightsSupervisor().setTopTrafficLight(new TrafficLight(lane2, Light.RED));
+                crossing1.getTrafficLightsSupervisor().setTopTrafficLight(new TrafficLight(lane2, Light.RED, false));
             }
             else{
-                crossing1.getTrafficLightsSupervisor().setBottomTrafficLight(new TrafficLight(lane2, Light.RED));
+                crossing1.getTrafficLightsSupervisor().setBottomTrafficLight(new TrafficLight(lane2, Light.RED, false));
             }
 
 
             //curve to the crossing2
             if(nodes.get(1).getX() < crossing2.getX()){
-                crossing2.getTrafficLightsSupervisor().setLeftTrafficLight(new TrafficLight(lane1, Light.RED));
+                crossing2.getTrafficLightsSupervisor().setLeftTrafficLight(new TrafficLight(lane1, Light.RED, false));
             }
             else if(nodes.get(1).getX() > crossing2.getX()) {
-                crossing2.getTrafficLightsSupervisor().setRightTrafficLight(new TrafficLight(lane1, Light.RED));
+                crossing2.getTrafficLightsSupervisor().setRightTrafficLight(new TrafficLight(lane1, Light.RED, false));
             }
             else if(nodes.get(1).getY() < crossing2.getY()){
-                crossing2.getTrafficLightsSupervisor().setBottomTrafficLight(new TrafficLight(lane1, Light.RED));
+                crossing2.getTrafficLightsSupervisor().setBottomTrafficLight(new TrafficLight(lane1, Light.RED, false));
             }
             else{
-                crossing2.getTrafficLightsSupervisor().setTopTrafficLight(new TrafficLight(lane1, Light.RED));
+                crossing2.getTrafficLightsSupervisor().setTopTrafficLight(new TrafficLight(lane1, Light.RED, false));
             }
         }
 
