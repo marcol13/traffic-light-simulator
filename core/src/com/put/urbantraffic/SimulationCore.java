@@ -104,15 +104,6 @@ public class SimulationCore {
     }
 
 
-//    private int returnGaussian() {
-//        Random r = new Random();
-//        int gaussNumber =(int) (abs(r.nextGaussian()) / 3 * population / 2);
-//        while (gaussNumber >= population/2) {
-//            gaussNumber = (int) (abs(r.nextGaussian()) / 3 * population / 2);
-//        }
-//        return gaussNumber;
-//    }
-
     private int[] makeNewGenotype(int[] genotypeMother, int[] genotypeFather) {
         int[] newGenotype = new int[genotypeMother.length];
         int border = (int) (Math.random() * genotypeMother.length);

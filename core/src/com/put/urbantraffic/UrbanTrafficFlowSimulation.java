@@ -41,16 +41,10 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         shapeRenderer = new ShapeRenderer();
         extendViewport = new ExtendViewport(1200, 1200);
 
-//        Crossing amount < 70 -> *2
-//        Crossing amount < 300 -> *4
-//        Crossing amount < 600 -> *6
-        int gridMultiplier = 2;
-        int crossingAmount = 50;
-        int amountOfCars = 10;
-        city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount);
+        city = new City(SETTINGS.gridMultiplier * 2 * 16, SETTINGS.gridMultiplier * 2 * 9, SETTINGS.crossingAmount);
         paths = new CityGraph().generate(city);
 
-        setupInitialCameraPositionAndZoom(gridMultiplier);
+        setupInitialCameraPositionAndZoom(SETTINGS.gridMultiplier);
 
         System.out.println("Quantity of Crossings: " + city.getCrossings().size());
         System.out.println("Quantity of Roads: " + city.getRoads().size());
@@ -89,18 +83,19 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //
 //        car = new Car(new Node(0, 0), new Node(200, 200), new ArrayList<Node>(Arrays.asList(new Node(0, 0), new Node(0, 100), new Node(0, 200), new Node(100, 200), new Node(200, 200))));
 
+        int amountOfCars = 1;
         for(int i = 0; i < amountOfCars; i++){
             cars.add(city.spawnCar());
         }
 
         SimulationCore simulation = new SimulationCore();
         simulation.city = city;
-        simulation.epochs = 600;
-        simulation.population = 100;
+        simulation.epochs = SETTINGS.epochs;
+        simulation.population = SETTINGS.population;
         simulation.numberOfCrossings = city.getCrossings().size();
-        simulation.mutationScale = 100;
-        simulation.initialDeltaRange = 1000;
-        simulation.tournamentSelectionContestants = 2;
+        simulation.mutationScale = SETTINGS.mutationScale;
+        simulation.initialDeltaRange = SETTINGS.initialDeltaRange;
+        simulation.tournamentSelectionContestants = SETTINGS.tournamentSelectionContestants;
         simulation.startSimulation();
     }
 
@@ -192,6 +187,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+            SETTINGS.TIME += 1;
+            System.out.println(SETTINGS.TIME);
             List<Car> removeCars = new ArrayList<>();
             for(Car car: cars){
                 if(car.getStatus() == RideStatus.FINISH){
