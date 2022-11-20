@@ -38,8 +38,10 @@ public class City {
         Lane startLane = null;
         Lane endLane = null;
         while (startLane == endLane) {
-            startLane = lanes.get(rand.nextInt(lanes.size()));
-            endLane = lanes.get(rand.nextInt(lanes.size()));
+//            startLane = lanes.get(rand.nextInt(lanes.size()));
+//            endLane = lanes.get(rand.nextInt(lanes.size()));
+startLane = lanes.get(128);
+            endLane = lanes.get(23);
 
             boolean doesAnyContainTurn = startLane.doesContainTurn() || endLane.doesContainTurn();
             boolean areOnTheSameRoad = startLane.getStartCrossing() == endLane.getEndCrossing() && startLane.getEndCrossing() == endLane.getStartCrossing();

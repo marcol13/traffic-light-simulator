@@ -50,7 +50,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //        Crossing amount < 600 -> *6
         int gridMultiplier = 4;
         int crossingAmount = 200;
-        int amountOfCars = 1000;
+        int amountOfCars = 1;
         city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount, rand);
         paths = new CityGraph().generate(city);
 
@@ -182,6 +182,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
             drawCircle(carNode.getX() + offsetX, carNode.getY() + offsetY, CAR_CIRCLE_RADIUS, car.getStatus() == RideStatus.RIDING ? Color.YELLOW : Color.BLUE);
         }
+
+        drawPath(paths[128][23]);
     }
 
     private void drawTrafficLight(Crossing crossing){
