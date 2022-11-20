@@ -192,7 +192,7 @@ public class Car {
                     nextCrossing.goOutFromCrossing(this);
 
 
-                    if (currentLane.getNodeList().size() == 2 || currentLane.getNodeList().size() > 2 && currentNode == currentLane.getNodeList().get(2)) {
+                    if (currentLane.getNodeList().size() == 2 || currentLane.getNodeList().size() > 2 && nextNode == currentLane.getNodeList().get(2)) {
 
                         lanesList.get(0).getCarsList().remove(0);
                         lanesList.remove(0);
