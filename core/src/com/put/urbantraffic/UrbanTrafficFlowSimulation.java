@@ -33,10 +33,10 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         shapeRenderer = new ShapeRenderer();
         extendViewport = new ExtendViewport(1200, 1200);
 
-        city = new City(SETTINGS.gridMultiplier * 2 * 16, SETTINGS.gridMultiplier * 2 * 16, SETTINGS.crossingAmount);
+        city = new City(SETTINGS.GRID_MULTIPLIER * 2 * 16, SETTINGS.GRID_MULTIPLIER * 2 * 16, SETTINGS.GRID_MULTIPLIER);
         paths = new CityGraph().generate(city);
 
-        setupInitialCameraPositionAndZoom(SETTINGS.gridMultiplier);
+        setupInitialCameraPositionAndZoom(SETTINGS.GRID_MULTIPLIER);
 
         System.out.println("Quantity of Crossings: " + city.getCrossings().size());
         System.out.println("Quantity of Roads: " + city.getRoads().size());
@@ -75,21 +75,17 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //
 //        car = new Car(new Node(0, 0), new Node(200, 200), new ArrayList<Node>(Arrays.asList(new Node(0, 0), new Node(0, 100), new Node(0, 200), new Node(100, 200), new Node(200, 200))));
 
-        int amountOfCars = 0;
-        for(int i = 0; i < amountOfCars; i++){
-            cars.add(city.spawnCar());
-        }
 
         createSpawnCarArray();
 
         SimulationCore simulation = new SimulationCore();
         simulation.city = city;
-        simulation.epochs = SETTINGS.epochs;
-        simulation.population = SETTINGS.population;
+        simulation.epochs = SETTINGS.EPOCHS;
+        simulation.population = SETTINGS.POPULATION;
         simulation.numberOfCrossings = city.getCrossings().size();
-        simulation.mutationScale = SETTINGS.mutationScale;
-        simulation.initialDeltaRange = SETTINGS.initialDeltaRange;
-        simulation.tournamentSelectionContestants = SETTINGS.tournamentSelectionContestants;
+        simulation.mutationScale = SETTINGS.MUTATION_SCALE;
+        simulation.initialDeltaRange = SETTINGS.INITIAL_DELTA_RANGE;
+        simulation.tournamentSelectionContestants = SETTINGS.TOURNAMENT_SELECTION_CONTESTANT;
         simulation.startSimulation();
     }
 
@@ -119,12 +115,6 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
             }
         }
-        System.out.println("start");
-        for(int i=0; i<spawn_car_array.size(); i++){
-            System.out.println(spawn_car_array.get(i));
-        }
-        System.out.println("End");
-
     }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
@@ -220,7 +210,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 cars.add(city.spawnCar());
                 spawn_car_array.remove(0);
             }
-            System.out.println(SETTINGS.TIME);
+//            Uncomment to see the passing time
+//            System.out.println(SETTINGS.TIME);
             List<Car> removeCars = new ArrayList<>();
             for(Car car: cars){
                 if(car.getStatus() == RideStatus.FINISH){

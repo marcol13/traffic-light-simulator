@@ -34,7 +34,8 @@ public class SimulationCore {
 
 
             createNewIndividuals(individuals);
-            System.out.println("Best in Epoch " + epoch + " : " + individuals[0].valueOfGoalFunction);
+//            Uncomment to see the best individual in this epoch
+//            System.out.println("Best in Epoch " + epoch + " : " + individuals[0].valueOfGoalFunction);
         }
     }
 

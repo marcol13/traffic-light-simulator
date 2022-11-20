@@ -20,8 +20,8 @@ public class SETTINGS {
     //        Crossing amount < 70 -> *1
     //        Crossing amount < 300 -> *2
     //        Crossing amount < 600 -> *3
-    final static int crossingAmount = 25;
-    final static int gridMultiplier = 1;
+    final static int CROSSING_AMOUNT = 25;
+    final static int GRID_MULTIPLIER = 1;
 
 
 
@@ -40,12 +40,12 @@ public class SETTINGS {
 ////////////////////////////////////
 //    Genetic Algorithm
 ////////////////////////////////////
-    final static int epochs = 100;
-    final static int population = 100;
-    final static int mutationScale = 100;
-    public static int tournamentSelectionContestants = 2;
+    final static int EPOCHS = 100;
+    final static int POPULATION = 100;
+    final static int MUTATION_SCALE = 100;
+    public static int TOURNAMENT_SELECTION_CONTESTANT = 2;
 //    Needs to be change to min_delta & max_delta
-    final static int initialDeltaRange = 1000;
+    final static int INITIAL_DELTA_RANGE = 1000;
 
 
 }
