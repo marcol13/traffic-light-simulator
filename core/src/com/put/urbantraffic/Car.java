@@ -5,7 +5,6 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @Data
 public class Car {
@@ -49,8 +48,6 @@ public class Car {
         this.nextNode = path.get(1);
 
         this.way = calculateWay(this.currentNode, this.nextNode);
-
-        System.out.println(this.path);
     }
 
     private List<Node> generatePath(Lane startLane, Lane endLane) {

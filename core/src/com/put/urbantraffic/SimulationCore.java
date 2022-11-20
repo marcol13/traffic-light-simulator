@@ -34,7 +34,8 @@ public class SimulationCore {
 
 
             createNewIndividuals(individuals);
-            System.out.println("Best in Epoch " + epoch + " : " + individuals[0].valueOfGoalFunction);
+//            Uncomment to see the best individual in this epoch
+//            System.out.println("Best in Epoch " + epoch + " : " + individuals[0].valueOfGoalFunction);
         }
     }
 
@@ -103,15 +104,6 @@ public class SimulationCore {
         return finalIndex;
     }
 
-
-//    private int returnGaussian() {
-//        Random r = new Random();
-//        int gaussNumber =(int) (abs(r.nextGaussian()) / 3 * population / 2);
-//        while (gaussNumber >= population/2) {
-//            gaussNumber = (int) (abs(r.nextGaussian()) / 3 * population / 2);
-//        }
-//        return gaussNumber;
-//    }
 
     private int[] makeNewGenotype(int[] genotypeMother, int[] genotypeFather) {
         int[] newGenotype = new int[genotypeMother.length];

@@ -10,11 +10,10 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import lombok.val;
 
+import java.util.Arrays;
 import java.util.List;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
@@ -24,14 +23,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
     private City city;
     private final List<Car> cars = new ArrayList<Car>();
-
-    private static final float MOVE_SPEED = 150f;
-    private static final int NODE_CIRCLE_RADIUS = 15;
-    private static final int CORNER_CIRCLE_RADIUS = 7;
-    private static final int NODE_OFFSET_LANE = 4;
-
-    private static final int CAR_CIRCLE_RADIUS = 10;
-    private static final Color CAR_CIRCLE_COLOR = Color.YELLOW;
+    private List<Integer> spawn_car_array = new ArrayList<>();
 
 
     static CityGraph.PathWithTime[][] paths;
@@ -41,16 +33,10 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         shapeRenderer = new ShapeRenderer();
         extendViewport = new ExtendViewport(1200, 1200);
 
-//        Crossing amount < 70 -> *2
-//        Crossing amount < 300 -> *4
-//        Crossing amount < 600 -> *6
-        int gridMultiplier = 2;
-        int crossingAmount = 50;
-        int amountOfCars = 10;
-        city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount);
+        city = new City(SETTINGS.GRID_MULTIPLIER * 2 * 16, SETTINGS.GRID_MULTIPLIER * 2 * 9, SETTINGS.GRID_MULTIPLIER);
         paths = new CityGraph().generate(city);
 
-        setupInitialCameraPositionAndZoom(gridMultiplier);
+        setupInitialCameraPositionAndZoom(SETTINGS.GRID_MULTIPLIER);
 
         System.out.println("Quantity of Crossings: " + city.getCrossings().size());
         System.out.println("Quantity of Roads: " + city.getRoads().size());
@@ -89,19 +75,46 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //
 //        car = new Car(new Node(0, 0), new Node(200, 200), new ArrayList<Node>(Arrays.asList(new Node(0, 0), new Node(0, 100), new Node(0, 200), new Node(100, 200), new Node(200, 200))));
 
-        for(int i = 0; i < amountOfCars; i++){
-            cars.add(city.spawnCar());
-        }
+
+        createSpawnCarArray();
 
         SimulationCore simulation = new SimulationCore();
         simulation.city = city;
-        simulation.epochs = 600;
-        simulation.population = 100;
+        simulation.epochs = SETTINGS.EPOCHS;
+        simulation.population = SETTINGS.POPULATION;
         simulation.numberOfCrossings = city.getCrossings().size();
-        simulation.mutationScale = 100;
-        simulation.initialDeltaRange = 1000;
-        simulation.tournamentSelectionContestants = 2;
+        simulation.mutationScale = SETTINGS.MUTATION_SCALE;
+        simulation.initialDeltaRange = SETTINGS.INITIAL_DELTA_RANGE;
+        simulation.tournamentSelectionContestants = SETTINGS.TOURNAMENT_SELECTION_CONTESTANT;
         simulation.startSimulation();
+    }
+
+    private void createSpawnCarArray() {
+        double[] trapeze_area = new double[SETTINGS.ENDING_HOUR];
+        double[] cars_per_hour = new double[SETTINGS.ENDING_HOUR];
+
+        for(int i=SETTINGS.STARTING_HOUR; i<SETTINGS.ENDING_HOUR; i++){
+            trapeze_area[i] = (SETTINGS.TRAFFIC_LEVEL_BY_HOUR[i] + SETTINGS.TRAFFIC_LEVEL_BY_HOUR[i+1])/2;
+        }
+        double trapeze_area_sum = Arrays.stream(trapeze_area).sum();
+        for(int i=SETTINGS.STARTING_HOUR; i<SETTINGS.ENDING_HOUR; i++){
+            cars_per_hour[i] = trapeze_area[i]/trapeze_area_sum*SETTINGS.CARS_QUANTITY;
+        }
+
+        spawn_car_array = new ArrayList<>();
+        double cars_every_second;
+        double left_cars=0;
+        for(int hour=SETTINGS.STARTING_HOUR; hour<SETTINGS.ENDING_HOUR; hour++){
+            cars_every_second = cars_per_hour[hour]/3600;
+            for(int second=0; second<3600; second++){
+                left_cars += cars_every_second;
+                while(left_cars >= 1){
+                    spawn_car_array.add(3600 * hour + second);
+                    left_cars -= 1;
+                }
+
+            }
+        }
     }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
@@ -127,7 +140,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
 
         for (Crossing crossing : city.getCrossings()) {
-            drawCircle(crossing.getX(), crossing.getY(), NODE_CIRCLE_RADIUS, Color.WHITE);
+            drawCircle(crossing.getX(), crossing.getY(), SETTINGS.CROSSING_RADIUS, Color.WHITE);
         }
 
 
@@ -143,7 +156,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
             for (Node node : nodeList) {
                 if (node.getX() != startX && node.getY() != startY) {
-                    drawCircle(endX, endY, CORNER_CIRCLE_RADIUS, Color.WHITE);
+                    drawCircle(endX, endY, SETTINGS.CORNER_RADIUS, Color.WHITE);
                     drawLaneWithSpeedLimit(lanesAmount, lane, startX, startY, endX, endY);
                     startX = endX;
                     startY = endY;
@@ -160,15 +173,15 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             Node carNode = car.getActualNode();
 
             if(car.getWay() == Car.Way.TOP)
-                offsetX = NODE_OFFSET_LANE;
+                offsetX = SETTINGS.NODE_LANE_OFFSET;
             if(car.getWay() == Car.Way.BOTTOM)
-                offsetX = -NODE_OFFSET_LANE;
+                offsetX = -SETTINGS.NODE_LANE_OFFSET;
             if(car.getWay() == Car.Way.LEFT)
-                offsetY = NODE_OFFSET_LANE;
+                offsetY = SETTINGS.NODE_LANE_OFFSET;
             if(car.getWay() == Car.Way.RIGHT)
-                offsetY = -NODE_OFFSET_LANE;
+                offsetY = -SETTINGS.NODE_LANE_OFFSET;
 
-            drawCircle(carNode.getX() + offsetX, carNode.getY() + offsetY, CAR_CIRCLE_RADIUS, CAR_CIRCLE_COLOR);
+            drawCircle(carNode.getX() + offsetX, carNode.getY() + offsetY, SETTINGS.CAR_RADIUS, SETTINGS.CAR_CIRCLE_COLOR);
         }
     }
 
@@ -192,6 +205,13 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+            SETTINGS.TIME += 1;
+            if(SETTINGS.TIME == spawn_car_array.get(0)){
+                cars.add(city.spawnCar());
+                spawn_car_array.remove(0);
+            }
+//            Uncomment to see the passing time
+//            System.out.println(SETTINGS.TIME);
             List<Car> removeCars = new ArrayList<>();
             for(Car car: cars){
                 if(car.getStatus() == RideStatus.FINISH){
@@ -207,15 +227,15 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            playerX -= MOVE_SPEED * delta;
+            playerX -= SETTINGS.CAMERA_MOVE_SPEED * delta;
         } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            playerX += MOVE_SPEED * delta;
+            playerX += SETTINGS.CAMERA_MOVE_SPEED * delta;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            playerY -= MOVE_SPEED * delta;
+            playerY -= SETTINGS.CAMERA_MOVE_SPEED * delta;
         } else if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            playerY += MOVE_SPEED * delta;
+            playerY += SETTINGS.CAMERA_MOVE_SPEED * delta;
         }
 
         extendViewport.getCamera().position.set(playerX, playerY, 0);
@@ -226,15 +246,15 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     public void drawLanes(int startX, int startY, int endX, int endY, int lanesAmount, Color color) {
         int offsetX, offsetY, shiftX, shiftY;
         if (startX == endX) {
-            offsetX = NODE_OFFSET_LANE;
+            offsetX = SETTINGS.NODE_LANE_OFFSET;
             offsetY = 0;
-            shiftX = NODE_OFFSET_LANE / 2 * (lanesAmount - 1);
+            shiftX = SETTINGS.NODE_LANE_OFFSET / 2 * (lanesAmount - 1);
             shiftY = 1;
         } else {
             offsetX = 0;
-            offsetY = NODE_OFFSET_LANE;
+            offsetY = SETTINGS.NODE_LANE_OFFSET;
             shiftX = 1;
-            shiftY = NODE_OFFSET_LANE / 2 * (lanesAmount - 1);
+            shiftY = SETTINGS.NODE_LANE_OFFSET / 2 * (lanesAmount - 1);
         }
         for (int i = 0; i < lanesAmount; i++) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);

@@ -23,12 +23,10 @@ public class City {
         int counter = 0;
         for (int[] x : grid) {
             for (int y : x) {
-//                System.out.print(y + " ");
                 if (y == 8) {
                     counter++;
                 }
             }
-//            System.out.println();
         }
         System.out.println("Quantity of Turns: " + counter);
         crossings = new ArrayList<>();
@@ -53,9 +51,6 @@ public class City {
         return new Car(startLane, endLane);
     }
 
-    private <T> T getRandomListElement(List<T> elementsList, Random rand) {
-        return elementsList.get(rand.nextInt(elementsList.size()));
-    }
 
 
     private void parseGridToClasses(int[][] grid) {
