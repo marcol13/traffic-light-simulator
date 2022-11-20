@@ -13,6 +13,7 @@ import lombok.val;
 import java.util.List;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
@@ -38,14 +39,19 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     public void create() {
         shapeRenderer = new ShapeRenderer();
         extendViewport = new ExtendViewport(1200, 1200);
+        Random rand = new Random(0);
+//        long seed = rand.nextLong();
+        long seed = -4962768465676381896L;
+        rand.setSeed(seed);
+        System.out.println("Seed is " + seed);
 
 //        Crossing amount < 70 -> *2
 //        Crossing amount < 300 -> *4
 //        Crossing amount < 600 -> *6
-        int gridMultiplier = 2;
-        int crossingAmount = 50;
-        int amountOfCars = 1;
-        city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount);
+        int gridMultiplier = 4;
+        int crossingAmount = 200;
+        int amountOfCars = 1000;
+        city = new City(gridMultiplier * 16, gridMultiplier * 9, crossingAmount, rand);
         paths = new CityGraph().generate(city);
 
         setupInitialCameraPositionAndZoom(gridMultiplier);
@@ -95,7 +101,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             cars.add(city.spawnCar());
         }
 
-        SimulationCore simulation = new SimulationCore();
+        SimulationCore simulation = new SimulationCore(rand);
         simulation.city = city;
         simulation.epochs = 600;
         simulation.population = 100;

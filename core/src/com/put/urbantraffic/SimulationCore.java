@@ -2,6 +2,7 @@ package com.put.urbantraffic;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Random;
 
 public class SimulationCore {
     City city;
@@ -12,14 +13,18 @@ public class SimulationCore {
     int initialDeltaRange;
     int tournamentSelectionContestants;
     SimulatorChild[] individuals;
+    Random rand;
 
+    public SimulationCore(Random rand) {
+        this.rand = rand;
+    }
 
     public void startSimulation() {
         individuals = new SimulatorChild[population];
         for (int i = 0; i < population; i++) {
             int[] lightDeltas = new int[numberOfCrossings];
             for (int j = 0; j < numberOfCrossings; j++) {
-                lightDeltas[j] = (int) (Math.random() * initialDeltaRange);
+                lightDeltas[j] = (int) (rand.nextFloat() * initialDeltaRange);
             }
 
             individuals[i] = new SimulatorChild();
@@ -85,7 +90,7 @@ public class SimulationCore {
         for (int index = 0; index < tournamentSelectionContestants; index++) {
             do {
                 flag = false;
-                tryIndex = (int) (Math.random() * individuals.length / 2);
+                tryIndex = (int) (rand.nextFloat() * individuals.length / 2);
                 for (int i = 0; i < index; i++) {
                     if (indexes[i] == tryIndex) {
                         flag = true;
@@ -105,7 +110,7 @@ public class SimulationCore {
 
 
 //    private int returnGaussian() {
-//        Random r = new Random();
+//        Random r = rand;
 //        int gaussNumber =(int) (abs(r.nextGaussian()) / 3 * population / 2);
 //        while (gaussNumber >= population/2) {
 //            gaussNumber = (int) (abs(r.nextGaussian()) / 3 * population / 2);
@@ -115,15 +120,15 @@ public class SimulationCore {
 
     private int[] makeNewGenotype(int[] genotypeMother, int[] genotypeFather) {
         int[] newGenotype = new int[genotypeMother.length];
-        int border = (int) (Math.random() * genotypeMother.length);
+        int border = (int) (rand.nextFloat() * genotypeMother.length);
 
         System.arraycopy(genotypeMother, 0, newGenotype, 0, border);
         System.arraycopy(genotypeFather, border, newGenotype, border, genotypeMother.length - border);
 
-        int whichDeltaMutated = (int) (Math.random() * genotypeMother.length);
+        int whichDeltaMutated = (int) (rand.nextFloat() * genotypeMother.length);
         int mutation;
         do {
-            mutation = (int) (Math.random() * mutationScale - mutationScale / 2);
+            mutation = (int) (rand.nextFloat() * mutationScale - mutationScale / 2);
         } while (newGenotype[whichDeltaMutated] + mutation < 0 || newGenotype[whichDeltaMutated] + mutation > initialDeltaRange);
 
         newGenotype[whichDeltaMutated] += mutation;

@@ -5,22 +5,15 @@ import lombok.Data;
 
 import javax.print.attribute.standard.Destination;
 import java.util.ArrayList;
+import java.util.Random;
 
 @Data
 public class Crossing {
     static final int NODE_CIRCLE_RADIUS = 15;
     private final int id;
     private final int x;
-
-    @Override
-    public String toString() {
-        return "Crossing{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
-    }
-
     private final int y;
+    private final Random rand;
 
     private final ArrayList<Car> forwardTopCardField = new ArrayList<Car>();
     private final ArrayList<Car> turnRightTopCardField = new ArrayList<Car>();
@@ -38,7 +31,23 @@ public class Crossing {
     private final ArrayList<Car> turnRightRightCardField = new ArrayList<Car>();
     private final ArrayList<Car> turnLeftRightCardField = new ArrayList<Car>();
 
-    private TrafficLightsSupervisor trafficLightsSupervisor = new TrafficLightsSupervisor();
+    private TrafficLightsSupervisor trafficLightsSupervisor;
+
+    @Override
+    public String toString() {
+        return "Crossing{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
+
+    public Crossing(int id, int x, int y, Random rand) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.rand = rand;
+        this.trafficLightsSupervisor = new TrafficLightsSupervisor(rand);
+    }
 
 
 //    boolean mayTurnLeft(Car.Way current, Car.Way next){

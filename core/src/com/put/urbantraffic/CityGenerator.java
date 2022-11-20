@@ -5,13 +5,18 @@ import lombok.val;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Math.max;
 
 public class CityGenerator {
-    private List<Point> potentialCrossingsCoordinates = new ArrayList<Point>();
-    ;
+    private final List<Point> potentialCrossingsCoordinates = new ArrayList<Point>();
+    Random rand;
+
+    public CityGenerator(Random rand) {
+        this.rand = rand;
+    }
 
     int[][] generate(int width, int height, int crossingAmount) {
 //        Creating array for randomizing numbers with weights
@@ -57,9 +62,9 @@ public class CityGenerator {
             int y = height / 4 * 2 + 1;
             while (grid[y][x] == 9 || grid[y][x] == 1) {
 //                x = 2 * generateRandomInt(0, (width + 1) / 2 - 2) + 1;
-                x = 2 * tilesProbabilities[(int) (tilesProbabilities.length * Math.random())][0] + 1;
+                x = 2 * tilesProbabilities[(int) (tilesProbabilities.length * rand.nextFloat())][0] + 1;
 //                y = 2 * generateRandomInt(0, (height + 1) / 2 - 2) + 1;
-                y = 2 * tilesProbabilities[(int) (tilesProbabilities.length * Math.random())][1] + 1;
+                y = 2 * tilesProbabilities[(int) (tilesProbabilities.length * rand.nextFloat())][1] + 1;
             }
             grid[y][x] = 9;
             potentialCrossingsCoordinates.add(new Point(x, y));

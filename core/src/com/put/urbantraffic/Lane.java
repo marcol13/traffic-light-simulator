@@ -103,4 +103,14 @@ public class Lane {
     public boolean isLaneFull(){
         return length - carsList.size()* (AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS) < AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS;
     }
+
+    @Override
+    public String toString() {
+        return "Lane{" +
+                "id=" + id +
+                ", startCrossing=" + startCrossing +
+                ", endCrossing=" + endCrossing +
+                ", nodeList=" + nodeList +
+                '}';
+    }
 }
