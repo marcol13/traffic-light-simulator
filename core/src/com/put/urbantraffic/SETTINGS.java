@@ -22,6 +22,7 @@ public class SETTINGS {
     //        Crossing amount < 600 -> *3
     final static int CROSSING_AMOUNT = 25;
     final static int GRID_MULTIPLIER = 1;
+    final static int MESH_DISTANCE = 100;
 
 
 
