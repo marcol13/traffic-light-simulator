@@ -23,7 +23,6 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
     private City city;
     private final List<Car> cars = new ArrayList<Car>();
-    private List<Integer> spawnCarArray = new ArrayList<>();
 
 
     static CityGraph.PathWithTime[][] paths;
@@ -76,7 +75,6 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 //        car = new Car(new Node(0, 0), new Node(200, 200), new ArrayList<Node>(Arrays.asList(new Node(0, 0), new Node(0, 100), new Node(0, 200), new Node(100, 200), new Node(200, 200))));
 
 
-        createSpawnCarArray();
 
         SimulationCore simulation = new SimulationCore();
         simulation.city = city;
@@ -89,32 +87,6 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         simulation.startSimulation();
     }
 
-    private void createSpawnCarArray() {
-        double[] trapezeArea = new double[Settings.ENDING_HOUR];
-        double[] carsPerHour = new double[Settings.ENDING_HOUR];
-
-        for(int i = Settings.STARTING_HOUR; i< Settings.ENDING_HOUR; i++){
-            trapezeArea[i] = (Settings.TRAFFIC_LEVEL_BY_HOUR[i] + Settings.TRAFFIC_LEVEL_BY_HOUR[i+1])/2;
-        }
-
-        double trapeze_area_sum = Arrays.stream(trapezeArea).sum();
-        for(int i = Settings.STARTING_HOUR; i< Settings.ENDING_HOUR; i++){
-            carsPerHour[i] = trapezeArea[i]/trapeze_area_sum* Settings.CARS_QUANTITY;
-        }
-
-        double leftCars=0;
-        for(int hour = Settings.STARTING_HOUR; hour< Settings.ENDING_HOUR; hour++){
-            double carsEverySecond = carsPerHour[hour]/3600;
-            for(int second=0; second<3600; second++){
-                leftCars += carsEverySecond;
-                while(leftCars >= 1){
-                    spawnCarArray.add(3600 * hour + second);
-                    leftCars -= 1;
-                }
-
-            }
-        }
-    }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     private void setupInitialCameraPositionAndZoom(int gridMultiplier) {
@@ -205,9 +177,9 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
             Settings.TIME += 1;
-            if(Settings.TIME == spawnCarArray.get(0)){
+            if(Settings.TIME == city.spawnCarArray.get(0)){
                 cars.add(city.spawnCar());
-                spawnCarArray.remove(0);
+                city.spawnCarArray.remove(0);
             }
 //            Uncomment to see the passing time
 //            System.out.println(SETTINGS.TIME);
