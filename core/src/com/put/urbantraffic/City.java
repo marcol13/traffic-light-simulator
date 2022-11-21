@@ -5,7 +5,7 @@ import lombok.val;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.put.urbantraffic.SETTINGS.MESH_DISTANCE;
+import static com.put.urbantraffic.Settings.MESH_DISTANCE;
 
 public class City {
     private final List<Crossing> crossings;

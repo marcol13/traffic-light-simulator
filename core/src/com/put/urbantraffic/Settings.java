@@ -2,7 +2,7 @@ package com.put.urbantraffic;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class SETTINGS {
+public class Settings {
 
     final static float CAMERA_MOVE_SPEED = 300f;
 
