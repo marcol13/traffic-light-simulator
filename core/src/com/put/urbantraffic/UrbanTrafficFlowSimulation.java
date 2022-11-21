@@ -23,7 +23,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
     private City city;
     private final List<Car> cars = new ArrayList<Car>();
-    private List<Integer> spawn_car_array = new ArrayList<>();
+    private List<Integer> spawnCarArray = new ArrayList<>();
 
 
     static CityGraph.PathWithTime[][] paths;
@@ -90,27 +90,26 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     }
 
     private void createSpawnCarArray() {
-        double[] trapeze_area = new double[Settings.ENDING_HOUR];
-        double[] cars_per_hour = new double[Settings.ENDING_HOUR];
+        double[] trapezeArea = new double[Settings.ENDING_HOUR];
+        double[] carsPerHour = new double[Settings.ENDING_HOUR];
 
         for(int i = Settings.STARTING_HOUR; i< Settings.ENDING_HOUR; i++){
-            trapeze_area[i] = (Settings.TRAFFIC_LEVEL_BY_HOUR[i] + Settings.TRAFFIC_LEVEL_BY_HOUR[i+1])/2;
-        }
-        double trapeze_area_sum = Arrays.stream(trapeze_area).sum();
-        for(int i = Settings.STARTING_HOUR; i< Settings.ENDING_HOUR; i++){
-            cars_per_hour[i] = trapeze_area[i]/trapeze_area_sum* Settings.CARS_QUANTITY;
+            trapezeArea[i] = (Settings.TRAFFIC_LEVEL_BY_HOUR[i] + Settings.TRAFFIC_LEVEL_BY_HOUR[i+1])/2;
         }
 
-        spawn_car_array = new ArrayList<>();
-        double cars_every_second;
-        double left_cars=0;
+        double trapeze_area_sum = Arrays.stream(trapezeArea).sum();
+        for(int i = Settings.STARTING_HOUR; i< Settings.ENDING_HOUR; i++){
+            carsPerHour[i] = trapezeArea[i]/trapeze_area_sum* Settings.CARS_QUANTITY;
+        }
+
+        double leftCars=0;
         for(int hour = Settings.STARTING_HOUR; hour< Settings.ENDING_HOUR; hour++){
-            cars_every_second = cars_per_hour[hour]/3600;
+            double carsEverySecond = carsPerHour[hour]/3600;
             for(int second=0; second<3600; second++){
-                left_cars += cars_every_second;
-                while(left_cars >= 1){
-                    spawn_car_array.add(3600 * hour + second);
-                    left_cars -= 1;
+                leftCars += carsEverySecond;
+                while(leftCars >= 1){
+                    spawnCarArray.add(3600 * hour + second);
+                    leftCars -= 1;
                 }
 
             }
@@ -206,9 +205,9 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
             Settings.TIME += 1;
-            if(Settings.TIME == spawn_car_array.get(0)){
+            if(Settings.TIME == spawnCarArray.get(0)){
                 cars.add(city.spawnCar());
-                spawn_car_array.remove(0);
+                spawnCarArray.remove(0);
             }
 //            Uncomment to see the passing time
 //            System.out.println(SETTINGS.TIME);
