@@ -33,7 +33,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         shapeRenderer = new ShapeRenderer();
         extendViewport = new ExtendViewport(1200, 1200);
 
-        city = new City(SETTINGS.GRID_MULTIPLIER * 2 * 16, SETTINGS.GRID_MULTIPLIER * 2 * 9, SETTINGS.GRID_MULTIPLIER);
+        city = new City(SETTINGS.GRID_MULTIPLIER * 2 * 16, SETTINGS.GRID_MULTIPLIER * 2 * 9, SETTINGS.CROSSING_AMOUNT);
         paths = new CityGraph().generate(city);
 
         setupInitialCameraPositionAndZoom(SETTINGS.GRID_MULTIPLIER);
