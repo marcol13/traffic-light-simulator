@@ -22,6 +22,7 @@ public class SETTINGS {
     //        Crossing amount < 600 -> *3
     final static int CROSSING_AMOUNT = 25;
     final static int GRID_MULTIPLIER = 1;
+    final static int MESH_DISTANCE = 100;
 
 
 
@@ -33,6 +34,7 @@ public class SETTINGS {
     final static int NODE_LANE_OFFSET = 4;
     final static int CAR_RADIUS = 10;
     final static Color CAR_CIRCLE_COLOR = Color.YELLOW;
+    final static float CAR_SPEED_MULTIPLIER = 1.0f;
 //    final static Color CAR_CIRCLE_COLOR = Color.GREEN;
 
 

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.put.urbantraffic.SETTINGS.CAR_SPEED_MULTIPLIER;
+
 @Data
 public class Car {
     private final Lane startLane;
@@ -89,7 +91,7 @@ public class Car {
                 speed *= 2;
             }
 
-            nodePercentage += speed;
+            nodePercentage += speed * CAR_SPEED_MULTIPLIER;
 
             if (nodePercentage >= 100) {
                 nodePercentage %= 100;
