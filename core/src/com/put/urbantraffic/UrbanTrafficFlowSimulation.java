@@ -38,7 +38,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         rand.setSeed(seed);
         System.out.println("Seed is " + seed);
 
-        city = new City(SETTINGS.GRID_MULTIPLIER * 2 * 16, SETTINGS.GRID_MULTIPLIER * 2 * 9, SETTINGS.CROSSING_AMOUNT, rand);
+        city = new City(Settings.GRID_MULTIPLIER * 2 * 16, Settings.GRID_MULTIPLIER * 2 * 9, Settings.CROSSING_AMOUNT, rand);
         paths = new CityGraph().generate(city);
 
         setupInitialCameraPositionAndZoom(Settings.GRID_MULTIPLIER);
@@ -121,7 +121,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
 
         for (Crossing crossing : city.getCrossings()) {
-            drawCircle(crossing.getX(), crossing.getY(), SETTINGS.CROSSING_RADIUS, Color.WHITE);
+            drawCircle(crossing.getX(), crossing.getY(), Settings.CROSSING_RADIUS, Color.WHITE);
             drawTrafficLight(crossing);
         }
 
@@ -165,7 +165,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
 
 
-            drawCircle(carNode.getX() + offsetX, carNode.getY() + offsetY, SETTINGS.CAR_RADIUS, car.getStatus() == RideStatus.RIDING ? SETTINGS.CAR_CIRCLE_COLOR : Color.BLUE);
+            drawCircle(carNode.getX() + offsetX, carNode.getY() + offsetY, Settings.CAR_RADIUS, car.getStatus() == RideStatus.RIDING ? Settings.CAR_CIRCLE_COLOR : Color.BLUE);
         }
     }
 
@@ -181,8 +181,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 color = crossing.getTrafficLightsSupervisor().getTopTrafficLight().getCurrentColor() == Light.GREEN? Color.GREEN : Color.RED;
             }
 
-            drawCircle(crossing.getX(), crossing.getY() + SETTINGS.CAR_RADIUS,
-                    SETTINGS.CAR_RADIUS / 2, color);
+            drawCircle(crossing.getX(), crossing.getY() + Settings.CAR_RADIUS,
+                    Settings.CAR_RADIUS / 2, color);
 
         }
 
@@ -196,8 +196,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 color = crossing.getTrafficLightsSupervisor().getBottomTrafficLight().getCurrentColor() == Light.GREEN? Color.GREEN : Color.RED;
             }
 
-            drawCircle(crossing.getX(), crossing.getY() - SETTINGS.CAR_RADIUS,
-                    SETTINGS.CAR_RADIUS/2, color);
+            drawCircle(crossing.getX(), crossing.getY() - Settings.CAR_RADIUS,
+                    Settings.CAR_RADIUS/2, color);
         }
 
         if(crossing.getTrafficLightsSupervisor().getRightTrafficLight() != null) {
@@ -210,8 +210,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 color = crossing.getTrafficLightsSupervisor().getRightTrafficLight().getCurrentColor() == Light.GREEN? Color.GREEN : Color.RED;
             }
 
-            drawCircle(crossing.getX() + SETTINGS.CAR_RADIUS, crossing.getY(),
-                    SETTINGS.CAR_RADIUS/2, color);
+            drawCircle(crossing.getX() + Settings.CAR_RADIUS, crossing.getY(),
+                    Settings.CAR_RADIUS/2, color);
         }
 
         if(crossing.getTrafficLightsSupervisor().getLeftTrafficLight() != null){
@@ -224,8 +224,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 color = crossing.getTrafficLightsSupervisor().getLeftTrafficLight().getCurrentColor() == Light.GREEN? Color.GREEN : Color.RED;
             }
 
-            drawCircle(crossing.getX() - SETTINGS.CAR_RADIUS, crossing.getY(),
-                    SETTINGS.CAR_RADIUS/2, color);
+            drawCircle(crossing.getX() - Settings.CAR_RADIUS, crossing.getY(),
+                    Settings.CAR_RADIUS/2, color);
         }
     }
 
@@ -255,7 +255,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 city.spawnCarArray.remove(0);
             }
 //            Uncomment to see the passing time
-//            System.out.println(SETTINGS.TIME);
+//            System.out.println(Settings.TIME);
             List<Car> removeCars = new ArrayList<>();
             for(Car car: cars){
                 if(car.getStatus() == RideStatus.FINISH){
