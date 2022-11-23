@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class Lane {
-    private static final double AVERAGE_CAR_LENGTH = 2.5;
-    private static final double DISTANCE_BETWEEN_CARS = 0.5;
+    public static final double AVERAGE_CAR_LENGTH = 10;
+    public static final double DISTANCE_BETWEEN_CARS = 0.5;
 
     private final int id;
     private final Crossing startCrossing;
@@ -75,6 +75,10 @@ public class Lane {
         return nodeList;
     }
 
+    public boolean doesContainTurn() {
+        return getNodeList().size() > 2;
+    }
+
     public int getLength() {
         return length;
     }
@@ -94,5 +98,19 @@ public class Lane {
     @Override
     public int hashCode() {
         return Objects.hash(id, startCrossing, endCrossing, directions, speedLimit, nodeList, length, carsList);
+    }
+
+    public boolean isLaneFull(){
+        return length - carsList.size()* (AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS) < AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS;
+    }
+
+    @Override
+    public String toString() {
+        return "Lane{" +
+                "id=" + id +
+                ", startCrossing=" + startCrossing +
+                ", endCrossing=" + endCrossing +
+                ", nodeList=" + nodeList +
+                '}';
     }
 }
