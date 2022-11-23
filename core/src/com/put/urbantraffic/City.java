@@ -11,15 +11,17 @@ public class City {
     private final List<Crossing> crossings;
     private final List<Road> roads;
     private final List<Lane> lanes = new ArrayList<>();
+    Random rand;
 
-    public City(List<Crossing> crossings, List<Road> roads) {
+    public City(List<Crossing> crossings, List<Road> roads, Random rand) {
         this.crossings = crossings;
         this.roads = roads;
+        this.rand = rand;
     }
 
-    public City(int width, int height, int crossingAmount) {
-
-        int[][] grid = new CityGenerator().generate(width, height, crossingAmount);
+    public City(int width, int height, int crossingAmount, Random rand) {
+        this.rand = rand;
+        int[][] grid = new CityGenerator(rand).generate(width, height, crossingAmount);
         int counter = 0;
         for (int[] x : grid) {
             for (int y : x) {
@@ -36,7 +38,6 @@ public class City {
     }
 
     public Car spawnCar() {
-        Random rand = new Random();
         Lane startLane = null;
         Lane endLane = null;
         while (startLane == endLane) {
@@ -60,7 +61,7 @@ public class City {
         for (int y = 1; y < grid.length; y += 2) {
             for (int x = 1; x < grid[0].length; x += 2) {
                 if (grid[y][x] == 9) {
-                    crossings.add(new Crossing(crossingId, x * MESH_DISTANCE, y * MESH_DISTANCE));
+                    crossings.add(new Crossing(crossingId, x * MESH_DISTANCE, y * MESH_DISTANCE, rand));
                     crossingId++;
                 }
             }
@@ -270,8 +271,7 @@ public class City {
 
     private void addDriveway(int[][] grid, int x, int y, int addX, int addY, int crossingId) {
         List<Node> nodes = new ArrayList<>();
-
-        Crossing crossing2 = new Crossing(crossingId, x * MESH_DISTANCE, y * MESH_DISTANCE);
+        Crossing crossing2 = new Crossing(crossingId, x * MESH_DISTANCE, y * MESH_DISTANCE, rand);
         crossings.add(crossing2);
         nodes.add(new Node(x * MESH_DISTANCE, y * MESH_DISTANCE));
         x += addX;

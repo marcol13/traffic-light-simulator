@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
@@ -33,9 +34,13 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     public void create() {
         shapeRenderer = new ShapeRenderer();
         extendViewport = new ExtendViewport(1200, 1200);
+        Random rand = new Random(0);
+//        long seed = rand.nextLong();
+        long seed = -4962768465676381896L;
+        rand.setSeed(seed);
+        System.out.println("Seed is " + seed);
 
-
-        city = new City(SETTINGS.GRID_MULTIPLIER * 2 * 16, SETTINGS.GRID_MULTIPLIER * 2 * 9, SETTINGS.GRID_MULTIPLIER);
+        city = new City(SETTINGS.GRID_MULTIPLIER * 2 * 16, SETTINGS.GRID_MULTIPLIER * 2 * 9, SETTINGS.GRID_MULTIPLIER, rand);
         paths = new CityGraph().generate(city);
 
         setupInitialCameraPositionAndZoom(SETTINGS.GRID_MULTIPLIER);
@@ -84,7 +89,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
         createSpawnCarArray();
 
-        SimulationCore simulation = new SimulationCore();
+        SimulationCore simulation = new SimulationCore(rand);
         simulation.city = city;
         simulation.epochs = SETTINGS.EPOCHS;
         simulation.population = SETTINGS.POPULATION;

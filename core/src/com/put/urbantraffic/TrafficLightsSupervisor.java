@@ -1,13 +1,19 @@
 package com.put.urbantraffic;
 
-import lombok.Data;
+import lombok.*;
 
 import java.util.Random;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class TrafficLightsSupervisor {
     private static final int LIGHTS_DURATION = 120 * 2;
+    Random rand;
 
+    public TrafficLightsSupervisor(Random rand) {
+        this.rand = rand;
+    }
 
     @Override
     public String toString() {
@@ -36,7 +42,7 @@ public class TrafficLightsSupervisor {
 
 
     void turnOnLights(){
-        if(new Random().nextInt() % 2 == 0){
+        if(rand.nextInt() % 2 == 0){
             changeLight(topTrafficLight, Light.GREEN);
             changeLight(bottomTrafficLight, Light.GREEN);
             changeLight(leftTrafficLight, Light.RED);
