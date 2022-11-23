@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.put.urbantraffic.SETTINGS.CAR_SPEED_MULTIPLIER;
+import static com.put.urbantraffic.Settings.CAR_SPEED_MULTIPLIER;
 
 
 @Data

@@ -5,12 +5,13 @@ import lombok.val;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.put.urbantraffic.SETTINGS.MESH_DISTANCE;
+import static com.put.urbantraffic.Settings.MESH_DISTANCE;
 
 public class City {
     private final List<Crossing> crossings;
     private final List<Road> roads;
     private final List<Lane> lanes = new ArrayList<>();
+    public List<Integer> spawnCarArray = new ArrayList<>();
     Random rand;
 
     public City(List<Crossing> crossings, List<Road> roads, Random rand) {
@@ -35,6 +36,7 @@ public class City {
         roads = new ArrayList<>();
         parseGridToClasses(grid);
         calculateRoadSpeedLimit();
+        createSpawnCarArray();
     }
 
     public Car spawnCar() {
@@ -52,6 +54,33 @@ public class City {
             }
         }
         return new Car(startLane, endLane);
+    }
+
+    private void createSpawnCarArray() {
+        double[] trapezeArea = new double[Settings.ENDING_HOUR];
+        double[] carsPerHour = new double[Settings.ENDING_HOUR];
+
+        for(int i = Settings.STARTING_HOUR; i< Settings.ENDING_HOUR; i++){
+            trapezeArea[i] = (Settings.TRAFFIC_LEVEL_BY_HOUR[i] + Settings.TRAFFIC_LEVEL_BY_HOUR[i+1])/2;
+        }
+
+        double trapeze_area_sum = Arrays.stream(trapezeArea).sum();
+        for(int i = Settings.STARTING_HOUR; i< Settings.ENDING_HOUR; i++){
+            carsPerHour[i] = trapezeArea[i]/trapeze_area_sum* Settings.CARS_QUANTITY;
+        }
+
+        double leftCars=0;
+        for(int hour = Settings.STARTING_HOUR; hour< Settings.ENDING_HOUR; hour++){
+            double carsEverySecond = carsPerHour[hour]/3600;
+            for(int second=0; second<3600; second++){
+                leftCars += carsEverySecond;
+                while(leftCars >= 1){
+                    spawnCarArray.add(3600 * hour + second);
+                    leftCars -= 1;
+                }
+
+            }
+        }
     }
 
 
