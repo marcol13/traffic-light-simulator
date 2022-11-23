@@ -1,12 +1,13 @@
 package com.put.urbantraffic;
 
-import com.badlogic.gdx.utils.Array;
 import lombok.Data;
 
-import javax.sound.sampled.Line;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static com.put.urbantraffic.SETTINGS.CAR_SPEED_MULTIPLIER;
+
 
 @Data
 public class Car {
@@ -75,6 +76,7 @@ public class Car {
             startLane.getCarsList().add(laneCenter, this);
         }
 //        System.out.println(this.path);
+
     }
 
     private List<Node> generatePath(Lane startLane, Lane endLane) {
@@ -118,9 +120,6 @@ public class Car {
                 speed = (float) currentLane.getSpeedLimit() / (float) getNodeLength(nodeList.get(0), nodeList.get(nodeList.size() - 1));
                 speed *= 2;
             }
-
-
-
             int carPositionInTrafficJam = currentLane.getCarsList().indexOf(this);
 
             if(currentLane.getCarsList().size() > 1 && carPositionInTrafficJam > 0){
@@ -161,7 +160,7 @@ public class Car {
                 }
             }
 
-            nodePercentage += speed;
+            nodePercentage += speed * CAR_SPEED_MULTIPLIER;
 
             if (nodePercentage >= 100) {
 
@@ -192,7 +191,7 @@ public class Car {
                     nextCrossing.goOutFromCrossing(this);
 
 
-                    if (currentLane.getNodeList().size() == 2 || currentLane.getNodeList().size() > 2 && currentNode == currentLane.getNodeList().get(2)) {
+                    if (currentLane.getNodeList().size() == 2 || (currentLane.getNodeList().size() > 2 && nextNode == currentLane.getNodeList().get(2))) {
 
                         lanesList.get(0).getCarsList().remove(0);
                         lanesList.remove(0);
