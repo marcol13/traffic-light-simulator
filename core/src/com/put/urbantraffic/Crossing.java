@@ -101,11 +101,9 @@ public class Crossing {
                         turnRightBottomCardField.add(car);
                         return true;
                     }
-                } else if (direction == Direction.LEFT) {
-                    if (turnLeftBottomCardField.size() < 2) {
-                        turnLeftBottomCardField.add(car);
-                        return true;
-                    }
+                } else if (direction == Direction.LEFT && turnLeftBottomCardField.size() < 2) {
+                    turnLeftBottomCardField.add(car);
+                    return true;
                 }
             }
         } else if (way == Car.Way.BOTTOM) {
@@ -122,11 +120,9 @@ public class Crossing {
                         turnRightTopCardField.add(car);
                         return true;
                     }
-                } else if (direction == Direction.LEFT) {
-                    if (turnLeftTopCardField.size() < 2) {
-                        turnLeftTopCardField.add(car);
-                        return true;
-                    }
+                } else if (direction == Direction.LEFT && turnLeftTopCardField.size() < 2) {
+                    turnLeftTopCardField.add(car);
+                    return true;
                 }
             }
         } else if (way == Car.Way.LEFT) {
@@ -143,11 +139,9 @@ public class Crossing {
                         turnRightRightCardField.add(car);
                         return true;
                     }
-                } else if (direction == Direction.LEFT) {
-                    if (turnLeftRightCardField.size() < 2) {
-                        turnLeftRightCardField.add(car);
-                        return true;
-                    }
+                } else if (direction == Direction.LEFT && turnLeftRightCardField.size() < 2) {
+                    turnLeftRightCardField.add(car);
+                    return true;
                 }
             }
         } else if (way == Car.Way.RIGHT) {
@@ -164,11 +158,9 @@ public class Crossing {
                         turnRightLeftCardField.add(car);
                         return true;
                     }
-                } else if (direction == Direction.LEFT) {
-                    if (turnLeftLeftCardField.size() < 2) {
-                        turnLeftLeftCardField.add(car);
-                        return true;
-                    }
+                } else if (direction == Direction.LEFT && turnLeftLeftCardField.size() < 2) {
+                    turnLeftLeftCardField.add(car);
+                    return true;
                 }
             }
         }
