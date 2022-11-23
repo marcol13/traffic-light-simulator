@@ -35,18 +35,21 @@ public class City {
         calculateRoadSpeedLimit();
     }
 
-    public Car spawnCar(){
+    public Car spawnCar() {
         Random rand = new Random();
-        int startIndex = 0, endIndex = 0;
-        while (startIndex == endIndex) {
-            startIndex = rand.nextInt(lanes.size());
-            endIndex = rand.nextInt(lanes.size());
-            if(lanes.get(startIndex).getNodeList().size() > 2 || lanes.get(endIndex).getNodeList().size() > 2){
-                startIndex = endIndex;
+        Lane startLane = null;
+        Lane endLane = null;
+        while (startLane == endLane) {
+            startLane = lanes.get(rand.nextInt(lanes.size()));
+            endLane = lanes.get(rand.nextInt(lanes.size()));
+
+            boolean doesAnyContainTurn = startLane.doesContainTurn() || endLane.doesContainTurn();
+            boolean areOnTheSameRoad = startLane.getStartCrossing() == endLane.getEndCrossing() && startLane.getEndCrossing() == endLane.getStartCrossing();
+            if (doesAnyContainTurn || areOnTheSameRoad) {
+                startLane = null;
+                endLane = null;
             }
         }
-        Lane startLane = lanes.get(startIndex);
-        Lane endLane = lanes.get(endIndex);
         return new Car(startLane, endLane);
     }
 

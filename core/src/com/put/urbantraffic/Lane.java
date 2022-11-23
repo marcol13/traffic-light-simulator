@@ -75,6 +75,10 @@ public class Lane {
         return nodeList;
     }
 
+    public boolean doesContainTurn() {
+        return getNodeList().size() > 2;
+    }
+
     public int getLength() {
         return length;
     }
