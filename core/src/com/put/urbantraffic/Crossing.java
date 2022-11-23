@@ -1,9 +1,7 @@
 package com.put.urbantraffic;
 
-import com.badlogic.gdx.utils.Array;
 import lombok.Data;
 
-import javax.print.attribute.standard.Destination;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -31,7 +29,8 @@ public class Crossing {
     private final ArrayList<Car> turnRightRightCardField = new ArrayList<Car>();
     private final ArrayList<Car> turnLeftRightCardField = new ArrayList<Car>();
 
-    private TrafficLightsSupervisor trafficLightsSupervisor;
+
+    private final TrafficLightsSupervisor trafficLightsSupervisor;
 
     @Override
     public String toString() {
@@ -41,12 +40,12 @@ public class Crossing {
                 '}';
     }
 
-    public Crossing(int id, int x, int y, Random rand) {
+    public Crossing(int id, int x, int y, int offset, int greenDuration, int redDuration, Random rand) {
         this.id = id;
         this.x = x;
         this.y = y;
         this.rand = rand;
-        this.trafficLightsSupervisor = new TrafficLightsSupervisor(rand);
+        this.trafficLightsSupervisor = new TrafficLightsSupervisor(greenDuration, redDuration, offset, rand);
     }
 
 
