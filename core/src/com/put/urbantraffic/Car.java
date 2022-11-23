@@ -1,9 +1,7 @@
 package com.put.urbantraffic;
 
-import com.badlogic.gdx.utils.Array;
 import lombok.Data;
 
-import javax.sound.sampled.Line;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
