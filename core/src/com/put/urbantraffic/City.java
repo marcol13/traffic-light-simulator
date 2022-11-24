@@ -39,12 +39,19 @@ public class City {
         createSpawnCarArray();
     }
 
+    static int id = 0;
     public Car spawnCar() {
         Lane startLane = null;
         Lane endLane = null;
         while (startLane == endLane) {
-            startLane = lanes.get(rand.nextInt(lanes.size()));
-            endLane = lanes.get(rand.nextInt(lanes.size()));
+
+            if (id < 2) {
+                startLane = lanes.get(0);
+                endLane = lanes.get(3);
+            } else {
+                startLane = lanes.get(3);
+                endLane = lanes.get(0);
+            }
 
             boolean doesAnyContainTurn = startLane.doesContainTurn() || endLane.doesContainTurn();
             boolean areOnTheSameRoad = startLane.getStartCrossing() == endLane.getEndCrossing() && startLane.getEndCrossing() == endLane.getStartCrossing();
@@ -53,34 +60,39 @@ public class City {
                 endLane = null;
             }
         }
+        id++;
         return new Car(startLane, endLane);
     }
 
     private void createSpawnCarArray() {
-        double[] trapezeArea = new double[Settings.ENDING_HOUR];
-        double[] carsPerHour = new double[Settings.ENDING_HOUR];
-
-        for(int i = Settings.STARTING_HOUR; i< Settings.ENDING_HOUR; i++){
-            trapezeArea[i] = (Settings.TRAFFIC_LEVEL_BY_HOUR[i] + Settings.TRAFFIC_LEVEL_BY_HOUR[i+1])/2;
-        }
-
-        double trapeze_area_sum = Arrays.stream(trapezeArea).sum();
-        for(int i = Settings.STARTING_HOUR; i< Settings.ENDING_HOUR; i++){
-            carsPerHour[i] = trapezeArea[i]/trapeze_area_sum* Settings.CARS_QUANTITY;
-        }
-
-        double leftCars=0;
-        for(int hour = Settings.STARTING_HOUR; hour< Settings.ENDING_HOUR; hour++){
-            double carsEverySecond = carsPerHour[hour]/3600;
-            for(int second=0; second<3600; second++){
-                leftCars += carsEverySecond;
-                while(leftCars >= 1){
-                    spawnCarArray.add(3600 * hour + second);
-                    leftCars -= 1;
-                }
-
-            }
-        }
+        spawnCarArray.add(10);
+        spawnCarArray.add(11);
+        spawnCarArray.add(12);
+        spawnCarArray.add(13);
+//        double[] trapezeArea = new double[Settings.ENDING_HOUR];
+//        double[] carsPerHour = new double[Settings.ENDING_HOUR];
+//
+//        for(int i = Settings.STARTING_HOUR; i< Settings.ENDING_HOUR; i++){
+//            trapezeArea[i] = (Settings.TRAFFIC_LEVEL_BY_HOUR[i] + Settings.TRAFFIC_LEVEL_BY_HOUR[i+1])/2;
+//        }
+//
+//        double trapeze_area_sum = Arrays.stream(trapezeArea).sum();
+//        for(int i = Settings.STARTING_HOUR; i< Settings.ENDING_HOUR; i++){
+//            carsPerHour[i] = trapezeArea[i]/trapeze_area_sum* Settings.CARS_QUANTITY;
+//        }
+//
+//        double leftCars=0;
+//        for(int hour = Settings.STARTING_HOUR; hour< Settings.ENDING_HOUR; hour++){
+//            double carsEverySecond = carsPerHour[hour]/3600;
+//            for(int second=0; second<3600; second++){
+//                leftCars += carsEverySecond;
+//                while(leftCars >= 1){
+//                    spawnCarArray.add(3600 * hour + second);
+//                    leftCars -= 1;
+//                }
+//
+//            }
+//        }
     }
 
 

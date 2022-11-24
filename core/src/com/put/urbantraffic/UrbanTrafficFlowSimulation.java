@@ -32,11 +32,11 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     public void create() {
         shapeRenderer = new ShapeRenderer();
         extendViewport = new ExtendViewport(1200, 1200);
-        Random rand = new Random(0);
+        Random rand = new Random();
 //        long seed = rand.nextLong();
-        long seed = -4962768465676381896L;
+        long seed = 7738005172933535364L;
         rand.setSeed(seed);
-        System.out.println("Seed is " + seed);
+        System.out.println("Seed is " + seed + "L");
 
         city = new City(Settings.GRID_MULTIPLIER * 2 * 16, Settings.GRID_MULTIPLIER * 2 * 9, Settings.CROSSING_AMOUNT, rand);
         paths = new CityGraph().generate(city);
@@ -170,7 +170,6 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     }
 
     private void drawTrafficLight(Crossing crossing){
-        crossing.getTrafficLightsSupervisor().changeAllLights();
         if(crossing.getTrafficLightsSupervisor().getTopTrafficLight() != null){
 
             Color color;
@@ -249,8 +248,11 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+            for (Crossing crossing : city.getCrossings()) {
+                crossing.getTrafficLightsSupervisor().changeAllLights();
+            }
             Settings.TIME += 1;
-            if(Settings.TIME == city.spawnCarArray.get(0)){
+            if (city.spawnCarArray.size() > 0 && Settings.TIME == city.spawnCarArray.get(0)){
                 cars.add(city.spawnCar());
                 city.spawnCarArray.remove(0);
             }
