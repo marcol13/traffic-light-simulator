@@ -19,8 +19,8 @@ public class Car {
                 '}';
     }
 
-    private final Lane startLane;
-    private final Lane endLane;
+    private Lane startLane;
+    private Lane endLane;
     private Node startNode;
     private Node endNode;
 
@@ -51,15 +51,8 @@ public class Car {
         TOP, RIGHT, BOTTOM, LEFT
     }
 
-    public Car(Lane startLane, Lane endLane) {
-
-        this.startLane = startLane;
-        this.endLane = endLane;
-
-        this.startNode = this.startLane.getMiddlePoint();
-        this.endNode = this.endLane.getMiddlePoint();
-
-        this.path = generatePath(startLane, endLane);
+    public Car(Road startRoad, Road endRoad) {
+        this.path = generatePathAndInitializeLanes(startRoad, endRoad);
 
         this.currentNode = new Node(path.get(0).getX(), path.get(0).getY());
         this.currentLane = lanesList.get(0);
@@ -79,9 +72,16 @@ public class Car {
 
     }
 
-    private List<Node> generatePath(Lane startLane, Lane endLane) {
-        calculatedPath = UrbanTrafficFlowSimulation.paths[startLane.getId()][endLane.getId()];
+    private List<Node> generatePathAndInitializeLanes (Road startRoad, Road endRoad) {
+
+        List<Lane> possibleStartLanes = startRoad.getLaneList();
+        List<Lane> possibleEndLanes = endRoad.getLaneList();
+        calculatedPath = UrbanTrafficFlowSimulation.paths[possibleStartLanes.get(0).getId()][possibleEndLanes.get(0).getId()];
         this.crossingList = new ArrayList<>(calculatedPath.getCrossings());
+        this.startLane = possibleStartLanes.get(0).getEndCrossing() == crossingList.get(0) ? possibleStartLanes.get(0) : possibleStartLanes.get(1);
+        this.endLane = possibleEndLanes.get(0).getStartCrossing() == crossingList.get(crossingList.size() - 1) ? possibleEndLanes.get(0) : possibleEndLanes.get(1);
+        this.startNode = this.startLane.getMiddlePoint();
+        this.endNode = this.endLane.getMiddlePoint();
 
         this.lanesList = new ArrayList<>(Collections.singletonList(this.startLane));
         this.lanesList.addAll(calculatedPath.getLanes());

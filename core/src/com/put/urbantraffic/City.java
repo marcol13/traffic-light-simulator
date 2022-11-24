@@ -40,20 +40,21 @@ public class City {
     }
 
     public Car spawnCar() {
-        Lane startLane = null;
-        Lane endLane = null;
-        while (startLane == endLane) {
-            startLane = lanes.get(rand.nextInt(lanes.size()));
-            endLane = lanes.get(rand.nextInt(lanes.size()));
+        Road startRoad = null;
+        Road endRoad = null;
 
-            boolean doesAnyContainTurn = startLane.doesContainTurn() || endLane.doesContainTurn();
-            boolean areOnTheSameRoad = startLane.getStartCrossing() == endLane.getEndCrossing() && startLane.getEndCrossing() == endLane.getStartCrossing();
-            if (doesAnyContainTurn || areOnTheSameRoad) {
-                startLane = null;
-                endLane = null;
+        while (startRoad == endRoad) {
+
+            startRoad = roads.get(rand.nextInt(roads.size()));
+            endRoad = roads.get(rand.nextInt(roads.size()));
+
+            boolean doesAnyContainTurn = startRoad.getLaneList().get(0).doesContainTurn() || endRoad.getLaneList().get(0).doesContainTurn();
+            if (doesAnyContainTurn) {
+                startRoad = null;
+                endRoad = null;
             }
         }
-        return new Car(startLane, endLane);
+        return new Car(startRoad, endRoad);
     }
 
     private void createSpawnCarArray() {
