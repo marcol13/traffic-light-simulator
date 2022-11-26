@@ -62,12 +62,28 @@ public class Car {
 
         this.way = calculateWay(this.currentNode, this.nextNode);
 
-        int laneCenter = (int)(startLane.getLength()/(Lane.AVERAGE_CAR_LENGTH + Lane.DISTANCE_BETWEEN_CARS))/2;
-        if(laneCenter > startLane.getCarsList().size()){
-            startLane.getCarsList().add(this);
-        } else{
-            startLane.getCarsList().add(laneCenter, this);
+        List<Node> nodeList = startLane.getNodeList();
+        Way laneWay = calculateWay(nodeList.get(0), nodeList.get(1));
+        List<Car> carsList = startLane.getCarsList();
+        int i;
+        loop:
+        for (i = 0; i < carsList.size(); i++) {
+            switch (laneWay) {
+                case TOP:
+                    if (carsList.get(i).getCarPosition().getY() < currentNode.getY()) break loop;
+                    break;
+                case RIGHT:
+                    if (carsList.get(i).getCarPosition().getY() < currentNode.getX()) break loop;
+                    break;
+                case BOTTOM:
+                    if (carsList.get(i).getCarPosition().getY() > currentNode.getY()) break loop;
+                    break;
+                case LEFT:
+                    if (carsList.get(i).getCarPosition().getY() > currentNode.getX()) break loop;
+                    break;
+            }
         }
+        startLane.getCarsList().add(i, this);
 //        System.out.println(this.path);
 
     }
@@ -130,7 +146,8 @@ public class Car {
                 if(calculateDistance(carPosition.getX(),
                         carPosition.getY(),
                         previousCar.carPosition.getX(),
-                        previousCar.carPosition.getY()) <= Lane.DISTANCE_BETWEEN_CARS + Lane.AVERAGE_CAR_LENGTH * 2){
+                        previousCar.carPosition.getY()) <= Lane.DISTANCE_BETWEEN_CARS + Lane.AVERAGE_CAR_LENGTH * 2
+                && previousCar.getWay() == way){
                     status = RideStatus.WAITING;
                     return;
                 }
