@@ -210,7 +210,7 @@ public class Car {
 
                     if (currentLane.getNodeList().size() == 2 || (currentLane.getNodeList().size() > 2 && nextNode == currentLane.getNodeList().get(2))) {
 
-                        lanesList.get(0).getCarsList().remove(0);
+                        lanesList.get(0).getCarsList().remove(this);
                         lanesList.remove(0);
 
 
