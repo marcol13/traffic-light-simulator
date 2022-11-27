@@ -19,8 +19,8 @@ public class Car {
                 '}';
     }
 
-    private final Lane startLane;
-    private final Lane endLane;
+    private Lane startLane;
+    private Lane endLane;
     private Node startNode;
     private Node endNode;
 
@@ -51,15 +51,8 @@ public class Car {
         TOP, RIGHT, BOTTOM, LEFT
     }
 
-    public Car(Lane startLane, Lane endLane) {
-
-        this.startLane = startLane;
-        this.endLane = endLane;
-
-        this.startNode = this.startLane.getMiddlePoint();
-        this.endNode = this.endLane.getMiddlePoint();
-
-        this.path = generatePath(startLane, endLane);
+    public Car(Road startRoad, Road endRoad) {
+        this.path = generatePathAndInitializeLanes(startRoad, endRoad);
 
         this.currentNode = new Node(path.get(0).getX(), path.get(0).getY());
         this.currentLane = lanesList.get(0);
@@ -69,19 +62,42 @@ public class Car {
 
         this.way = calculateWay(this.currentNode, this.nextNode);
 
-        int laneCenter = (int)(startLane.getLength()/(Lane.AVERAGE_CAR_LENGTH + Lane.DISTANCE_BETWEEN_CARS))/2;
-        if(laneCenter > startLane.getCarsList().size()){
-            startLane.getCarsList().add(this);
-        } else{
-            startLane.getCarsList().add(laneCenter, this);
+        List<Node> nodeList = startLane.getNodeList();
+        Way laneWay = calculateWay(nodeList.get(0), nodeList.get(1));
+        List<Car> carsList = startLane.getCarsList();
+        int i;
+        loop:
+        for (i = 0; i < carsList.size(); i++) {
+            switch (laneWay) {
+                case TOP:
+                    if (carsList.get(i).getCarPosition().getY() < currentNode.getY()) break loop;
+                    break;
+                case RIGHT:
+                    if (carsList.get(i).getCarPosition().getY() < currentNode.getX()) break loop;
+                    break;
+                case BOTTOM:
+                    if (carsList.get(i).getCarPosition().getY() > currentNode.getY()) break loop;
+                    break;
+                case LEFT:
+                    if (carsList.get(i).getCarPosition().getY() > currentNode.getX()) break loop;
+                    break;
+            }
         }
+        startLane.getCarsList().add(i, this);
 //        System.out.println(this.path);
 
     }
 
-    private List<Node> generatePath(Lane startLane, Lane endLane) {
-        calculatedPath = UrbanTrafficFlowSimulation.paths[startLane.getId()][endLane.getId()];
+    private List<Node> generatePathAndInitializeLanes (Road startRoad, Road endRoad) {
+
+        List<Lane> possibleStartLanes = startRoad.getLaneList();
+        List<Lane> possibleEndLanes = endRoad.getLaneList();
+        calculatedPath = UrbanTrafficFlowSimulation.paths[possibleStartLanes.get(0).getId()][possibleEndLanes.get(0).getId()];
         this.crossingList = new ArrayList<>(calculatedPath.getCrossings());
+        this.startLane = possibleStartLanes.get(0).getEndCrossing() == crossingList.get(0) ? possibleStartLanes.get(0) : possibleStartLanes.get(1);
+        this.endLane = possibleEndLanes.get(0).getStartCrossing() == crossingList.get(crossingList.size() - 1) ? possibleEndLanes.get(0) : possibleEndLanes.get(1);
+        this.startNode = this.startLane.getMiddlePoint();
+        this.endNode = this.endLane.getMiddlePoint();
 
         this.lanesList = new ArrayList<>(Collections.singletonList(this.startLane));
         this.lanesList.addAll(calculatedPath.getLanes());
@@ -130,7 +146,8 @@ public class Car {
                 if(calculateDistance(carPosition.getX(),
                         carPosition.getY(),
                         previousCar.carPosition.getX(),
-                        previousCar.carPosition.getY()) <= Lane.DISTANCE_BETWEEN_CARS + Lane.AVERAGE_CAR_LENGTH * 2){
+                        previousCar.carPosition.getY()) <= Lane.DISTANCE_BETWEEN_CARS + Lane.AVERAGE_CAR_LENGTH * 2
+                && previousCar.getWay() == way){
                     status = RideStatus.WAITING;
                     return;
                 }
@@ -193,7 +210,7 @@ public class Car {
 
                     if (currentLane.getNodeList().size() == 2 || (currentLane.getNodeList().size() > 2 && nextNode == currentLane.getNodeList().get(2))) {
 
-                        lanesList.get(0).getCarsList().remove(0);
+                        lanesList.get(0).getCarsList().remove(this);
                         lanesList.remove(0);
 
 
