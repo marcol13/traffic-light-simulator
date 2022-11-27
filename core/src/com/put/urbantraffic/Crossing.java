@@ -94,11 +94,11 @@ public class Crossing {
     public boolean isGoOnCrossingPossible(Car car) {
         Car.Way way = car.getWay();
         Direction direction = car.getDirection();
-        System.out.println("Car " + car.getCarPosition() + " crossing " + x + " " + y);
-        System.out.println(" way " + way + " direction " + direction);
-        System.out.println("LightSupervisor: " + trafficLightsSupervisor.toString());
+//        System.out.println("Car " + car.getCarPosition() + " crossing " + x + " " + y);
+//        System.out.println(" way " + way + " direction " + direction);
+//        System.out.println("LightSupervisor: " + trafficLightsSupervisor.toString());
         if (way == Car.Way.TOP) {
-            System.out.println("Traffic Light" + trafficLightsSupervisor.getBottomTrafficLight().getCurrentColor());
+//            System.out.println("Traffic Light" + trafficLightsSupervisor.getBottomTrafficLight().getCurrentColor());
             if (trafficLightsSupervisor.getBottomTrafficLight().getCurrentColor() == Light.GREEN) {
                 if (direction == Direction.FORWARD) {
                     if (forwardBottomCardField.size() == 0 && turnLeftBottomCardField.size() < 2) {
@@ -116,7 +116,7 @@ public class Crossing {
                 }
             }
         } else if (way == Car.Way.BOTTOM) {
-            System.out.println("Traffic Light" + trafficLightsSupervisor.getTopTrafficLight().getCurrentColor());
+//            System.out.println("Traffic Light" + trafficLightsSupervisor.getTopTrafficLight().getCurrentColor());
 
             if (trafficLightsSupervisor.getTopTrafficLight().getCurrentColor() == Light.GREEN) {
                 if (direction == Direction.FORWARD) {
@@ -135,7 +135,7 @@ public class Crossing {
                 }
             }
         } else if (way == Car.Way.LEFT) {
-            System.out.println("Traffic Light" + trafficLightsSupervisor.getRightTrafficLight().getCurrentColor());
+//            System.out.println("Traffic Light" + trafficLightsSupervisor.getRightTrafficLight().getCurrentColor());
 
             if (trafficLightsSupervisor.getRightTrafficLight().getCurrentColor() == Light.GREEN) {
                 if (direction == Direction.FORWARD) {
@@ -154,7 +154,7 @@ public class Crossing {
                 }
             }
         } else if (way == Car.Way.RIGHT) {
-            System.out.println("Traffic Light" + trafficLightsSupervisor.getLeftTrafficLight().getCurrentColor());
+//            System.out.println("Traffic Light" + trafficLightsSupervisor.getLeftTrafficLight().getCurrentColor());
 
             if (trafficLightsSupervisor.getLeftTrafficLight().getCurrentColor() == Light.GREEN) {
                 if (direction == Direction.FORWARD) {
