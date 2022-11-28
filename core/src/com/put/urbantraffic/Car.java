@@ -28,6 +28,7 @@ public class Car {
 
     private Node currentNode;
     private Node nextNode;
+    private Node predictedCarPosition;
     private Node carPosition;
     private Lane currentLane;
     private float nodePercentage = 0.0f;
@@ -56,7 +57,10 @@ public class Car {
 
         this.currentNode = new Node(path.get(0).getX(), path.get(0).getY());
         this.currentLane = lanesList.get(0);
+
         this.carPosition = new Node(path.get(0).getX(), path.get(0).getY());
+        this.predictedCarPosition = new Node(path.get(0).getX(), path.get(0).getY());
+
         this.nextNode = path.get(1);
         this.nextCrossing = crossingList.get(0);
 
@@ -121,7 +125,7 @@ public class Car {
         return path;
     }
 
-    public void moveCar() {
+    public void predictMoveCar() {
         if (status != RideStatus.FINISH) {
 
             status = RideStatus.RIDING;
@@ -237,13 +241,17 @@ public class Car {
             }
 
             if(status == RideStatus.RIDING || onCrossing) {
-                carPosition.setX((int) (currentNode.getX() + xVector * nodePercentage / 100));
-                carPosition.setY((int) (currentNode.getY() + yVector * nodePercentage / 100));
+                predictedCarPosition.setX((int) (currentNode.getX() + xVector * nodePercentage / 100));
+                predictedCarPosition.setY((int) (currentNode.getY() + yVector * nodePercentage / 100));
             }
 
 //            System.out.println("Car cords:" + actualNode.getX() + " " + actualNode.getY() + " Node percentage " + nodePercentage + " xVec " + xVector + " yVec " + yVector);
 
         }
+    }
+
+    void moveCar(){
+        carPosition = predictedCarPosition;
     }
 
     private int getNodeLength(Node currentNode, Node nextNode) {

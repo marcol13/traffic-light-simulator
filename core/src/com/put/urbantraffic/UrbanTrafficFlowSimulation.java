@@ -10,7 +10,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import lombok.val;
 
-import java.util.Arrays;
 import java.util.List;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     ExtendViewport extendViewport;
 
     private City city;
-    private final List<Car> cars = new ArrayList<Car>();
+    private final List<Car> cars = new ArrayList<>();
 
 
     static CityGraph.PathWithTime[][] paths;
@@ -162,9 +161,6 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 offsetY = Settings.NODE_LANE_OFFSET;
             if(car.getWay() == Car.Way.RIGHT)
                 offsetY = -Settings.NODE_LANE_OFFSET;
-
-
-
             drawCircle(carNode.getX() + offsetX, carNode.getY() + offsetY, Settings.CAR_RADIUS, car.getStatus() == RideStatus.RIDING ? Settings.CAR_CIRCLE_COLOR : Color.BLUE);
         }
     }
@@ -256,19 +252,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             }
 //            Uncomment to see the passing time
 //            System.out.println(Settings.TIME);
-            List<Car> removeCars = new ArrayList<>();
-            for(Car car: cars){
-                if(car.getStatus() == RideStatus.FINISH){
-                    removeCars.add(car);
-                    continue;
-                }
-
-                car.moveCar();
-            }
-
-            for(Car removeCar: removeCars){
-                cars.remove(removeCar);
-            }
+            carHandler();
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -286,6 +270,27 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         extendViewport.getCamera().position.set(playerX, playerY, 0);
 
 
+    }
+
+    public void carHandler(){
+        List<Car> removeCars = new ArrayList<>();
+
+        for(Car car: cars){
+            if(car.getStatus() == RideStatus.FINISH){
+                removeCars.add(car);
+                continue;
+            }
+            car.predictMoveCar();
+        }
+
+
+        for(Car removeCar: removeCars){
+            cars.remove(removeCar);
+        }
+
+        for( Car car: cars){
+            car.moveCar();
+        }
     }
 
     public void drawLanes(int startX, int startY, int endX, int endY, int lanesAmount, Color color) {
