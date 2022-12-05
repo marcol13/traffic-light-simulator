@@ -14,7 +14,6 @@ import lombok.val;
 
 import java.util.List;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
@@ -26,8 +25,6 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     SpriteBatch batch;
 
     private City city;
-    private final List<Car> cars = new ArrayList<>();
-
 
     static CityGraph.PathWithTime[][] paths;
 
@@ -156,7 +153,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
 
         //Draw cars
-        for(Car car: cars){
+        for(Car car: city.carList){
             int offsetX = 0, offsetY = 0;
             Node carNode = car.getCarPosition();
 
@@ -174,7 +171,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         batch.setProjectionMatrix(extendViewport.getCamera().combined);
         batch.begin();
         font.getData().setScale(4.0f);
-        font.draw(batch, "Funkcja celu: " + Long.toString(City.frameCount), 100,100);
+        font.draw(batch, "Funkcja celu: " + Long.toString(city.waitingTime), 100,100);
         batch.end();
     }
 
@@ -258,14 +255,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-            Settings.TIME += 1;
-            if(Settings.TIME == city.spawnCarArray.get(0)){
-                cars.add(city.spawnCar());
-                city.spawnCarArray.remove(0);
-            }
-//            Uncomment to see the passing time
-//            System.out.println(Settings.TIME);
-            carHandler();
+            city.simulate();
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -283,27 +273,6 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         extendViewport.getCamera().position.set(playerX, playerY, 0);
 
 
-    }
-
-    public void carHandler(){
-        List<Car> removeCars = new ArrayList<>();
-
-        for(Car car: cars){
-            if(car.getStatus() == RideStatus.FINISH){
-                removeCars.add(car);
-                continue;
-            }
-            car.predictMoveCar();
-        }
-
-
-        for(Car removeCar: removeCars){
-            cars.remove(removeCar);
-        }
-
-        for( Car car: cars){
-            car.moveCar();
-        }
     }
 
     public void drawLanes(int startX, int startY, int endX, int endY, int lanesAmount, Color color) {

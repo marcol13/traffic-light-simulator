@@ -2,7 +2,6 @@ package com.put.urbantraffic;
 
 import lombok.val;
 
-import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -13,7 +12,8 @@ public class City {
     private final List<Road> roads;
     private final List<Lane> lanes = new ArrayList<>();
     public List<Integer> spawnCarArray = new ArrayList<>();
-    static public long frameCount = 0;
+    public List<Car> carList = new ArrayList<>();
+    public long waitingTime = 0;
     Random rand;
 
     public City(List<Crossing> crossings, List<Road> roads, Random rand) {
@@ -57,6 +57,43 @@ public class City {
             }
         }
         return new Car(startRoad, endRoad);
+    }
+
+    public void simulate(){
+        Settings.TIME += 1;
+        if(Settings.TIME == spawnCarArray.get(0)){
+            carList.add(spawnCar());
+            spawnCarArray.remove(0);
+        }
+//            Uncomment to see the passing time
+//            System.out.println(Settings.TIME);
+        carHandler();
+        for(Car car: carList){
+
+            if(car.getStatus() == RideStatus.WAITING)
+                waitingTime++;
+        }
+
+    }
+
+    public void carHandler(){
+        List<Car> removeCars = new ArrayList<>();
+
+        for(Car car: carList){
+            if(car.getStatus() == RideStatus.FINISH){
+                removeCars.add(car);
+                continue;
+            }
+            car.predictMoveCar();
+        }
+
+        for(Car removeCar: removeCars){
+            carList.remove(removeCar);
+        }
+
+        for( Car car: carList){
+            car.moveCar();
+        }
     }
 
     private void createSpawnCarArray() {

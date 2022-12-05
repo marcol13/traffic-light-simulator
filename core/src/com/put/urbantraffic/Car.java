@@ -153,7 +153,6 @@ public class Car {
                         previousCar.carPosition.getY()) <= Lane.DISTANCE_BETWEEN_CARS + Lane.AVERAGE_CAR_LENGTH * 2
                 && previousCar.getWay() == way){
                     status = RideStatus.WAITING;
-                    City.frameCount++;
                     return;
                 }
             }
@@ -175,7 +174,6 @@ public class Car {
                         }
                         else{
                             status = RideStatus.WAITING;
-                            City.frameCount++;
                             return;
                         }
 
@@ -190,7 +188,6 @@ public class Car {
                 if(onCrossing && direction == Direction.LEFT){
                     if(!crossingList.get(0).isTurnLeftPossible(this)){
                         status = RideStatus.WAITING;
-                        City.frameCount++;
                         return;
                     }
                     else{
@@ -200,7 +197,6 @@ public class Car {
                             }
                             else{
                                 status = RideStatus.WAITING;
-                                City.frameCount++;
                                 return;
                             }
                         }
@@ -248,9 +244,6 @@ public class Car {
                 predictedCarPosition.setX((int) (currentNode.getX() + xVector * nodePercentage / 100));
                 predictedCarPosition.setY((int) (currentNode.getY() + yVector * nodePercentage / 100));
             }
-
-            if(status == RideStatus.WAITING)
-                City.frameCount++;
 
 //            System.out.println("Car cords:" + actualNode.getX() + " " + actualNode.getY() + " Node percentage " + nodePercentage + " xVec " + xVector + " yVec " + yVector);
 
