@@ -39,8 +39,6 @@ public class TrafficLightsSupervisor {
 
     private int timeToChangeLights = LIGHTS_DURATION;
 
-
-
     void turnOnLights(){
         if(rand.nextInt() % 2 == 0){
             changeLight(topTrafficLight, Light.GREEN);

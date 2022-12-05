@@ -1,5 +1,8 @@
 package com.put.urbantraffic;
 
+import com.put.urbantraffic.drawablemodels.DrawableCrossingTrafficLight;
+import com.put.urbantraffic.drawablemodels.DrawableCar;
+import com.put.urbantraffic.drawablemodels.Frame;
 import lombok.val;
 
 import java.util.*;
@@ -13,6 +16,8 @@ public class City {
     private final List<Lane> lanes = new ArrayList<>();
     public List<Integer> spawnCarArray = new ArrayList<>();
     Random rand;
+    public CityGraph.PathWithTime[][] paths;
+    final List<Car> cars = new ArrayList<>();
 
     public City(List<Crossing> crossings, List<Road> roads, Random rand) {
         this.crossings = crossings;
@@ -37,6 +42,55 @@ public class City {
         parseGridToClasses(grid);
         calculateRoadSpeedLimit();
         createSpawnCarArray();
+
+        for (Crossing crossing : getCrossings()) {
+            crossing.getTrafficLightsSupervisor().turnOnLights();
+        }
+        paths = new CityGraph().generate(this);
+    }
+
+    public List<Frame> frame = new ArrayList<>();
+
+    public void makeStep() {
+        while (Settings.TIME == spawnCarArray.get(0)) {
+            cars.add(spawnCar());
+            spawnCarArray.remove(0);
+        }
+        for (Crossing crossing : getCrossings()) {
+            crossing.getTrafficLightsSupervisor().changeAllLights();
+        }
+        carHandler();
+        Settings.TIME += 1;
+
+        // TODO: Disable if rendering is not enabled
+        List<DrawableCar> drawableCars = cars.stream()
+                .map(DrawableCar::fromCar)
+                .collect(Collectors.toList());
+        List<DrawableCrossingTrafficLight> drawableLights = crossings.stream()
+                .map(DrawableCrossingTrafficLight::fromCrossing)
+                .collect(Collectors.toList());
+
+        frame.add(new Frame(drawableCars, drawableLights));
+    }
+
+    public void carHandler() {
+        List<Car> removeCars = new ArrayList<>();
+
+        for (Car car : cars) {
+            if (car.getStatus() == RideStatus.FINISH) {
+                removeCars.add(car);
+                continue;
+            }
+            car.predictMoveCar();
+        }
+
+        for (Car removeCar : removeCars) {
+            cars.remove(removeCar);
+        }
+
+        for (Car car : cars) {
+            car.moveCar();
+        }
     }
 
     public Car spawnCar() {
@@ -54,7 +108,7 @@ public class City {
                 endRoad = null;
             }
         }
-        return new Car(startRoad, endRoad);
+        return new Car(startRoad, endRoad, paths);
     }
 
     private void createSpawnCarArray() {
