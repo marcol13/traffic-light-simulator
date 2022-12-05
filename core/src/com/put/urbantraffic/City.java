@@ -68,19 +68,15 @@ public class City {
 //            Uncomment to see the passing time
 //            System.out.println(Settings.TIME);
         carHandler();
-        for(Car car: carList){
-
-            if(car.getStatus() == RideStatus.WAITING)
-                waitingTime++;
-        }
-
     }
 
     public void carHandler(){
         List<Car> removeCars = new ArrayList<>();
 
         for(Car car: carList){
-            if(car.getStatus() == RideStatus.FINISH){
+            if(car.getStatus() == RideStatus.WAITING)
+                waitingTime++;
+            else if(car.getStatus() == RideStatus.FINISH){
                 removeCars.add(car);
                 continue;
             }
