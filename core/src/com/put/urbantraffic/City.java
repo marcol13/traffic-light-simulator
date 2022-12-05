@@ -2,6 +2,7 @@ package com.put.urbantraffic;
 
 import lombok.val;
 
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,7 @@ public class City {
     private final List<Road> roads;
     private final List<Lane> lanes = new ArrayList<>();
     public List<Integer> spawnCarArray = new ArrayList<>();
+    static public long frameCount = 0;
     Random rand;
 
     public City(List<Crossing> crossings, List<Road> roads, Random rand) {
