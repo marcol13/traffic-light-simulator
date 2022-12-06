@@ -1,5 +1,8 @@
 package com.put.urbantraffic;
 
+import com.put.urbantraffic.drawablemodels.DrawableCrossingTrafficLight;
+import com.put.urbantraffic.drawablemodels.DrawableCar;
+import com.put.urbantraffic.drawablemodels.Frame;
 import lombok.val;
 
 import java.util.*;
@@ -12,9 +15,10 @@ public class City {
     private final List<Road> roads;
     private final List<Lane> lanes = new ArrayList<>();
     public List<Integer> spawnCarArray = new ArrayList<>();
-    public List<Car> carList = new ArrayList<>();
     public long waitingTime = 0;
     Random rand;
+    public CityGraph.PathWithTime[][] paths;
+    final List<Car> cars = new ArrayList<>();
 
     public City(List<Crossing> crossings, List<Road> roads, Random rand) {
         this.crossings = crossings;
@@ -39,6 +43,35 @@ public class City {
         parseGridToClasses(grid);
         calculateRoadSpeedLimit();
         createSpawnCarArray();
+
+        for (Crossing crossing : getCrossings()) {
+            crossing.getTrafficLightsSupervisor().turnOnLights();
+        }
+        paths = new CityGraph().generate(this);
+    }
+
+    public List<Frame> frame = new ArrayList<>();
+
+    public void makeStep() {
+        while (Settings.TIME == spawnCarArray.get(0)) {
+            cars.add(spawnCar());
+            spawnCarArray.remove(0);
+        }
+        for (Crossing crossing : getCrossings()) {
+            crossing.getTrafficLightsSupervisor().changeAllLights();
+        }
+        carHandler();
+        Settings.TIME += 1;
+
+        // TODO: Disable if rendering is not enabled
+        List<DrawableCar> drawableCars = cars.stream()
+                .map(DrawableCar::fromCar)
+                .collect(Collectors.toList());
+        List<DrawableCrossingTrafficLight> drawableLights = crossings.stream()
+                .map(DrawableCrossingTrafficLight::fromCrossing)
+                .collect(Collectors.toList());
+
+        frame.add(new Frame(drawableCars, drawableLights, waitingTime));
     }
 
     public Car spawnCar() {
@@ -56,24 +89,13 @@ public class City {
                 endRoad = null;
             }
         }
-        return new Car(startRoad, endRoad);
-    }
-
-    public void simulate(){
-        Settings.TIME += 1;
-        if(Settings.TIME == spawnCarArray.get(0)){
-            carList.add(spawnCar());
-            spawnCarArray.remove(0);
-        }
-//            Uncomment to see the passing time
-//            System.out.println(Settings.TIME);
-        carHandler();
+        return new Car(startRoad, endRoad, paths);
     }
 
     public void carHandler(){
         List<Car> removeCars = new ArrayList<>();
 
-        for(Car car: carList){
+        for(Car car: cars){
             if(car.getStatus() == RideStatus.WAITING)
                 waitingTime++;
             else if(car.getStatus() == RideStatus.FINISH){
@@ -84,10 +106,10 @@ public class City {
         }
 
         for(Car removeCar: removeCars){
-            carList.remove(removeCar);
+            cars.remove(removeCar);
         }
 
-        for( Car car: carList){
+        for( Car car: cars){
             car.moveCar();
         }
     }
