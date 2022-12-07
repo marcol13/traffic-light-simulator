@@ -8,4 +8,5 @@ import java.util.List;
 public class Frame {
     private final List<DrawableCar> cars;
     private final List<DrawableCrossingTrafficLight> lights;
+    private final long waitingTime;
 }

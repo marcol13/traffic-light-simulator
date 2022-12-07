@@ -15,6 +15,7 @@ public class City {
     private final List<Road> roads;
     private final List<Lane> lanes = new ArrayList<>();
     public List<Integer> spawnCarArray = new ArrayList<>();
+    public long waitingTime = 0;
     Random rand;
     public CityGraph.PathWithTime[][] paths;
     final List<Car> cars = new ArrayList<>();
@@ -70,27 +71,7 @@ public class City {
                 .map(DrawableCrossingTrafficLight::fromCrossing)
                 .collect(Collectors.toList());
 
-        frame.add(new Frame(drawableCars, drawableLights));
-    }
-
-    public void carHandler() {
-        List<Car> removeCars = new ArrayList<>();
-
-        for (Car car : cars) {
-            if (car.getStatus() == RideStatus.FINISH) {
-                removeCars.add(car);
-                continue;
-            }
-            car.predictMoveCar();
-        }
-
-        for (Car removeCar : removeCars) {
-            cars.remove(removeCar);
-        }
-
-        for (Car car : cars) {
-            car.moveCar();
-        }
+        frame.add(new Frame(drawableCars, drawableLights, waitingTime));
     }
 
     public Car spawnCar() {
@@ -109,6 +90,28 @@ public class City {
             }
         }
         return new Car(startRoad, endRoad, paths);
+    }
+
+    public void carHandler(){
+        List<Car> removeCars = new ArrayList<>();
+
+        for(Car car: cars){
+            if(car.getStatus() == RideStatus.WAITING)
+                waitingTime++;
+            else if(car.getStatus() == RideStatus.FINISH){
+                removeCars.add(car);
+                continue;
+            }
+            car.predictMoveCar();
+        }
+
+        for(Car removeCar: removeCars){
+            cars.remove(removeCar);
+        }
+
+        for( Car car: cars){
+            car.moveCar();
+        }
     }
 
     private void createSpawnCarArray() {

@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -22,6 +24,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private float playerX;
     private float playerY;
     ExtendViewport extendViewport;
+    BitmapFont font;
+    SpriteBatch batch;
 
     private City city;
     private Frame frameToRender = null;
@@ -99,6 +103,9 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         simulation.initialDeltaRange = Settings.INITIAL_DELTA_RANGE;
         simulation.tournamentSelectionContestants = Settings.TOURNAMENT_SELECTION_CONTESTANT;
         simulation.startSimulation();
+
+        font = new BitmapFont(Gdx.files.internal("bahnschrift.fnt"));
+        batch = new SpriteBatch();
     }
 
 
@@ -154,6 +161,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
 
         //Draw cars
+
         for(DrawableCar car: frameToRender.getCars()){
             int offsetX = 0, offsetY = 0;
 
@@ -167,6 +175,12 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 offsetY = -Settings.NODE_LANE_OFFSET;
             drawCircle(car.getX() + offsetX, car.getY() + offsetY, Settings.CAR_RADIUS, car.getStatus() == RideStatus.RIDING ? Settings.CAR_CIRCLE_COLOR : Color.BLUE);
         }
+
+        batch.setProjectionMatrix(extendViewport.getCamera().combined);
+        batch.begin();
+        font.getData().setScale(4.0f);
+        font.draw(batch, "Funkcja celu: " + Long.toString(frameToRender.getWaitingTime()), 100,100);
+        batch.end();
     }
 
     private void drawTrafficLight(DrawableCrossingTrafficLight crossing) {
