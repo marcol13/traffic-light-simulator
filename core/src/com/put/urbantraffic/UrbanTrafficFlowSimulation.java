@@ -25,6 +25,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private float playerY;
     ExtendViewport extendViewport;
     BitmapFont font;
+    BitmapFont clockFont;
     SpriteBatch batch;
 
     private City city;
@@ -105,6 +106,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         simulation.startSimulation();
 
         font = new BitmapFont(Gdx.files.internal("bahnschrift.fnt"));
+        clockFont = new BitmapFont(Gdx.files.internal("clock-font.fnt"));
         batch = new SpriteBatch();
     }
 
