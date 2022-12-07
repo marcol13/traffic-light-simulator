@@ -181,7 +181,13 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         batch.setProjectionMatrix(extendViewport.getCamera().combined);
         batch.begin();
         font.getData().setScale(4.0f);
-        font.draw(batch, "Funkcja celu: " + Long.toString(frameToRender.getWaitingTime()), 100,100);
+        font.draw(batch, "Value of goal function: " + Long.toString(frameToRender.getWaitingTime()), 0,0);
+
+        long currentSimulationTime = frameToRender.getCurrentTime();
+        String hour = String.format("%02d", currentSimulationTime / 3600 + Settings.STARTING_HOUR);
+        String minute = String.format("%02d", currentSimulationTime / 60 % 60);
+        String second = String.format("%02d", currentSimulationTime % 60);
+        font.draw(batch, "Current time: " + hour + ":" + minute + ":" + second, 0,100);
         batch.end();
     }
 
