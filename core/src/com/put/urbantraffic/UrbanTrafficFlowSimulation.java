@@ -303,7 +303,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             speed = 90;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_0)) {
-            speed = 100;
+            speed = 1;
         }
     }
 
