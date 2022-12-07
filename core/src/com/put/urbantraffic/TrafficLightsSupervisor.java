@@ -1,18 +1,28 @@
 package com.put.urbantraffic;
 
-import lombok.*;
-
 import java.util.Random;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode
 public class TrafficLightsSupervisor {
-    private static final int LIGHTS_DURATION = 120 * 2;
-    Random rand;
+    private static final int YELLOW_DURATION = 15; // TODO: Move to settings
+    private final int greenDuration;
+    private final int redDuration;
+    private final int offset;
+    private final Random rand;
 
-    public TrafficLightsSupervisor(Random rand) {
+    private int timeToChangeLights;
+    private int changeCount = 0;
+
+    public TrafficLightsSupervisor(int greenDuration, int redDuration, int offset, Random rand) {
+        this.greenDuration = greenDuration;
+        this.redDuration = redDuration;
+        this.offset = offset;
         this.rand = rand;
+        this.timeToChangeLights = offset + greenDuration + YELLOW_DURATION;
     }
 
     @Override
@@ -25,7 +35,7 @@ public class TrafficLightsSupervisor {
 
 
         return "TrafficLightsSupervisor{" +
-                "topTrafficLight=" +  top +
+                "topTrafficLight=" + top +
                 ", bottomTrafficLight=" + bottom +
                 ", leftTrafficLight=" + left +
                 ", rightTrafficLight=" + right +
@@ -37,16 +47,13 @@ public class TrafficLightsSupervisor {
     private TrafficLight leftTrafficLight = null;
     private TrafficLight rightTrafficLight = null;
 
-    private int timeToChangeLights = LIGHTS_DURATION;
-
     void turnOnLights(){
-        if(rand.nextInt() % 2 == 0){
+        if (offset == 0) {
             changeLight(topTrafficLight, Light.GREEN);
             changeLight(bottomTrafficLight, Light.GREEN);
             changeLight(leftTrafficLight, Light.RED);
             changeLight(rightTrafficLight, Light.RED);
-        }
-        else{
+        } else {
             changeLight(topTrafficLight, Light.RED);
             changeLight(bottomTrafficLight, Light.RED);
             changeLight(leftTrafficLight, Light.GREEN);
@@ -55,34 +62,27 @@ public class TrafficLightsSupervisor {
     }
 
     private void changeLight(TrafficLight trafficLight) {
-        if(trafficLight != null){
+        if (trafficLight != null) {
             Light newLight = trafficLight.getCurrentColor() == Light.RED ? Light.GREEN : Light.RED;
             trafficLight.setCurrentColor(newLight);
         }
     }
 
-    private void changeLight(TrafficLight trafficLight, Light light){
-        if(trafficLight != null){
+    private void changeLight(TrafficLight trafficLight, Light light) {
+        if (trafficLight != null) {
             trafficLight.setCurrentColor(light);
         }
     }
 
-    private void switchYellow(TrafficLight trafficLight, boolean turnOn){
-        if(trafficLight != null){
+    private void switchYellow(TrafficLight trafficLight, boolean turnOn) {
+        if (trafficLight != null) {
             trafficLight.setYellow(turnOn);
         }
     }
 
-    void changeAllLights(){
+    void changeAllLights() {
         timeToChangeLights--;
-        if(timeToChangeLights <  LIGHTS_DURATION/15 && timeToChangeLights != 0){
-            switchYellow(topTrafficLight, true);
-            switchYellow(bottomTrafficLight, true);
-            switchYellow(leftTrafficLight,true );
-            switchYellow(rightTrafficLight, true );
-        }
-        else if(timeToChangeLights == 0){
-
+        if (timeToChangeLights == 0) {
             switchYellow(topTrafficLight, false);
             switchYellow(bottomTrafficLight, false);
             switchYellow(leftTrafficLight, false);
@@ -92,8 +92,14 @@ public class TrafficLightsSupervisor {
             changeLight(bottomTrafficLight);
             changeLight(leftTrafficLight);
             changeLight(rightTrafficLight);
-            timeToChangeLights = LIGHTS_DURATION;
-        }
 
+            changeCount++;
+            timeToChangeLights = YELLOW_DURATION + (changeCount % 2 == 0 ? greenDuration : redDuration);
+        } else if (timeToChangeLights < YELLOW_DURATION) {
+            switchYellow(topTrafficLight, true);
+            switchYellow(bottomTrafficLight, true);
+            switchYellow(leftTrafficLight, true);
+            switchYellow(rightTrafficLight, true);
+        }
     }
 }

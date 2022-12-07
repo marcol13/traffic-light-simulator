@@ -148,7 +148,7 @@ public class City {
         for (int y = 1; y < grid.length; y += 2) {
             for (int x = 1; x < grid[0].length; x += 2) {
                 if (grid[y][x] == 9) {
-                    crossings.add(new Crossing(crossingId, x * MESH_DISTANCE, y * MESH_DISTANCE, rand));
+                    addNewCrossing(x, y, crossingId);
                     crossingId++;
                 }
             }
@@ -358,8 +358,7 @@ public class City {
 
     private void addDriveway(int[][] grid, int x, int y, int addX, int addY, int crossingId) {
         List<Node> nodes = new ArrayList<>();
-        Crossing crossing2 = new Crossing(crossingId, x * MESH_DISTANCE, y * MESH_DISTANCE, rand);
-        crossings.add(crossing2);
+        Crossing crossing2 = addNewCrossing(x, y, crossingId);
         nodes.add(new Node(x * MESH_DISTANCE, y * MESH_DISTANCE));
         x += addX;
         y += addY;
@@ -374,6 +373,15 @@ public class City {
                 break;
             }
         }
+    }
+
+    private Crossing addNewCrossing(int x, int y, int crossingId) {
+        final int offset = rand.nextBoolean() ? 215 / 2 : 0;
+        final int greenDuration = 215;
+        final int redDuration = 50;
+        Crossing crossing = new Crossing(crossingId, x * MESH_DISTANCE, y * MESH_DISTANCE, offset, greenDuration, redDuration, rand);
+        crossings.add(crossing);
+        return crossing;
     }
 
     private void addNewRoad(List<Node> nodes, Crossing crossing1, Crossing crossing2) {
