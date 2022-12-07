@@ -1,17 +1,24 @@
 package com.put.urbantraffic;
 
+import com.put.urbantraffic.drawablemodels.DrawableCrossingTrafficLight;
+import com.put.urbantraffic.drawablemodels.DrawableCar;
+import com.put.urbantraffic.drawablemodels.Frame;
 import lombok.val;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.put.urbantraffic.SETTINGS.MESH_DISTANCE;
+import static com.put.urbantraffic.Settings.MESH_DISTANCE;
 
 public class City {
     private final List<Crossing> crossings;
     private final List<Road> roads;
     private final List<Lane> lanes = new ArrayList<>();
+    public List<Integer> spawnCarArray = new ArrayList<>();
+    public long waitingTime = 0;
     Random rand;
+    public CityGraph.PathWithTime[][] paths;
+    final List<Car> cars = new ArrayList<>();
 
     public City(List<Crossing> crossings, List<Road> roads, Random rand) {
         this.crossings = crossings;
@@ -35,23 +42,103 @@ public class City {
         roads = new ArrayList<>();
         parseGridToClasses(grid);
         calculateRoadSpeedLimit();
+        createSpawnCarArray();
+
+        for (Crossing crossing : getCrossings()) {
+            crossing.getTrafficLightsSupervisor().turnOnLights();
+        }
+        paths = new CityGraph().generate(this);
+    }
+
+    public List<Frame> frame = new ArrayList<>();
+
+    public void makeStep() {
+        while (Settings.TIME == spawnCarArray.get(0)) {
+            cars.add(spawnCar());
+            spawnCarArray.remove(0);
+        }
+        for (Crossing crossing : getCrossings()) {
+            crossing.getTrafficLightsSupervisor().changeAllLights();
+        }
+        carHandler();
+        Settings.TIME += 1;
+
+        // TODO: Disable if rendering is not enabled
+        List<DrawableCar> drawableCars = cars.stream()
+                .map(DrawableCar::fromCar)
+                .collect(Collectors.toList());
+        List<DrawableCrossingTrafficLight> drawableLights = crossings.stream()
+                .map(DrawableCrossingTrafficLight::fromCrossing)
+                .collect(Collectors.toList());
+
+        frame.add(new Frame(drawableCars, drawableLights, waitingTime));
     }
 
     public Car spawnCar() {
-        Lane startLane = null;
-        Lane endLane = null;
-        while (startLane == endLane) {
-            startLane = lanes.get(rand.nextInt(lanes.size()));
-            endLane = lanes.get(rand.nextInt(lanes.size()));
+        Road startRoad = null;
+        Road endRoad = null;
 
-            boolean doesAnyContainTurn = startLane.doesContainTurn() || endLane.doesContainTurn();
-            boolean areOnTheSameRoad = startLane.getStartCrossing() == endLane.getEndCrossing() && startLane.getEndCrossing() == endLane.getStartCrossing();
-            if (doesAnyContainTurn || areOnTheSameRoad) {
-                startLane = null;
-                endLane = null;
+        while (startRoad == endRoad) {
+
+            startRoad = roads.get(rand.nextInt(roads.size()));
+            endRoad = roads.get(rand.nextInt(roads.size()));
+
+            boolean doesAnyContainTurn = startRoad.getLaneList().get(0).doesContainTurn() || endRoad.getLaneList().get(0).doesContainTurn();
+            if (doesAnyContainTurn) {
+                startRoad = null;
+                endRoad = null;
             }
         }
-        return new Car(startLane, endLane);
+        return new Car(startRoad, endRoad, paths);
+    }
+
+    public void carHandler(){
+        List<Car> removeCars = new ArrayList<>();
+
+        for(Car car: cars){
+            if(car.getStatus() == RideStatus.WAITING)
+                waitingTime++;
+            else if(car.getStatus() == RideStatus.FINISH){
+                removeCars.add(car);
+                continue;
+            }
+            car.predictMoveCar();
+        }
+
+        for(Car removeCar: removeCars){
+            cars.remove(removeCar);
+        }
+
+        for( Car car: cars){
+            car.moveCar();
+        }
+    }
+
+    private void createSpawnCarArray() {
+        double[] trapezeArea = new double[Settings.ENDING_HOUR];
+        double[] carsPerHour = new double[Settings.ENDING_HOUR];
+
+        for(int i = Settings.STARTING_HOUR; i< Settings.ENDING_HOUR; i++){
+            trapezeArea[i] = (Settings.TRAFFIC_LEVEL_BY_HOUR[i] + Settings.TRAFFIC_LEVEL_BY_HOUR[i+1])/2;
+        }
+
+        double trapeze_area_sum = Arrays.stream(trapezeArea).sum();
+        for(int i = Settings.STARTING_HOUR; i< Settings.ENDING_HOUR; i++){
+            carsPerHour[i] = trapezeArea[i]/trapeze_area_sum* Settings.CARS_QUANTITY;
+        }
+
+        double leftCars=0;
+        for(int hour = Settings.STARTING_HOUR; hour< Settings.ENDING_HOUR; hour++){
+            double carsEverySecond = carsPerHour[hour]/3600;
+            for(int second=0; second<3600; second++){
+                leftCars += carsEverySecond;
+                while(leftCars >= 1){
+                    spawnCarArray.add(3600 * hour + second);
+                    leftCars -= 1;
+                }
+
+            }
+        }
     }
 
 

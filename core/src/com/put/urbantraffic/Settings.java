@@ -2,7 +2,7 @@ package com.put.urbantraffic;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class SETTINGS {
+public class Settings {
 
     final static float CAMERA_MOVE_SPEED = 300f;
 
@@ -11,7 +11,7 @@ public class SETTINGS {
     final static int ENDING_HOUR = 24;
     static int TIME = STARTING_HOUR*3600;
     final static double[] TRAFFIC_LEVEL_BY_HOUR = new double[]{1.6, 1.1, 1.1, 0.9, 1.1, 1.2, 2.4, 4.4, 6.8, 7.8, 5.7, 5.3, 5.7, 5.8, 6.3, 7.4, 8.2, 6.9, 5.2, 4.2, 3.2, 2.8, 2.3, 1.9, 1.6};
-    final static int CARS_QUANTITY = 1000;
+    final static int CARS_QUANTITY = 10000;
 
 
 ///////////////////////////////////

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.put.urbantraffic.SETTINGS.CAR_SPEED_MULTIPLIER;
+import static com.put.urbantraffic.Settings.CAR_SPEED_MULTIPLIER;
 
 
 @Data
@@ -19,8 +19,8 @@ public class Car {
                 '}';
     }
 
-    private final Lane startLane;
-    private final Lane endLane;
+    private Lane startLane;
+    private Lane endLane;
     private Node startNode;
     private Node endNode;
 
@@ -28,6 +28,7 @@ public class Car {
 
     private Node currentNode;
     private Node nextNode;
+    private Node predictedCarPosition;
     private Node carPosition;
     private Lane currentLane;
     private float nodePercentage = 0.0f;
@@ -51,37 +52,56 @@ public class Car {
         TOP, RIGHT, BOTTOM, LEFT
     }
 
-    public Car(Lane startLane, Lane endLane) {
-
-        this.startLane = startLane;
-        this.endLane = endLane;
-
-        this.startNode = this.startLane.getMiddlePoint();
-        this.endNode = this.endLane.getMiddlePoint();
-
-        this.path = generatePath(startLane, endLane);
+    public Car(Road startRoad, Road endRoad, CityGraph.PathWithTime[][] paths) {
+        this.path = generatePathAndInitializeLanes(startRoad, endRoad, paths);
 
         this.currentNode = new Node(path.get(0).getX(), path.get(0).getY());
         this.currentLane = lanesList.get(0);
+
         this.carPosition = new Node(path.get(0).getX(), path.get(0).getY());
+        this.predictedCarPosition = new Node(path.get(0).getX(), path.get(0).getY());
+
         this.nextNode = path.get(1);
         this.nextCrossing = crossingList.get(0);
 
         this.way = calculateWay(this.currentNode, this.nextNode);
 
-        int laneCenter = (int)(startLane.getLength()/(Lane.AVERAGE_CAR_LENGTH + Lane.DISTANCE_BETWEEN_CARS))/2;
-        if(laneCenter > startLane.getCarsList().size()){
-            startLane.getCarsList().add(this);
-        } else{
-            startLane.getCarsList().add(laneCenter, this);
+        List<Node> nodeList = startLane.getNodeList();
+        Way laneWay = calculateWay(nodeList.get(0), nodeList.get(1));
+        List<Car> carsList = startLane.getCarsList();
+        int i;
+        loop:
+        for (i = 0; i < carsList.size(); i++) {
+            switch (laneWay) {
+                case TOP:
+                    if (carsList.get(i).getCarPosition().getY() < currentNode.getY()) break loop;
+                    break;
+                case RIGHT:
+                    if (carsList.get(i).getCarPosition().getY() < currentNode.getX()) break loop;
+                    break;
+                case BOTTOM:
+                    if (carsList.get(i).getCarPosition().getY() > currentNode.getY()) break loop;
+                    break;
+                case LEFT:
+                    if (carsList.get(i).getCarPosition().getY() > currentNode.getX()) break loop;
+                    break;
+            }
         }
+        startLane.getCarsList().add(i, this);
 //        System.out.println(this.path);
 
     }
 
-    private List<Node> generatePath(Lane startLane, Lane endLane) {
-        calculatedPath = UrbanTrafficFlowSimulation.paths[startLane.getId()][endLane.getId()];
+    private List<Node> generatePathAndInitializeLanes(Road startRoad, Road endRoad, CityGraph.PathWithTime[][] paths) {
+
+        List<Lane> possibleStartLanes = startRoad.getLaneList();
+        List<Lane> possibleEndLanes = endRoad.getLaneList();
+        calculatedPath = paths[possibleStartLanes.get(0).getId()][possibleEndLanes.get(0).getId()];
         this.crossingList = new ArrayList<>(calculatedPath.getCrossings());
+        this.startLane = possibleStartLanes.get(0).getEndCrossing() == crossingList.get(0) ? possibleStartLanes.get(0) : possibleStartLanes.get(1);
+        this.endLane = possibleEndLanes.get(0).getStartCrossing() == crossingList.get(crossingList.size() - 1) ? possibleEndLanes.get(0) : possibleEndLanes.get(1);
+        this.startNode = this.startLane.getMiddlePoint();
+        this.endNode = this.endLane.getMiddlePoint();
 
         this.lanesList = new ArrayList<>(Collections.singletonList(this.startLane));
         this.lanesList.addAll(calculatedPath.getLanes());
@@ -105,7 +125,7 @@ public class Car {
         return path;
     }
 
-    public void moveCar() {
+    public void predictMoveCar() {
         if (status != RideStatus.FINISH) {
 
             status = RideStatus.RIDING;
@@ -130,7 +150,8 @@ public class Car {
                 if(calculateDistance(carPosition.getX(),
                         carPosition.getY(),
                         previousCar.carPosition.getX(),
-                        previousCar.carPosition.getY()) <= Lane.DISTANCE_BETWEEN_CARS + Lane.AVERAGE_CAR_LENGTH * 2){
+                        previousCar.carPosition.getY()) <= Lane.DISTANCE_BETWEEN_CARS + Lane.AVERAGE_CAR_LENGTH * 2
+                && previousCar.getWay() == way){
                     status = RideStatus.WAITING;
                     return;
                 }
@@ -193,7 +214,7 @@ public class Car {
 
                     if (currentLane.getNodeList().size() == 2 || (currentLane.getNodeList().size() > 2 && nextNode == currentLane.getNodeList().get(2))) {
 
-                        lanesList.get(0).getCarsList().remove(0);
+                        lanesList.get(0).getCarsList().remove(this);
                         lanesList.remove(0);
 
 
@@ -220,13 +241,17 @@ public class Car {
             }
 
             if(status == RideStatus.RIDING || onCrossing) {
-                carPosition.setX((int) (currentNode.getX() + xVector * nodePercentage / 100));
-                carPosition.setY((int) (currentNode.getY() + yVector * nodePercentage / 100));
+                predictedCarPosition.setX((int) (currentNode.getX() + xVector * nodePercentage / 100));
+                predictedCarPosition.setY((int) (currentNode.getY() + yVector * nodePercentage / 100));
             }
 
 //            System.out.println("Car cords:" + actualNode.getX() + " " + actualNode.getY() + " Node percentage " + nodePercentage + " xVec " + xVector + " yVec " + yVector);
 
         }
+    }
+
+    void moveCar(){
+        carPosition = predictedCarPosition;
     }
 
     private int getNodeLength(Node currentNode, Node nextNode) {
