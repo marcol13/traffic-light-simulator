@@ -15,6 +15,7 @@ public class City {
     private final List<Road> roads;
     private final List<Lane> lanes = new ArrayList<>();
     public List<Integer> spawnCarArray = new ArrayList<>();
+    public int time = Settings.STARTING_HOUR*3600;
     public long waitingTime = 0;
     Random rand;
     public CityGraph.PathWithTime[][] paths;
@@ -53,7 +54,7 @@ public class City {
     public List<Frame> frame = new ArrayList<>();
 
     public void makeStep() {
-        while (Settings.TIME == spawnCarArray.get(0)) {
+        while (time == spawnCarArray.get(0)) {
             cars.add(spawnCar());
             spawnCarArray.remove(0);
         }
@@ -61,7 +62,7 @@ public class City {
             crossing.getTrafficLightsSupervisor().changeAllLights();
         }
         carHandler();
-        Settings.TIME += 1;
+        time += 1;
 
         // TODO: Disable if rendering is not enabled
         List<DrawableCar> drawableCars = cars.stream()
@@ -71,7 +72,7 @@ public class City {
                 .map(DrawableCrossingTrafficLight::fromCrossing)
                 .collect(Collectors.toList());
 
-        frame.add(new Frame(drawableCars, drawableLights, waitingTime));
+        frame.add(new Frame(drawableCars, drawableLights, waitingTime, time));
     }
 
     public Car spawnCar() {
