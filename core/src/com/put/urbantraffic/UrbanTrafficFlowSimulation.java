@@ -18,6 +18,7 @@ import lombok.val;
 import java.util.List;
 
 import java.util.Random;
+import java.util.Set;
 
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
@@ -32,6 +33,9 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private Frame frameToRender = null;
     private int frameIndex = 0;
     private int speed = 1;
+    private final int scalePositionX = 2500;
+    private final int scalePositionY = 0;
+    private final int scaleSpace = 20;
 
     @Override
     public void create() {
@@ -178,8 +182,14 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             drawCircle(car.getX() + offsetX, car.getY() + offsetY, Settings.CAR_RADIUS, car.getStatus() == RideStatus.RIDING ? Settings.CAR_CIRCLE_COLOR : Color.BLUE);
         }
 
+        drawLinearScale();
+
         batch.setProjectionMatrix(extendViewport.getCamera().combined);
         batch.begin();
+        font.getData().setScale(1.0f);
+        font.draw(batch, "0", scalePositionX - 5,scalePositionY + 2 * scaleSpace);
+        font.draw(batch, "250", scalePositionX + Settings.MESH_DISTANCE - 15,scalePositionY + 2 * scaleSpace);
+        font.draw(batch, "500 [m]", scalePositionX + 2 * Settings.MESH_DISTANCE - 15,scalePositionY + 2 * scaleSpace);
         font.getData().setScale(4.0f);
         font.draw(batch, "Value of goal function: " + Long.toString(frameToRender.getWaitingTime()), 0,0);
 
@@ -188,6 +198,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         String minute = String.format("%02d", currentSimulationTime / 60 % 60);
         String second = String.format("%02d", currentSimulationTime % 60);
         font.draw(batch, "Current time: " + hour + ":" + minute + ":" + second, 0,100);
+
+        font.draw(batch, "Amount of cars: " + frameToRender.getCars().size(), 0,-100);
         batch.end();
     }
 
@@ -369,6 +381,16 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         for (Lane lane : pathWithTime.getLanes()) {
             drawLanes(lane.getStartCrossing().getX(), lane.getStartCrossing().getY(), lane.getEndCrossing().getX(), lane.getEndCrossing().getY(), 1, Color.LIME);
         }
+    }
+
+    private void drawLinearScale(){
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.rectLine(scalePositionX, scalePositionY, scalePositionX + 2 * Settings.MESH_DISTANCE, scalePositionY, 5);
+        shapeRenderer.rectLine(scalePositionX, scalePositionY - scaleSpace, scalePositionX, scalePositionY + scaleSpace, 5);
+        shapeRenderer.rectLine(scalePositionX + 2 * Settings.MESH_DISTANCE, scalePositionY - scaleSpace, scalePositionX + 2 * Settings.MESH_DISTANCE, scalePositionY + scaleSpace, 5);
+        shapeRenderer.rectLine(scalePositionX + Settings.MESH_DISTANCE, (float) (scalePositionY - scaleSpace * 0.75), scalePositionX + Settings.MESH_DISTANCE, (float) (scalePositionY + scaleSpace * 0.75), 5);
+        shapeRenderer.end();
     }
 
     @Override
