@@ -54,7 +54,7 @@ public class City {
     public List<Frame> frame = new ArrayList<>();
 
     public void makeStep() {
-        while (time == spawnCarArray.get(0)) {
+        while (spawnCarArray.size() > 0 && time == spawnCarArray.get(0)) {
             cars.add(spawnCar());
             spawnCarArray.remove(0);
         }
