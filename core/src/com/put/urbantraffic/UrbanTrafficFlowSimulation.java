@@ -194,7 +194,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         font.draw(batch, "Value of goal function: " + Long.toString(frameToRender.getWaitingTime()), 0,0);
 
         long currentSimulationTime = frameToRender.getCurrentTime();
-        String hour = String.format("%02d", currentSimulationTime / 3600 + Settings.STARTING_HOUR);
+        String hour = String.format("%02d", currentSimulationTime / 3600);
         String minute = String.format("%02d", currentSimulationTime / 60 % 60);
         String second = String.format("%02d", currentSimulationTime % 60);
         font.draw(batch, "Current time: " + hour + ":" + minute + ":" + second, 0,100);
