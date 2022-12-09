@@ -273,8 +273,10 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 frameToRender = city.frame.get(frameIndex);
                 frameIndex += speed;
             }
-//            Uncomment to see the passing time
-//            System.out.println(Settings.TIME);
+            else{
+                frameIndex = city.frame.size()-1;
+                frameToRender = city.frame.get(frameIndex);
+            }
         }
 
         handleSpeedControl();
