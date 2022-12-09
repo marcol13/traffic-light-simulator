@@ -83,6 +83,8 @@ public class City {
 
             startRoad = roads.get(rand.nextInt(roads.size()));
             endRoad = roads.get(rand.nextInt(roads.size()));
+//            startRoad = roads.get(rand.nextInt(3));
+//            endRoad = roads.get(14);
 
             boolean doesAnyContainTurn = startRoad.getLaneList().get(0).doesContainTurn() || endRoad.getLaneList().get(0).doesContainTurn();
             if (doesAnyContainTurn) {
