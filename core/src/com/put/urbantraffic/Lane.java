@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class Lane {
-    public static final double AVERAGE_CAR_LENGTH = 10;
-    public static final double DISTANCE_BETWEEN_CARS = 0.5;
+//    ??? what is that? same as Settings.CAR_RADIUS ??? I guess
+//    public static final double AVERAGE_CAR_LENGTH = 10;
+//    ??? Distance between cars in jam?? why 0.5? Does it even change anything?
+//    public static final double DISTANCE_BETWEEN_CARS = 0.5;
 
     private final int id;
     private final Crossing startCrossing;
@@ -101,7 +103,9 @@ public class Lane {
     }
 
     public boolean isLaneFull(){
-        return length - carsList.size()* (AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS) < AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS;
+//        ???
+//        return length - carsList.size()* (AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS) < AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS;
+        return length - carsList.size()* (Settings.CAR_RADIUS + Settings.DISTANCE_BETWEEN_CARS_IN_JAM) < Settings.CAR_RADIUS + Settings.DISTANCE_BETWEEN_CARS_IN_JAM;
     }
 
     @Override

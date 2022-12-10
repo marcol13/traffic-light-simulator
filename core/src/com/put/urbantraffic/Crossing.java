@@ -7,7 +7,8 @@ import java.util.Random;
 
 @Data
 public class Crossing {
-    static final int NODE_CIRCLE_RADIUS = 15;
+//    ???
+//    static final int NODE_CIRCLE_RADIUS = 15;
     private final int id;
     private final int x;
     private final int y;

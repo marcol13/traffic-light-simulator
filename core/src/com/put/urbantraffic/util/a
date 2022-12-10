@@ -1,0 +1,30 @@
+sprawdz czy jestes pierwszym autem
+    tak:
+    nie:
+        sprawdz czy w kolejnym bedziesz na skrzyżo (predictedX, predictedY)
+        tak:
+            sprawdz czy jestes na skrzyzo (teraz aktualne X, Y):
+                tak:
+                nie:
+                    sprawdz czy moj slot jest wolny:
+                        tak:
+                            sprawdz czy wszystkie sloty w lewo są zajete:
+                                tak:
+                                    stoj
+                                nie:
+                                    sprawdz czy droga na ktora wjade jest pelna:
+                                        tak:
+                                            stoj
+                                        nie:
+                                            CHYBA JEDŹ (zajmij slota i możę usun z lane)
+                        nie:
+                            wypierdalaj do kolejki
+        nie:
+            sprawdz czy w kolejnym bedzie ponad 100% drogi
+                tak:
+                nie:
+                    sprawdz czy w kolejnym będę na aucie przede mną
+                    tak:
+                        stój
+                    nie:
+                        jedz

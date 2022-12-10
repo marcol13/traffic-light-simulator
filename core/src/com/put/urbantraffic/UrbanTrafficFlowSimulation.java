@@ -54,7 +54,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         new Thread(() -> {
             for (int i = Settings.STARTING_HOUR * 3600; i < Settings.ENDING_HOUR * 3600 - 1; i++) {
                 city.makeStep();
-                System.out.println("Rendering frame: " + city.frame.size());
+//                System.out.println("Rendering frame: " + city.frame.size());
             }
         }).start();
 
