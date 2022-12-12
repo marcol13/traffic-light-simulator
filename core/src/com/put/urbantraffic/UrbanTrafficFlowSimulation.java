@@ -100,15 +100,15 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
 
 
-        SimulationCore simulation = new SimulationCore(rand);
-        simulation.city = city;
-        simulation.epochs = Settings.EPOCHS;
-        simulation.population = Settings.POPULATION;
-        simulation.numberOfCrossings = city.getCrossings().size();
-        simulation.mutationScale = Settings.MUTATION_SCALE;
-        simulation.initialDeltaRange = Settings.INITIAL_DELTA_RANGE;
-        simulation.tournamentSelectionContestants = Settings.TOURNAMENT_SELECTION_CONTESTANT;
-        simulation.startSimulation();
+//        SimulationCore simulation = new SimulationCore(rand);
+//        simulation.city = city;
+//        simulation.epochs = Settings.EPOCHS;
+//        simulation.population = Settings.POPULATION;
+//        simulation.numberOfCrossings = city.getCrossings().size();
+//        simulation.mutationScale = Settings.MUTATION_SCALE;
+//        simulation.initialDeltaRange = Settings.INITIAL_DELTA_RANGE;
+//        simulation.tournamentSelectionContestants = Settings.TOURNAMENT_SELECTION_CONTESTANT;
+//        simulation.startSimulation();
 
         font = new BitmapFont(Gdx.files.internal("bahnschrift.fnt"));
         clockFont = new BitmapFont(Gdx.files.internal("clock-font.fnt"));
@@ -323,7 +323,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             speed = 80;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_9)) {
-            speed = 90;
+            speed = 999999999;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_0)) {
             speed = 1;
