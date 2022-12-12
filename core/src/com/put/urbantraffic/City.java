@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.put.urbantraffic.Settings.MESH_DISTANCE;
+import static com.put.urbantraffic.Settings.TEMPORARY_INITIAL_TRAFFIC_LIGHT_TIME;
 
 public class City {
     private final List<Crossing> crossings;
@@ -132,11 +133,11 @@ public class City {
 
         double leftCars=0;
         for(int hour = Settings.STARTING_HOUR; hour< Settings.ENDING_HOUR; hour++){
-            double carsEverySecond = carsPerHour[hour]/3600;
-            for(int second=0; second<3600; second++){
+            double carsEverySecond = carsPerHour[hour]/Settings.TIME_PRECISION/3600;
+            for(int frame=0; frame<3600 * Settings.TIME_PRECISION; frame++){
                 leftCars += carsEverySecond;
                 while(leftCars >= 1){
-                    spawnCarArray.add(3600 * hour + second);
+                    spawnCarArray.add(hour * 3600 * Settings.TIME_PRECISION + frame);
                     leftCars -= 1;
                 }
 
@@ -379,9 +380,9 @@ public class City {
     }
 
     private Crossing addNewCrossing(int x, int y, int crossingId) {
-        final int offset = rand.nextBoolean() ? 215 / 2 : 0;
-        final int greenDuration = 215;
-        final int redDuration = 50;
+        final int offset = rand.nextBoolean() ? TEMPORARY_INITIAL_TRAFFIC_LIGHT_TIME / 2 : 0;
+        final int greenDuration = Settings.TEMPORARY_INITIAL_TRAFFIC_LIGHT_TIME * Settings.TIME_PRECISION;
+        final int redDuration = Settings.TEMPORARY_INITIAL_TRAFFIC_LIGHT_TIME * Settings.TIME_PRECISION;
         Crossing crossing = new Crossing(crossingId, x * MESH_DISTANCE / 2, y * MESH_DISTANCE / 2, offset, greenDuration, redDuration, rand);
         crossings.add(crossing);
         return crossing;

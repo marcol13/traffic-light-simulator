@@ -31,11 +31,10 @@ public class Settings {
     final static int CROSSING_RADIUS = 4;
     final static int CORNER_RADIUS = 4;
     final static int NODE_LANE_OFFSET = 4;
-    final static int CAR_RADIUS = 30;
+    final static int CAR_RADIUS = 2;
     final static int DISTANCE_BETWEEN_CARS_IN_JAM = 1;
     final static Color CAR_CIRCLE_COLOR = Color.YELLOW;
     final static float CAR_SPEED_MULTIPLIER = 1.0f;
-//    final static Color CAR_CIRCLE_COLOR = Color.GREEN;
 
 
 
@@ -49,5 +48,6 @@ public class Settings {
 //    TODO Needs to be change to min_delta & max_delta
     final static int INITIAL_DELTA_RANGE = 1000;
 
-
+    final static int TIME_PRECISION = 10; //One second is divided into TIME_PRECISION frames so e.g. TIME_PRECISION = 30 => one day is 24 x 60 x 60 x 30 frames
+    final static int TEMPORARY_INITIAL_TRAFFIC_LIGHT_TIME = 30; //In seconds
 }

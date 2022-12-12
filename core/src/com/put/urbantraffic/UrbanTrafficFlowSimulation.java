@@ -53,7 +53,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         // runs whole simulation on different thread
         // so we can still render next frames
         new Thread(() -> {
-            for (int i = Settings.STARTING_HOUR * 3600; i < Settings.ENDING_HOUR * 3600 - 1; i++) {
+            for (int i = Settings.STARTING_HOUR * 3600 * Settings.TIME_PRECISION; i < Settings.ENDING_HOUR * 3600 * Settings.TIME_PRECISION - 1; i++) {
                 city.makeStep();
 //                System.out.println("Rendering frame: " + city.frame.size());
             }
@@ -195,9 +195,9 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         font.draw(batch, "Value of goal function: " + Long.toString(frameToRender.getWaitingTime()), -100,-300);
 
         long currentSimulationTime = frameToRender.getCurrentTime();
-        String hour = String.format("%02d", currentSimulationTime / 3600);
-        String minute = String.format("%02d", currentSimulationTime / 60 % 60);
-        String second = String.format("%02d", currentSimulationTime % 60);
+        String hour = String.format("%02d", currentSimulationTime / Settings.TIME_PRECISION / 3600 );
+        String minute = String.format("%02d", currentSimulationTime / Settings.TIME_PRECISION / 60 % 60);
+        String second = String.format("%02d", currentSimulationTime / Settings.TIME_PRECISION % 60);
         font.draw(batch, "Current time: " + hour + ":" + minute + ":" + second, -100,-100);
 
         font.draw(batch, "Amount of cars: " + frameToRender.getCars().size(), -100,-200);
