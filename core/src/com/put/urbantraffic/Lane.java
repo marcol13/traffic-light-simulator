@@ -105,7 +105,9 @@ public class Lane {
     public boolean isLaneFull(){
 //        ???
 //        return length - carsList.size()* (AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS) < AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS;
-        return length - carsList.size()* (Settings.CAR_RADIUS + Settings.DISTANCE_BETWEEN_CARS_IN_JAM) < Settings.CAR_RADIUS + Settings.DISTANCE_BETWEEN_CARS_IN_JAM;
+
+        //TODO Nie jest uwzględniany rozmiar skrzyżowania
+        return length - carsList.size()* (Settings.CAR_RADIUS + Settings.DISTANCE_BETWEEN_CARS_IN_JAM) - 2 * Settings.CROSSING_RADIUS < Settings.CAR_RADIUS + Settings.DISTANCE_BETWEEN_CARS_IN_JAM;
     }
 
     @Override

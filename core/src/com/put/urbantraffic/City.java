@@ -381,7 +381,7 @@ public class City {
     private Crossing addNewCrossing(int x, int y, int crossingId) {
         final int offset = rand.nextBoolean() ? 215 / 2 : 0;
         final int greenDuration = 215;
-        final int redDuration = 50;
+        final int redDuration = 215;
         Crossing crossing = new Crossing(crossingId, x * MESH_DISTANCE, y * MESH_DISTANCE, offset, greenDuration, redDuration, rand);
         crossings.add(crossing);
         return crossing;

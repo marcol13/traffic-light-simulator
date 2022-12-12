@@ -55,10 +55,7 @@ public class Car {
     public Car(Road startRoad, Road endRoad, CityGraph.PathWithTime[][] paths) {
         this.path = generatePathAndInitializeLanes(startRoad, endRoad, paths);
 
-//        ??????
-//        this.currentNode = new Node(path.get(0).getX(), path.get(0).getY());
         this.currentNode = path.get(0);
-//
         this.currentLane = lanesList.get(0);
 
 //        ???
@@ -83,17 +80,18 @@ public class Car {
                     if (carsList.get(i).getCarPosition().getY() < currentNode.getY()) break loop;
                     break;
                 case RIGHT:
-                    if (carsList.get(i).getCarPosition().getY() < currentNode.getX()) break loop;
+                    if (carsList.get(i).getCarPosition().getX() < currentNode.getX()) break loop;
                     break;
                 case BOTTOM:
                     if (carsList.get(i).getCarPosition().getY() > currentNode.getY()) break loop;
                     break;
                 case LEFT:
-                    if (carsList.get(i).getCarPosition().getY() > currentNode.getX()) break loop;
+                    if (carsList.get(i).getCarPosition().getX() > currentNode.getX()) break loop;
                     break;
             }
         }
         startLane.getCarsList().add(i, this);
+        direction = calculateDirection(way, calculateWay(path.get(1), path.get(2)));
 //        System.out.println(this.path);
 
     }
@@ -165,7 +163,7 @@ public class Car {
             if (distance <= Settings.CROSSING_RADIUS + Settings.CAR_RADIUS) {
 
                 if (path.size() > 2) {
-                    System.out.println("Pierogi z serem");
+//                    System.out.println("Pierogi z serem");
 //                    Node currentCrossing = path.get(1);
 //                    Node nodeAfterCrossing = path.get(2);
 //                    nextWay = calculateWay(path.get(1), nodeAfterCrossing);
@@ -180,8 +178,6 @@ public class Car {
                         status = RideStatus.WAITING;
                         return;
                     }
-                }else{
-                    System.out.println("Pierogi ruskie");
                 }
             }
         }
@@ -202,7 +198,20 @@ public class Car {
                             status = RideStatus.WAITING;
                             return;
                         }
+                    } else{
+                        status = RideStatus.FINISH;
+                        carPosition = nextNode;
+                        return;
                     }
+                }
+            }
+            else if (onCrossing){
+                if(!lanesList.get(1).isLaneFull()){
+                    status = RideStatus.RIDING;
+                }
+                else{
+                    status = RideStatus.WAITING;
+                    return;
                 }
             }
 
@@ -212,16 +221,20 @@ public class Car {
                 path.remove(0);
 
                 onCrossing = false;
-                nextCrossing.goOutFromCrossing(this);
 
+                if(path.size() > 2){
+                    direction = calculateDirection(calculateWay(path.get(0), path.get(1)), calculateWay(path.get(1), path.get(2)));
+                }
 
                 if (currentLane.getNodeList().size() == 2 || (currentLane.getNodeList().size() > 2 && nextNode == currentLane.getNodeList().get(2))) {
+
+                    nextCrossing.goOutFromCrossing(this);
 
                     lanesList.get(0).getCarsList().remove(this);
                     lanesList.remove(0);
 
 
-                    if (lanesList.size() > 0)
+                    if (!lanesList.isEmpty())
                         lanesList.get(0).getCarsList().add(this);
 
                     if (crossingList.size() > 1) {
