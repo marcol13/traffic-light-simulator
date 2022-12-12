@@ -22,18 +22,16 @@ public class Settings {
     final static int CROSSING_AMOUNT = 25;
     final static int GRID_MULTIPLIER = 1;
     final static int MESH_DISTANCE = 100;
-//    final static int MESH_DISTANCE = 50;
 
 
 
 ///////////////////////////////////
 //    Car, Crossing, Lane characteristics
 ///////////////////////////////////
-//    final static int CROSSING_RADIUS = 4;
     final static int CROSSING_RADIUS = 4;
     final static int CORNER_RADIUS = 4;
     final static int NODE_LANE_OFFSET = 4;
-    final static int CAR_RADIUS = 2;
+    final static int CAR_RADIUS = 30;
     final static int DISTANCE_BETWEEN_CARS_IN_JAM = 1;
     final static Color CAR_CIRCLE_COLOR = Color.YELLOW;
     final static float CAR_SPEED_MULTIPLIER = 1.0f;

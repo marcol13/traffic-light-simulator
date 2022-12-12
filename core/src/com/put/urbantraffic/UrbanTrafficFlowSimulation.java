@@ -251,7 +251,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     }
 
     private void drawLaneWithSpeedLimit(int lanesAmount, Lane lane, int startX, int startY, int endX, int endY) {
-        if (lane.getSpeedLimit() == 40) {
+        if (lane.getSpeedLimit() == 30) {
             drawLanes(startX, startY, endX, endY, lanesAmount, Color.DARK_GRAY);
         } else if (lane.getSpeedLimit() == 50) {
             drawLanes(startX, startY, endX, endY, lanesAmount, Color.LIGHT_GRAY);

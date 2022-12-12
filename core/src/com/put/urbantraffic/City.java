@@ -466,7 +466,7 @@ public class City {
         val upperBoundLength = roadsLengths.get((int) (roadsLengths.size() * upperBoundFraction));
         for (Lane lane : lanes) {
             if (lane.getLength() <= lowerBoundLength) {
-                lane.setSpeedLimit(40);
+                lane.setSpeedLimit(30);
             } else if (lane.getLength() <= upperBoundLength) {
                 lane.setSpeedLimit(50);
             } else {
