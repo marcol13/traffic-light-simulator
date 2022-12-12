@@ -33,7 +33,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private Frame frameToRender = null;
     private int frameIndex = 0;
     private int speed = 1;
-    private final int scalePositionX = 2500;
+//    private final int scalePositionX = 2500;
+    private final int scalePositionX = -100;
     private final int scalePositionY = 0;
     private final int scaleSpace = 20;
 
@@ -188,18 +189,18 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         batch.begin();
         font.getData().setScale(1.0f);
         font.draw(batch, "0", scalePositionX - 5,scalePositionY + 2 * scaleSpace);
-        font.draw(batch, "250", scalePositionX + Settings.MESH_DISTANCE - 15,scalePositionY + 2 * scaleSpace);
-        font.draw(batch, "500 [m]", scalePositionX + 2 * Settings.MESH_DISTANCE - 15,scalePositionY + 2 * scaleSpace);
+        font.draw(batch, "100", scalePositionX + Settings.MESH_DISTANCE - 15,scalePositionY + 2 * scaleSpace);
+        font.draw(batch, "200 [m]", scalePositionX + 2 * Settings.MESH_DISTANCE - 15,scalePositionY + 2 * scaleSpace);
         font.getData().setScale(4.0f);
-        font.draw(batch, "Value of goal function: " + Long.toString(frameToRender.getWaitingTime()), 0,0);
+        font.draw(batch, "Value of goal function: " + Long.toString(frameToRender.getWaitingTime()), -100,-300);
 
         long currentSimulationTime = frameToRender.getCurrentTime();
         String hour = String.format("%02d", currentSimulationTime / 3600);
         String minute = String.format("%02d", currentSimulationTime / 60 % 60);
         String second = String.format("%02d", currentSimulationTime % 60);
-        font.draw(batch, "Current time: " + hour + ":" + minute + ":" + second, 0,100);
+        font.draw(batch, "Current time: " + hour + ":" + minute + ":" + second, -100,-100);
 
-        font.draw(batch, "Amount of cars: " + frameToRender.getCars().size(), 0,-100);
+        font.draw(batch, "Amount of cars: " + frameToRender.getCars().size(), -100,-200);
         batch.end();
     }
 

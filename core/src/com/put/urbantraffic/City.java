@@ -165,13 +165,13 @@ public class City {
                     if (grid[y][x + 1] == 1) {
                         Crossing startCrossing = null;
                         for (Crossing crossing : crossings) {
-                            if (crossing.getX() == x * MESH_DISTANCE && crossing.getY() == y * MESH_DISTANCE) {
+                            if (crossing.getX() == x * MESH_DISTANCE / 2 && crossing.getY() == y * MESH_DISTANCE / 2) {
                                 startCrossing = crossing;
                                 break;
                             }
                         }
                         List<Node> nodes = new ArrayList<>();
-                        nodes.add(new Node(x * MESH_DISTANCE, y * MESH_DISTANCE));
+                        nodes.add(new Node(x * MESH_DISTANCE / 2, y * MESH_DISTANCE / 2));
                         x += 2;
                         while (grid[y][x] == 1) {
                             x++;
@@ -182,10 +182,10 @@ public class City {
                         }
                         Crossing endCrossing = null;
                         if (grid[y][x] == 9) {
-                            nodes.add(new Node(x * MESH_DISTANCE, y * MESH_DISTANCE));
+                            nodes.add(new Node(x * MESH_DISTANCE / 2, y * MESH_DISTANCE / 2));
 //                            Search for that crossing
                             for (Crossing crossing : crossings) {
-                                if (crossing.getX() == x * MESH_DISTANCE && crossing.getY() == y * MESH_DISTANCE) {
+                                if (crossing.getX() == x * MESH_DISTANCE / 2 && crossing.getY() == y * MESH_DISTANCE / 2) {
                                     endCrossing = crossing;
                                     break;
                                 }
@@ -206,13 +206,13 @@ public class City {
                     if (grid[y + 1][x] == 1) {
                         Crossing startCrossing = null;
                         for (Crossing crossing : crossings) {
-                            if (crossing.getX() == x * MESH_DISTANCE && crossing.getY() == y * MESH_DISTANCE) {
+                            if (crossing.getX() == x * MESH_DISTANCE / 2 && crossing.getY() == y * MESH_DISTANCE / 2) {
                                 startCrossing = crossing;
                                 break;
                             }
                         }
                         List<Node> nodes = new ArrayList<>();
-                        nodes.add(new Node(x * MESH_DISTANCE, y * MESH_DISTANCE));
+                        nodes.add(new Node(x * MESH_DISTANCE / 2, y * MESH_DISTANCE / 2));
                         y += 2;
                         while (grid[y][x] == 1) {
                             y++;
@@ -223,10 +223,10 @@ public class City {
                         }
                         Crossing endCrossing = null;
                         if (grid[y][x] == 9) {
-                            nodes.add(new Node(x * MESH_DISTANCE, y * MESH_DISTANCE));
+                            nodes.add(new Node(x * MESH_DISTANCE / 2, y * MESH_DISTANCE / 2));
 //                            Search for that crossing
                             for (Crossing crossing : crossings) {
-                                if (crossing.getX() == x * MESH_DISTANCE && crossing.getY() == y * MESH_DISTANCE) {
+                                if (crossing.getX() == x * MESH_DISTANCE / 2 && crossing.getY() == y * MESH_DISTANCE / 2) {
                                     endCrossing = crossing;
                                     break;
                                 }
@@ -249,13 +249,13 @@ public class City {
                     if (grid[tempy][tempx + 1] == 1) {
                         Crossing startCrossing = null;
                         for (Crossing crossing : crossings) {
-                            if (crossing.getX() == tempx * MESH_DISTANCE && crossing.getY() == tempy * MESH_DISTANCE) {
+                            if (crossing.getX() == tempx * MESH_DISTANCE / 2 && crossing.getY() == tempy * MESH_DISTANCE / 2) {
                                 startCrossing = crossing;
                                 break;
                             }
                         }
                         List<Node> nodes = new ArrayList<>();
-                        nodes.add(new Node(tempx * MESH_DISTANCE, tempy * MESH_DISTANCE));
+                        nodes.add(new Node(tempx * MESH_DISTANCE / 2, tempy * MESH_DISTANCE / 2));
                         tempx += 2;
                         while (grid[tempy][tempx] == 1) {
                             tempx++;
@@ -266,7 +266,7 @@ public class City {
                         }
                         Crossing endCrossing = null;
                         if (grid[tempy][tempx] == 8) {
-                            nodes.add(new Node(tempx * MESH_DISTANCE, tempy * MESH_DISTANCE));
+                            nodes.add(new Node(tempx * MESH_DISTANCE / 2, tempy * MESH_DISTANCE / 2));
                             int directionAfterTurn;
                             if (grid[tempy + 1][tempx] == 1) {
                                 directionAfterTurn = 1;
@@ -278,10 +278,10 @@ public class City {
                                 tempy += directionAfterTurn;
                             }
 
-                            nodes.add(new Node(tempx * MESH_DISTANCE, tempy * MESH_DISTANCE));
+                            nodes.add(new Node(tempx * MESH_DISTANCE / 2, tempy * MESH_DISTANCE / 2));
 //                            Search for that crossing
                             for (Crossing crossing : crossings) {
-                                if (crossing.getX() == tempx * MESH_DISTANCE && crossing.getY() == tempy * MESH_DISTANCE) {
+                                if (crossing.getX() == tempx * MESH_DISTANCE / 2 && crossing.getY() == tempy * MESH_DISTANCE / 2) {
                                     endCrossing = crossing;
                                     break;
                                 }
@@ -303,14 +303,14 @@ public class City {
                     if (grid[tempy][tempx - 1] == 1) {
                         Crossing startCrossing = null;
                         for (Crossing crossing : crossings) {
-                            if (crossing.getX() == tempx * MESH_DISTANCE && crossing.getY() == tempy * MESH_DISTANCE) {
+                            if (crossing.getX() == tempx * MESH_DISTANCE / 2 && crossing.getY() == tempy * MESH_DISTANCE / 2) {
                                 startCrossing = crossing;
                                 break;
                             }
                         }
 
                         List<Node> nodes = new ArrayList<>();
-                        nodes.add(new Node(tempx * MESH_DISTANCE, tempy * MESH_DISTANCE));
+                        nodes.add(new Node(tempx * MESH_DISTANCE / 2, tempy * MESH_DISTANCE / 2));
                         tempx--;
                         while (grid[tempy][tempx] == 1) {
                             tempx--;
@@ -321,7 +321,7 @@ public class City {
                         }
                         Crossing endCrossing = null;
                         if (grid[tempy][tempx] == 8) {
-                            nodes.add(new Node(tempx * MESH_DISTANCE, tempy * MESH_DISTANCE));
+                            nodes.add(new Node(tempx * MESH_DISTANCE / 2, tempy * MESH_DISTANCE / 2));
                             int directionAfterTurn;
                             if (grid[tempy + 1][tempx] == 1) {
                                 directionAfterTurn = 1;
@@ -333,10 +333,10 @@ public class City {
                                 tempy += directionAfterTurn;
                             }
 
-                            nodes.add(new Node(tempx * MESH_DISTANCE, tempy * MESH_DISTANCE));
+                            nodes.add(new Node(tempx * MESH_DISTANCE / 2, tempy * MESH_DISTANCE / 2));
 //                            Search for that crossing
                             for (Crossing crossing : crossings) {
-                                if (crossing.getX() == tempx * MESH_DISTANCE && crossing.getY() == tempy * MESH_DISTANCE) {
+                                if (crossing.getX() == tempx * MESH_DISTANCE / 2 && crossing.getY() == tempy * MESH_DISTANCE / 2) {
                                     endCrossing = crossing;
                                     break;
                                 }
@@ -362,16 +362,16 @@ public class City {
     private void addDriveway(int[][] grid, int x, int y, int addX, int addY, int crossingId) {
         List<Node> nodes = new ArrayList<>();
         Crossing crossing2 = addNewCrossing(x, y, crossingId);
-        nodes.add(new Node(x * MESH_DISTANCE, y * MESH_DISTANCE));
+        nodes.add(new Node(x * MESH_DISTANCE / 2, y * MESH_DISTANCE / 2));
         x += addX;
         y += addY;
         while (grid[y][x] == 1) {
             x += addX;
             y += addY;
         }
-        nodes.add(new Node(x * MESH_DISTANCE, y * MESH_DISTANCE));
+        nodes.add(new Node(x * MESH_DISTANCE / 2, y * MESH_DISTANCE / 2));
         for (Crossing crossing : crossings) {
-            if (crossing.getX() == x * MESH_DISTANCE && crossing.getY() == y * MESH_DISTANCE) {
+            if (crossing.getX() == x * MESH_DISTANCE / 2 && crossing.getY() == y * MESH_DISTANCE / 2) {
                 addNewRoad(nodes, crossing2, crossing);
                 break;
             }
@@ -382,7 +382,7 @@ public class City {
         final int offset = rand.nextBoolean() ? 215 / 2 : 0;
         final int greenDuration = 215;
         final int redDuration = 50;
-        Crossing crossing = new Crossing(crossingId, x * MESH_DISTANCE, y * MESH_DISTANCE, offset, greenDuration, redDuration, rand);
+        Crossing crossing = new Crossing(crossingId, x * MESH_DISTANCE / 2, y * MESH_DISTANCE / 2, offset, greenDuration, redDuration, rand);
         crossings.add(crossing);
         return crossing;
     }
