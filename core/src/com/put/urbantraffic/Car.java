@@ -33,7 +33,7 @@ public class Car {
     private Lane currentLane;
     private float nodePercentage = 0.0f;
 
-    private RideStatus status = RideStatus.RIDING;
+    private RideStatus status = RideStatus.STARTING;
 
     private List<Crossing> crossingList;
     private Crossing nextCrossing;
@@ -130,8 +130,6 @@ public class Car {
     }
 
     public void predictMoveCar() {
-        status = RideStatus.RIDING;
-
         List<Node> nodeList = currentLane.getNodeList();
         float speed = (float) currentLane.getSpeedLimit() / (float) getNodeLength(currentNode, nextNode);
 
@@ -142,7 +140,23 @@ public class Car {
 
         int carPositionInTrafficJam = currentLane.getCarsList().indexOf(this);
 
+        if(status == RideStatus.STARTING && carPositionInTrafficJam > 0){
+            Car previousCar = currentLane.getCarsList().get(carPositionInTrafficJam - 1);
+//            ??? TODO I would say we have to check it after the potential move, not now. BTW it is probably necessary with sequentional movement
+            //check, some car is in front of you
+            if (calculateDistance(predictedX,
+                    predictedY,
+                    previousCar.carPosition.getX(),
+                    previousCar.carPosition.getY()) <= Settings.DISTANCE_BETWEEN_CARS_IN_JAM + Settings.CAR_RADIUS * 2){
+                status = RideStatus.STARTING;
+                return;
+            }
+        }
+
+        status = RideStatus.RIDING;
+
         if(carPositionInTrafficJam > 0){
+            carPositionInTrafficJam = currentLane.getCarsList().indexOf(this);
 
             Car previousCar = currentLane.getCarsList().get(carPositionInTrafficJam - 1);
 //            ??? TODO I would say we have to check it after the potential move, not now. BTW it is probably necessary with sequentional movement
@@ -229,6 +243,8 @@ public class Car {
                 if (currentLane.getNodeList().size() == 2 || (currentLane.getNodeList().size() > 2 && nextNode == currentLane.getNodeList().get(2))) {
 
                     nextCrossing.goOutFromCrossing(this);
+
+                    nodePercentage = 0;
 
                     lanesList.get(0).getCarsList().remove(this);
                     lanesList.remove(0);

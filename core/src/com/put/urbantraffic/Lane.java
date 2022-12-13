@@ -107,7 +107,8 @@ public class Lane {
 //        return length - carsList.size()* (AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS) < AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS;
 
         //TODO Nie jest uwzględniany rozmiar skrzyżowania
-        return length - carsList.size()* (Settings.CAR_RADIUS + Settings.DISTANCE_BETWEEN_CARS_IN_JAM) - 2 * Settings.CROSSING_RADIUS < Settings.CAR_RADIUS + Settings.DISTANCE_BETWEEN_CARS_IN_JAM;
+        int carsWithoutStarting = (int)carsList.stream().filter(car -> car.getStatus() != RideStatus.STARTING && !car.isOnCrossing()).count();
+        return length - carsWithoutStarting * (2 * Settings.CAR_RADIUS + Settings.DISTANCE_BETWEEN_CARS_IN_JAM) - 2 * Settings.CROSSING_RADIUS < 2 * Settings.CAR_RADIUS + Settings.DISTANCE_BETWEEN_CARS_IN_JAM;
     }
 
     @Override
