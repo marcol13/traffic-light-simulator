@@ -41,14 +41,17 @@ public class Crossing {
                 '}';
     }
 
-    public Crossing(int id, int x, int y, int offset, int greenDuration, int redDuration, Random rand) {
+    public Crossing(int id, int x, int y, TrafficLightsSettings trafficLightsSettings, Random rand) {
         this.id = id;
         this.x = x;
         this.y = y;
         this.rand = rand;
-        this.trafficLightsSupervisor = new TrafficLightsSupervisor(greenDuration, redDuration, offset, rand);
+        this.trafficLightsSupervisor = new TrafficLightsSupervisor(trafficLightsSettings, rand);
     }
 
+    public void setTrafficLightsSettings(TrafficLightsSettings trafficLightsSettings) {
+        trafficLightsSupervisor.setTrafficLightsSettings(trafficLightsSettings);
+    }
 
     @SuppressWarnings("RedundantCollectionOperation")
     public void goOutFromCrossing(Car car) {

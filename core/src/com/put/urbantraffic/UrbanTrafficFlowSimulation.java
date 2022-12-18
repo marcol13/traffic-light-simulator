@@ -15,10 +15,10 @@ import com.put.urbantraffic.drawablemodels.DrawableCar;
 import com.put.urbantraffic.drawablemodels.Frame;
 import lombok.val;
 
-import java.util.List;
+import java.util.*;
 
-import java.util.Random;
-import java.util.Set;
+import static com.put.urbantraffic.Settings.IS_DEBUG;
+import static com.put.urbantraffic.Settings.IS_OPTIMIZATION;
 
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
@@ -37,6 +37,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private final int scalePositionX = -100;
     private final int scalePositionY = 0;
     private final int scaleSpace = 20;
+    SimulationCore simulation = new SimulationCore(new Random());
 
     @Override
     public void create() {
@@ -44,76 +45,39 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         extendViewport = new ExtendViewport(1200, 1200);
         Random rand = new Random(0);
 //        long seed = rand.nextLong();
-//        long seed = -4962768465676381896L;
-        long seed = -4962768465676381810L;
+        long seed = 0;
         rand.setSeed(seed);
         System.out.println("Seed is " + seed);
 
-        city = new City(Settings.GRID_MULTIPLIER * 2 * 16, Settings.GRID_MULTIPLIER * 2 * 9, Settings.CROSSING_AMOUNT, rand);
+        if (IS_DEBUG) {
+            System.out.println("Quantity of Crossings: " + city.getCrossings().size());
+            System.out.println("Quantity of Roads: " + city.getRoads().size());
+        }
 
-        // runs whole simulation on different thread
-        // so we can still render next frames
-        new Thread(() -> {
-            for (int i = Settings.STARTING_HOUR * 3600 * Settings.TIME_PRECISION; i < Settings.ENDING_HOUR * 3600 * Settings.TIME_PRECISION - 1; i++) {
-                city.makeStep();
-//                System.out.println("Rendering frame: " + city.frame.size());
-            }
-        }).start();
-
-        setupInitialCameraPositionAndZoom(Settings.GRID_MULTIPLIER);
-
-        System.out.println("Quantity of Crossings: " + city.getCrossings().size());
-        System.out.println("Quantity of Roads: " + city.getRoads().size());
-
-//        List<Crossing> crossings = new ArrayList<Crossing>(Arrays.asList(new Crossing(1, 0, 200, new ArrayList<>()), new Crossing(2, 0,  0, new ArrayList<>()), new Crossing(3, 0, 400, new ArrayList<>()), new Crossing(4, 200, 200, new ArrayList<>())));
-//        List<Road> roads = new ArrayList<Road>(
-//                Arrays.asList(
-//                        new Road(200,
-//                                new ArrayList<Lane>(Arrays.asList(
-//                                        new Lane(1, crossings.get(1), crossings.get(0), new ArrayList<Direction>()),
-//                                        new Lane(1, crossings.get(0), crossings.get(1), new ArrayList<Direction>()))),
-//                                new ArrayList<Node>(Arrays.asList(
-//                                        new Node(0, 0),
-//                                        new Node(0, 100),
-//                                        new Node(0, 200)))),
-//                        new Road(200,
-//                                new ArrayList<Lane>(Arrays.asList(
-//                                        new Lane(1, crossings.get(0), crossings.get(2), new ArrayList<Direction>()),
-//                                        new Lane(4, crossings.get(2), crossings.get(0), new ArrayList<Direction>()))),
-//                                new ArrayList<Node>(Arrays.asList(
-//                                        new Node(0, 200),
-//                                        new Node(0, 300),
-//                                        new Node(0, 400)))),
-//                        new Road(200,
-//                                new ArrayList<Lane>(Arrays.asList(
-//                                        new Lane(5, crossings.get(0), crossings.get(3), new ArrayList<Direction>()),
-//                                        new Lane(6, crossings.get(3), crossings.get(0), new ArrayList<Direction>()))),
-//                                new ArrayList<Node>(Arrays.asList(
-//                                        new Node(0, 200),
-//                                        new Node(100, 200),
-//                                        new Node(200, 200)
-//                                )))
-//                        ));
-//
-//        city = new City(crossings, roads);
-//
-//        car = new Car(new Node(0, 0), new Node(200, 200), new ArrayList<Node>(Arrays.asList(new Node(0, 0), new Node(0, 100), new Node(0, 200), new Node(100, 200), new Node(200, 200))));
-
-
-
-//        SimulationCore simulation = new SimulationCore(rand);
-//        simulation.city = city;
-//        simulation.epochs = Settings.EPOCHS;
-//        simulation.population = Settings.POPULATION;
-//        simulation.numberOfCrossings = city.getCrossings().size();
-//        simulation.mutationScale = Settings.MUTATION_SCALE;
-//        simulation.initialDeltaRange = Settings.INITIAL_DELTA_RANGE;
-//        simulation.tournamentSelectionContestants = Settings.TOURNAMENT_SELECTION_CONTESTANT;
-//        simulation.startSimulation();
+        if (IS_OPTIMIZATION) {
+            simulation.seed = seed;
+            simulation.epochs = Settings.EPOCHS;
+            simulation.population = Settings.POPULATION;
+            simulation.mutationScale = Settings.MUTATION_SCALE;
+            simulation.initialDeltaRange = Settings.INITIAL_DELTA_RANGE;
+            simulation.tournamentSelectionContestants = Settings.TOURNAMENT_SELECTION_CONTESTANT;
+            simulation.startSimulation();
+            city = simulation.worst;
+            System.out.println(city.waitingTime);
+        } else {
+            // runs whole simulation on different thread
+            // so we can still render next frames
+            city = new City(rand);
+            new Thread(() -> {
+                city.startSimulation();
+            }).start();
+        }
 
         font = new BitmapFont(Gdx.files.internal("bahnschrift.fnt"));
         clockFont = new BitmapFont(Gdx.files.internal("clock-font.fnt"));
         batch = new SpriteBatch();
+
+        setupInitialCameraPositionAndZoom(Settings.GRID_MULTIPLIER);
     }
 
 
@@ -278,6 +242,17 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             else{
                 frameIndex = city.frame.size()-1;
                 frameToRender = city.frame.get(frameIndex);
+                if (IS_OPTIMIZATION) {
+                    try {
+                        // sleep so we are aware of the first simulation is ending
+                        // and that the 2nd is about to start
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    city = simulation.best;
+                    frameIndex = 0;
+                }
             }
         }
 
