@@ -20,8 +20,6 @@ public class CityGenerator {
 
     int[][] generate(int width, int height, int crossingAmount) {
 //        Creating array for randomizing numbers with weights
-        int scaler = 10;
-
         int longest_distance = (int) Math.sqrt(Math.pow(((width + 1) / 2. - 2) / 2, 2) + Math.pow(((height + 1) / 2. - 2) / 2, 2));
         int sumOfProbabilities = 0;
         for (int i = 0; i < ((width + 1) / 2. - 2); i++) {
@@ -59,9 +57,7 @@ public class CityGenerator {
             int x = width / 4 * 2 - 1;
             int y = height / 4 * 2 + 1;
             while (grid[y][x] == 9 || grid[y][x] == 1) {
-//                x = 2 * generateRandomInt(0, (width + 1) / 2 - 2) + 1;
                 x = 2 * tilesProbabilities[(int) (tilesProbabilities.length * rand.nextFloat())][0] + 1;
-//                y = 2 * generateRandomInt(0, (height + 1) / 2 - 2) + 1;
                 y = 2 * tilesProbabilities[(int) (tilesProbabilities.length * rand.nextFloat())][1] + 1;
             }
             grid[y][x] = 9;

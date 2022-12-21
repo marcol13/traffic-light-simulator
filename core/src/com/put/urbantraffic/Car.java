@@ -194,7 +194,7 @@ public class Car {
 
         status = RideStatus.RIDING;
 
-        nodePercentage += speed * CAR_SPEED_MULTIPLIER;
+        nodePercentage += speed * CAR_SPEED_MULTIPLIER * 100 / Settings.TIME_PRECISION / 300 * 83;
 
         if (nodePercentage >= 100) {
 
