@@ -44,7 +44,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         extendViewport = new ExtendViewport(1200, 1200);
         Random rand = new Random(0);
 //        long seed = rand.nextLong();
-        long seed = -4962768465676381896L;
+//        long seed = -4962768465676381896L;
+        long seed = -4962768465676381810L;
         rand.setSeed(seed);
         System.out.println("Seed is " + seed);
 
@@ -180,7 +181,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 offsetY = Settings.NODE_LANE_OFFSET;
             if(car.getWay() == Car.Way.RIGHT)
                 offsetY = -Settings.NODE_LANE_OFFSET;
-            drawCircle(car.getX() + offsetX, car.getY() + offsetY, Settings.CAR_RADIUS, car.getStatus() == RideStatus.RIDING ? Settings.CAR_CIRCLE_COLOR : Color.BLUE);
+            drawCircle(car.getX() + offsetX, car.getY() + offsetY, Settings.CAR_RADIUS, car.getStatus() == RideStatus.STARTING ? Color.GREEN : (car.getStatus() == RideStatus.RIDING ? Settings.CAR_CIRCLE_COLOR : Color.BLUE));
         }
 
         drawLinearScale();

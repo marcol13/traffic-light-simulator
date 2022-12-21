@@ -33,7 +33,7 @@ public class Car {
     private Lane currentLane;
     private float nodePercentage = 0.0f;
 
-    private RideStatus status = RideStatus.RIDING;
+    private RideStatus status = RideStatus.STARTING;
 
     private List<Crossing> crossingList;
     private Crossing nextCrossing;
@@ -48,6 +48,9 @@ public class Car {
 
     private boolean onCrossing = false;
 
+    private int carPositionInTrafficJam;
+    private boolean changedPositionInTrafficJam;
+
     public enum Way {
         TOP, RIGHT, BOTTOM, LEFT
     }
@@ -55,10 +58,7 @@ public class Car {
     public Car(Road startRoad, Road endRoad, CityGraph.PathWithTime[][] paths) {
         this.path = generatePathAndInitializeLanes(startRoad, endRoad, paths);
 
-//        ??????
-//        this.currentNode = new Node(path.get(0).getX(), path.get(0).getY());
         this.currentNode = path.get(0);
-//
         this.currentLane = lanesList.get(0);
 
 //        ???
@@ -83,17 +83,22 @@ public class Car {
                     if (carsList.get(i).getCarPosition().getY() < currentNode.getY()) break loop;
                     break;
                 case RIGHT:
-                    if (carsList.get(i).getCarPosition().getY() < currentNode.getX()) break loop;
+                    if (carsList.get(i).getCarPosition().getX() < currentNode.getX()) break loop;
                     break;
                 case BOTTOM:
                     if (carsList.get(i).getCarPosition().getY() > currentNode.getY()) break loop;
                     break;
                 case LEFT:
-                    if (carsList.get(i).getCarPosition().getY() > currentNode.getX()) break loop;
+                    if (carsList.get(i).getCarPosition().getX() > currentNode.getX()) break loop;
                     break;
             }
         }
         startLane.getCarsList().add(i, this);
+        for(Car car: startLane.getCarsList()){
+            car.setChangedPositionInTrafficJam(true);
+        }
+        carPositionInTrafficJam = i;
+        direction = calculateDirection(way, calculateWay(path.get(1), path.get(2)));
 //        System.out.println(this.path);
 
     }
@@ -132,9 +137,6 @@ public class Car {
     }
 
     public void predictMoveCar() {
-        status = RideStatus.RIDING;
-
-        List<Node> nodeList = currentLane.getNodeList();
         float speed = (float) currentLane.getSpeedLimit() / (float) getNodeLength(currentNode, nextNode);
 
         int xVector = nextNode.getX() - currentNode.getX();
@@ -142,18 +144,24 @@ public class Car {
         int predictedX = predictXandYPosition(xVector, yVector)[0];
         int predictedY = predictXandYPosition(xVector, yVector)[1];
 
-        int carPositionInTrafficJam = currentLane.getCarsList().indexOf(this);
+        if(changedPositionInTrafficJam){
+            carPositionInTrafficJam = currentLane.getCarsList().indexOf(this);
+            changedPositionInTrafficJam = false;
+        }
+
+
 
         if(carPositionInTrafficJam > 0){
-
             Car previousCar = currentLane.getCarsList().get(carPositionInTrafficJam - 1);
+
 //            ??? TODO I would say we have to check it after the potential move, not now. BTW it is probably necessary with sequentional movement
             //check, some car is in front of you
+
             if (calculateDistance(predictedX,
                     predictedY,
                     previousCar.carPosition.getX(),
                     previousCar.carPosition.getY()) <= Settings.DISTANCE_BETWEEN_CARS_IN_JAM + Settings.CAR_RADIUS * 2){
-                status = RideStatus.WAITING;
+                status = status == RideStatus.STARTING ? RideStatus.STARTING : RideStatus.WAITING;
                 return;
             }
         } else if (carPositionInTrafficJam == 0 && !onCrossing) {
@@ -165,7 +173,7 @@ public class Car {
             if (distance <= Settings.CROSSING_RADIUS + Settings.CAR_RADIUS) {
 
                 if (path.size() > 2) {
-                    System.out.println("Pierogi z serem");
+//                    System.out.println("Pierogi z serem");
 //                    Node currentCrossing = path.get(1);
 //                    Node nodeAfterCrossing = path.get(2);
 //                    nextWay = calculateWay(path.get(1), nodeAfterCrossing);
@@ -180,22 +188,22 @@ public class Car {
                         status = RideStatus.WAITING;
                         return;
                     }
-                }else{
-                    System.out.println("Pierogi ruskie");
                 }
             }
         }
 
-        nodePercentage += speed * CAR_SPEED_MULTIPLIER * 100 / Settings.TIME_PRECISION / 300 * 83 ;
+        status = RideStatus.RIDING;
+
+        nodePercentage += speed * CAR_SPEED_MULTIPLIER * 100 / Settings.TIME_PRECISION / 300 * 83;
 
         if (nodePercentage >= 100) {
 
-            if (onCrossing && direction == Direction.LEFT) {
-                if (!crossingList.get(0).isTurnLeftPossible(this)) {
-                    status = RideStatus.WAITING;
-                    return;
-                } else {
-                    if (lanesList.size() > 1) {
+            if(onCrossing){
+                if(direction == Direction.LEFT){
+                    if (!crossingList.get(0).isTurnLeftPossible(this)) {
+                        status = RideStatus.WAITING;
+                        return;
+                    } else {
                         if (!lanesList.get(1).isLaneFull()) {
                             status = RideStatus.RIDING;
                         } else {
@@ -203,43 +211,63 @@ public class Car {
                             return;
                         }
                     }
+                } else{
+                    if(!lanesList.get(1).isLaneFull()){
+                        status = RideStatus.RIDING;
+                    }
+                    else{
+                        status = RideStatus.WAITING;
+                        return;
+                    }
                 }
             }
 
-            if (status == RideStatus.RIDING) {
+            //IF GO TO NEXT NODE
 
-                nodePercentage %= 100;
-                path.remove(0);
+            nodePercentage %= 100;
+            path.remove(0);
 
-                onCrossing = false;
+            onCrossing = false;
+
+            if(path.size() > 2){
+                direction = calculateDirection(calculateWay(path.get(0), path.get(1)), calculateWay(path.get(1), path.get(2)));
+            }
+
+            if (currentLane.getNodeList().size() == 2 || (currentLane.getNodeList().size() > 2 && nextNode == currentLane.getNodeList().get(2))) {
+
                 nextCrossing.goOutFromCrossing(this);
 
+                nodePercentage = 0;
 
-                if (currentLane.getNodeList().size() == 2 || (currentLane.getNodeList().size() > 2 && nextNode == currentLane.getNodeList().get(2))) {
+                lanesList.get(0).getCarsList().remove(this);
+                for(Car car: lanesList.get(0).getCarsList()){
+                    car.setChangedPositionInTrafficJam(true);
+                }
+                lanesList.remove(0);
 
-                    lanesList.get(0).getCarsList().remove(this);
-                    lanesList.remove(0);
 
-
-                    if (lanesList.size() > 0)
-                        lanesList.get(0).getCarsList().add(this);
-
-                    if (crossingList.size() > 1) {
-                        crossingList.remove(0);
-                        nextCrossing = crossingList.get(0);
+                if (!lanesList.isEmpty()){
+                    lanesList.get(0).getCarsList().add(this);
+                    for(Car car: lanesList.get(0).getCarsList()){
+                        car.setChangedPositionInTrafficJam(true);
                     }
                 }
 
-                if (path.size() > 1) {
-                    currentNode = path.get(0);
-                    currentLane = lanesList.get(0);
-                    nextNode = path.get(1);
-                    way = calculateWay(currentNode, nextNode);
-                } else {
-                    status = RideStatus.FINISH;
-                    carPosition = nextNode;
-                    return;
+                if (crossingList.size() > 1) {
+                    crossingList.remove(0);
+                    nextCrossing = crossingList.get(0);
                 }
+            }
+
+            if (path.size() > 1) {
+                currentNode = path.get(0);
+                currentLane = lanesList.get(0);
+                nextNode = path.get(1);
+                way = calculateWay(currentNode, nextNode);
+            } else {
+                status = RideStatus.FINISH;
+                carPosition = nextNode;
+                return;
             }
         }
 
@@ -247,9 +275,6 @@ public class Car {
             predictedCarPosition.setX((int) (currentNode.getX() + xVector * nodePercentage / 100));
             predictedCarPosition.setY((int) (currentNode.getY() + yVector * nodePercentage / 100));
         }
-
-//            System.out.println("Car cords:" + actualNode.getX() + " " + actualNode.getY() + " Node percentage " + nodePercentage + " xVec " + xVector + " yVec " + yVector);
-
     }
 
     void moveCar(){

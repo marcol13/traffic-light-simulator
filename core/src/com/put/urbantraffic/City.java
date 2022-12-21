@@ -384,6 +384,7 @@ public class City {
         final int greenDuration = Settings.TEMPORARY_INITIAL_TRAFFIC_LIGHT_TIME * Settings.TIME_PRECISION;
         final int redDuration = Settings.TEMPORARY_INITIAL_TRAFFIC_LIGHT_TIME * Settings.TIME_PRECISION;
         Crossing crossing = new Crossing(crossingId, x * MESH_DISTANCE / 2, y * MESH_DISTANCE / 2, offset, greenDuration, redDuration, rand);
+
         crossings.add(crossing);
         return crossing;
     }
