@@ -33,7 +33,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private Frame frameToRender = null;
     private int frameIndex = 0;
     private int speed = 1;
-    private final int scalePositionX = 2500;
+//    private final int scalePositionX = 2500;
+    private final int scalePositionX = -100;
     private final int scalePositionY = 0;
     private final int scaleSpace = 20;
 
@@ -43,7 +44,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         extendViewport = new ExtendViewport(1200, 1200);
         Random rand = new Random(0);
 //        long seed = rand.nextLong();
-        long seed = -4962768465676381896L;
+//        long seed = -4962768465676381896L;
+        long seed = -4962768465676381810L;
         rand.setSeed(seed);
         System.out.println("Seed is " + seed);
 
@@ -52,9 +54,9 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         // runs whole simulation on different thread
         // so we can still render next frames
         new Thread(() -> {
-            for (int i = Settings.STARTING_HOUR * 3600; i < Settings.ENDING_HOUR * 3600 - 1; i++) {
+            for (int i = Settings.STARTING_HOUR * 3600 * Settings.TIME_PRECISION; i < Settings.ENDING_HOUR * 3600 * Settings.TIME_PRECISION - 1; i++) {
                 city.makeStep();
-                System.out.println("Rendering frame: " + city.frame.size());
+//                System.out.println("Rendering frame: " + city.frame.size());
             }
         }).start();
 
@@ -99,15 +101,15 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
 
 
-        SimulationCore simulation = new SimulationCore(rand);
-        simulation.city = city;
-        simulation.epochs = Settings.EPOCHS;
-        simulation.population = Settings.POPULATION;
-        simulation.numberOfCrossings = city.getCrossings().size();
-        simulation.mutationScale = Settings.MUTATION_SCALE;
-        simulation.initialDeltaRange = Settings.INITIAL_DELTA_RANGE;
-        simulation.tournamentSelectionContestants = Settings.TOURNAMENT_SELECTION_CONTESTANT;
-        simulation.startSimulation();
+//        SimulationCore simulation = new SimulationCore(rand);
+//        simulation.city = city;
+//        simulation.epochs = Settings.EPOCHS;
+//        simulation.population = Settings.POPULATION;
+//        simulation.numberOfCrossings = city.getCrossings().size();
+//        simulation.mutationScale = Settings.MUTATION_SCALE;
+//        simulation.initialDeltaRange = Settings.INITIAL_DELTA_RANGE;
+//        simulation.tournamentSelectionContestants = Settings.TOURNAMENT_SELECTION_CONTESTANT;
+//        simulation.startSimulation();
 
         font = new BitmapFont(Gdx.files.internal("bahnschrift.fnt"));
         clockFont = new BitmapFont(Gdx.files.internal("clock-font.fnt"));
@@ -179,7 +181,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 offsetY = Settings.NODE_LANE_OFFSET;
             if(car.getWay() == Car.Way.RIGHT)
                 offsetY = -Settings.NODE_LANE_OFFSET;
-            drawCircle(car.getX() + offsetX, car.getY() + offsetY, Settings.CAR_RADIUS, car.getStatus() == RideStatus.RIDING ? Settings.CAR_CIRCLE_COLOR : Color.BLUE);
+            drawCircle(car.getX() + offsetX, car.getY() + offsetY, Settings.CAR_RADIUS, car.getStatus() == RideStatus.STARTING ? Color.GREEN : (car.getStatus() == RideStatus.RIDING ? Settings.CAR_CIRCLE_COLOR : Color.BLUE));
         }
 
         drawLinearScale();
@@ -188,18 +190,18 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         batch.begin();
         font.getData().setScale(1.0f);
         font.draw(batch, "0", scalePositionX - 5,scalePositionY + 2 * scaleSpace);
-        font.draw(batch, "250", scalePositionX + Settings.MESH_DISTANCE - 15,scalePositionY + 2 * scaleSpace);
-        font.draw(batch, "500 [m]", scalePositionX + 2 * Settings.MESH_DISTANCE - 15,scalePositionY + 2 * scaleSpace);
+        font.draw(batch, "100", scalePositionX + Settings.MESH_DISTANCE - 15,scalePositionY + 2 * scaleSpace);
+        font.draw(batch, "200 [m]", scalePositionX + 2 * Settings.MESH_DISTANCE - 15,scalePositionY + 2 * scaleSpace);
         font.getData().setScale(4.0f);
-        font.draw(batch, "Value of goal function: " + Long.toString(frameToRender.getWaitingTime()), 0,0);
+        font.draw(batch, "Value of goal function: " + Long.toString(frameToRender.getWaitingTime()), -100,-300);
 
         long currentSimulationTime = frameToRender.getCurrentTime();
-        String hour = String.format("%02d", currentSimulationTime / 3600 + Settings.STARTING_HOUR);
-        String minute = String.format("%02d", currentSimulationTime / 60 % 60);
-        String second = String.format("%02d", currentSimulationTime % 60);
-        font.draw(batch, "Current time: " + hour + ":" + minute + ":" + second, 0,100);
+        String hour = String.format("%02d", currentSimulationTime / Settings.TIME_PRECISION / 3600 );
+        String minute = String.format("%02d", currentSimulationTime / Settings.TIME_PRECISION / 60 % 60);
+        String second = String.format("%02d", currentSimulationTime / Settings.TIME_PRECISION % 60);
+        font.draw(batch, "Current time: " + hour + ":" + minute + ":" + second, -100,-100);
 
-        font.draw(batch, "Amount of cars: " + frameToRender.getCars().size(), 0,-100);
+        font.draw(batch, "Amount of cars: " + frameToRender.getCars().size(), -100,-200);
         batch.end();
     }
 
@@ -250,7 +252,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     }
 
     private void drawLaneWithSpeedLimit(int lanesAmount, Lane lane, int startX, int startY, int endX, int endY) {
-        if (lane.getSpeedLimit() == 40) {
+        if (lane.getSpeedLimit() == 30) {
             drawLanes(startX, startY, endX, endY, lanesAmount, Color.DARK_GRAY);
         } else if (lane.getSpeedLimit() == 50) {
             drawLanes(startX, startY, endX, endY, lanesAmount, Color.LIGHT_GRAY);
@@ -322,7 +324,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             speed = 80;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_9)) {
-            speed = 90;
+            speed = 999999999;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_0)) {
             speed = 1;

@@ -1,0 +1,18 @@
+v = s/t
+predkosc to 30km/h
+dlugosc najkrotszej drogi w naszej symulacji to 100m
+30 = 0.1/t
+t = 0,00(3)h = 12 sek
+auto na najkrótszej drodze musi przebyć odległość od skrzyżowania do skrzyżowania w 12 sekund
+
+zatem jego prędkość powinna wynosić 100m/12s = 8.(3) pix/klatkę co daje 8.(3) / 100m = 0.08(3) - to jest część drogi jaką pokonuje w jednej klatce, 8.(3)% drogi
+
+aktualnie auto przejezdża taką drogę z prędkością
+float speed = (float) currentLane.getSpeedLimit() / (float) getNodeLength(currentNode, nextNode);
+30 / 100 (podana predkosc drogi to 30/50/70) przez dlugosc drogi = 0.3
+nodePercentage += speed * CAR_SPEED_MULTIPLIER * 100;
+ta wartość jest następnie mnożona przez 100 zatem 0.3 * 100 = 30 % w jednej klatce (tam był wcześniej błąd i nie było to mnożone razy 100 i bubel wyszedł, poprawiłem że mnożymy razy 100 - to jednak są procenty)
+
+Zatem żeby nasza prędkość została zmieniona na poprawną musimy wymnożyć jeszcze naszą prędkość razy 8.(3) / 30 - ja robię to poprzez 83/300 żeby nie było floatów
+
+Dzięki temu w 12 sekund nasze auto przemierza najkrótszy możliwy odcinek miasta (100m) przy prędkości 30km/h, czyli zostaje spełniony waarunek realistycznej podróży samochodem.

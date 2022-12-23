@@ -27,7 +27,7 @@ public class TrafficLightsSupervisor {
 
     @Override
     public String toString() {
-
+// TODO Change BRAK XDDD to EMPTY / NULL whatever
         String top = topTrafficLight != null ? "TOP" : "BRAK";
         String bottom = bottomTrafficLight != null ? "BOTTOM" : "BRAK";
         String left = leftTrafficLight != null ? "LEFT" : "BRAK";
