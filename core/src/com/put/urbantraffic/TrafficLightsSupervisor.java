@@ -8,21 +8,17 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TrafficLightsSupervisor {
-    private static final int YELLOW_DURATION = 15; // TODO: Move to settings
-    private final int greenDuration;
-    private final int redDuration;
-    private final int offset;
+    static final int YELLOW_DURATION = 2 * Settings.TIME_PRECISION; // TODO: Move to settings
+    private TrafficLightsSettings trafficLightsSettings;
     private final Random rand;
 
     private int timeToChangeLights;
     private int changeCount = 0;
 
-    public TrafficLightsSupervisor(int greenDuration, int redDuration, int offset, Random rand) {
-        this.greenDuration = greenDuration;
-        this.redDuration = redDuration;
-        this.offset = offset;
+    public TrafficLightsSupervisor(TrafficLightsSettings trafficLightsSettings, Random rand) {
+        this.trafficLightsSettings = trafficLightsSettings;
         this.rand = rand;
-        this.timeToChangeLights = offset + greenDuration + YELLOW_DURATION;
+        this.timeToChangeLights = trafficLightsSettings.getOffset() + trafficLightsSettings.getGreenDuration() + YELLOW_DURATION;
     }
 
     @Override
@@ -48,7 +44,7 @@ public class TrafficLightsSupervisor {
     private TrafficLight rightTrafficLight = null;
 
     void turnOnLights(){
-        if (offset == 0) {
+        if (trafficLightsSettings.getOffset() == 0) {
             changeLight(topTrafficLight, Light.GREEN);
             changeLight(bottomTrafficLight, Light.GREEN);
             changeLight(leftTrafficLight, Light.RED);
@@ -81,8 +77,8 @@ public class TrafficLightsSupervisor {
     }
 
     void changeAllLights() {
-        timeToChangeLights--;
-        if (timeToChangeLights == 0) {
+        timeToChangeLights --;
+        if (timeToChangeLights <= 0) {
             switchYellow(topTrafficLight, false);
             switchYellow(bottomTrafficLight, false);
             switchYellow(leftTrafficLight, false);
@@ -94,7 +90,9 @@ public class TrafficLightsSupervisor {
             changeLight(rightTrafficLight);
 
             changeCount++;
-            timeToChangeLights = YELLOW_DURATION + (changeCount % 2 == 0 ? greenDuration : redDuration);
+            int currentLightDuration = changeCount % 2 == 0 ?
+                    trafficLightsSettings.getGreenDuration() : trafficLightsSettings.getRedDuration();
+            timeToChangeLights = YELLOW_DURATION + currentLightDuration;
         } else if (timeToChangeLights < YELLOW_DURATION) {
             switchYellow(topTrafficLight, true);
             switchYellow(bottomTrafficLight, true);

@@ -1,14 +1,11 @@
 package com.put.urbantraffic;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Random;
+import java.util.*;
 
 public class SimulationCore {
-    City city;
+    public long seed;
     int epochs;
     int population;
-    int numberOfCrossings;
     int mutationScale;
     int initialDeltaRange;
     int tournamentSelectionContestants;
@@ -19,29 +16,26 @@ public class SimulationCore {
         this.rand = rand;
     }
 
+    City worst;
+    City best;
     public void startSimulation() {
         individuals = new SimulatorChild[population];
         for (int i = 0; i < population; i++) {
-            int[] lightDeltas = new int[numberOfCrossings];
-            for (int j = 0; j < numberOfCrossings; j++) {
-                lightDeltas[j] = (int) (rand.nextFloat() * initialDeltaRange);
-            }
-
-            individuals[i] = new SimulatorChild();
-            individuals[i].lightDeltas = lightDeltas;
+            individuals[i] = new SimulatorChild(seed, null);
         }
         simulateChildren(individuals);
 //        Ascending order!
         Arrays.sort(individuals, Comparator.comparing(p -> p.valueOfGoalFunction));
-
+        worst = individuals[individuals.length - 1].city;
 
         for (int epoch = 0; epoch < epochs; epoch++) {
 
 
             createNewIndividuals(individuals);
 //            Uncomment to see the best individual in this epoch
-//            System.out.println("Best in Epoch " + epoch + " : " + individuals[0].valueOfGoalFunction);
+            System.out.println("Best in Epoch " + epoch + " : " + individuals[0].valueOfGoalFunction);
         }
+        best = individuals[0].city;
     }
 
 
@@ -54,8 +48,7 @@ public class SimulationCore {
 //            index2 = returnGaussian();
             index = returnTournamentSelection(individuals);
             index2 = returnTournamentSelection(individuals);
-            children[child] = new SimulatorChild();
-            children[child].lightDeltas = makeNewGenotype(individuals[index].lightDeltas, individuals[index2].lightDeltas);
+            children[child] = new SimulatorChild(seed, makeNewGenotype(individuals[index].trafficLightsSettingsList, individuals[index2].trafficLightsSettingsList));
         }
         simulateChildren(children);
 
@@ -63,8 +56,6 @@ public class SimulationCore {
 
 //        Ascending order!
         Arrays.sort(individuals, Comparator.comparing(p -> p.valueOfGoalFunction));
-
-
     }
 
     private void simulateChildren(SimulatorChild[] children) {
@@ -109,23 +100,35 @@ public class SimulationCore {
         return finalIndex;
     }
 
-    private int[] makeNewGenotype(int[] genotypeMother, int[] genotypeFather) {
-        int[] newGenotype = new int[genotypeMother.length];
-        int border = (int) (rand.nextFloat() * genotypeMother.length);
+    private List<TrafficLightsSettings> makeNewGenotype(List<TrafficLightsSettings> genotypeMother, List<TrafficLightsSettings> genotypeFather) {
+        List<TrafficLightsSettings> newGenotype = new ArrayList<>();
+        int border = (int) (rand.nextFloat() * genotypeMother.size());
 
-        System.arraycopy(genotypeMother, 0, newGenotype, 0, border);
-        System.arraycopy(genotypeFather, border, newGenotype, border, genotypeMother.length - border);
+        newGenotype.addAll(genotypeMother.subList(0, border));
+        newGenotype.addAll(genotypeFather.subList(border, genotypeFather.size()));
 
-        int whichDeltaMutated = (int) (rand.nextFloat() * genotypeMother.length);
-        int mutation;
-        do {
-            mutation = (int) (rand.nextFloat() * mutationScale - mutationScale / 2);
-        } while (newGenotype[whichDeltaMutated] + mutation < 0 || newGenotype[whichDeltaMutated] + mutation > initialDeltaRange);
-
-        newGenotype[whichDeltaMutated] += mutation;
+        int whichDeltaMutated = (int) (rand.nextFloat() * genotypeMother.size());
+        int mutatedRed, mutatedGreen, mutatedOffset;
+        TrafficLightsSettings settingsToBeMutated = newGenotype.get(whichDeltaMutated);
+        while (true) {
+            mutatedRed = (int) (rand.nextFloat() * mutationScale - mutationScale / 2) + settingsToBeMutated.getRedDuration();
+            mutatedGreen = (int) (rand.nextFloat() * mutationScale - mutationScale / 2) + settingsToBeMutated.getGreenDuration();
+            mutatedOffset = (int) (rand.nextFloat() * mutationScale - mutationScale / 2) + settingsToBeMutated.getOffset();
+            boolean isGreenInRange = isInRange(mutatedGreen);
+            boolean isRedInRange = isInRange(mutatedRed);
+//            boolean isOffsetInRange = isInRange(mutatedOffset);
+            if (isGreenInRange && isRedInRange) {
+                break;
+            }
+        }
+        newGenotype.set(whichDeltaMutated, new TrafficLightsSettings(mutatedGreen, mutatedRed, mutatedOffset));
 
         return newGenotype;
     }
 
-
+    boolean isInRange(float duration) {
+        boolean isOverZero = duration > TrafficLightsSupervisor.YELLOW_DURATION * 2;
+        boolean isUnderInitialDeltaRange = duration < initialDeltaRange;
+        return isOverZero && isUnderInitialDeltaRange;
+    }
 }

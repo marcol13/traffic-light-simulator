@@ -8,8 +8,8 @@ import lombok.val;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.put.urbantraffic.Settings.IS_DEBUG;
 import static com.put.urbantraffic.Settings.MESH_DISTANCE;
-import static com.put.urbantraffic.Settings.TEMPORARY_INITIAL_TRAFFIC_LIGHT_TIME;
 
 public class City {
     private final List<Crossing> crossings;
@@ -21,15 +21,22 @@ public class City {
     Random rand;
     public CityGraph.PathWithTime[][] paths;
     final List<Car> cars = new ArrayList<>();
+    List<TrafficLightsSettings> trafficLightsSettingsList;
+    private final boolean shouldGenerateLights;
 
-    public City(List<Crossing> crossings, List<Road> roads, Random rand) {
-        this.crossings = crossings;
-        this.roads = roads;
-        this.rand = rand;
+    public City(Random rand) {
+        this(rand, new ArrayList<>());
     }
 
-    public City(int width, int height, int crossingAmount, Random rand) {
+    public City(Random rand, List<TrafficLightsSettings> trafficLightsSettingsList) {
+        int width = Settings.GRID_MULTIPLIER * 2 * 16;
+        int height = Settings.GRID_MULTIPLIER * 2 * 9;
+        int crossingAmount = Settings.CROSSING_AMOUNT;
+
+        this.trafficLightsSettingsList = trafficLightsSettingsList;
+        this.shouldGenerateLights = trafficLightsSettingsList.isEmpty();
         this.rand = rand;
+
         int[][] grid = new CityGenerator(rand).generate(width, height, crossingAmount);
         int counter = 0;
         for (int[] x : grid) {
@@ -39,7 +46,7 @@ public class City {
                 }
             }
         }
-        System.out.println("Quantity of Turns: " + counter);
+        if (IS_DEBUG) System.out.println("Quantity of Turns: " + counter);
         crossings = new ArrayList<>();
         roads = new ArrayList<>();
         parseGridToClasses(grid);
@@ -76,6 +83,13 @@ public class City {
         frame.add(new Frame(drawableCars, drawableLights, waitingTime, time));
     }
 
+    public void startSimulation() {
+        for (int i = Settings.STARTING_HOUR * 3600; i < Settings.ENDING_HOUR * 3600 - 1; i++) {
+            makeStep();
+            if (IS_DEBUG) System.out.println("Rendering frame: " + frame.size());
+        }
+    }
+
     public Car spawnCar() {
         Road startRoad = null;
         Road endRoad = null;
@@ -84,8 +98,6 @@ public class City {
 
             startRoad = roads.get(rand.nextInt(roads.size()));
             endRoad = roads.get(rand.nextInt(roads.size()));
-//            startRoad = roads.get(rand.nextInt(3));
-//            endRoad = roads.get(14);
 
             boolean doesAnyContainTurn = startRoad.getLaneList().get(0).doesContainTurn() || endRoad.getLaneList().get(0).doesContainTurn();
             if (doesAnyContainTurn) {
@@ -380,13 +392,29 @@ public class City {
     }
 
     private Crossing addNewCrossing(int x, int y, int crossingId) {
-        final int offset = rand.nextBoolean() ? TEMPORARY_INITIAL_TRAFFIC_LIGHT_TIME / 2 : 0;
-        final int greenDuration = Settings.TEMPORARY_INITIAL_TRAFFIC_LIGHT_TIME * Settings.TIME_PRECISION;
-        final int redDuration = Settings.TEMPORARY_INITIAL_TRAFFIC_LIGHT_TIME * Settings.TIME_PRECISION;
-        Crossing crossing = new Crossing(crossingId, x * MESH_DISTANCE / 2, y * MESH_DISTANCE / 2, offset, greenDuration, redDuration, rand);
-
+        final int greenDuration = 10 * Settings.TIME_PRECISION;
+        final int redDuration = 10  * Settings.TIME_PRECISION;
+        final int offset = 10 * Settings.TIME_PRECISION;
+        TrafficLightsSettings trafficLightsSettings;
+        if (shouldGenerateLights) {
+            trafficLightsSettings = new TrafficLightsSettings(greenDuration, redDuration, offset);
+            trafficLightsSettingsList.add(trafficLightsSettings);
+        } else {
+            trafficLightsSettings = trafficLightsSettingsList.get(crossingId);
+        }
+        Crossing crossing = new Crossing(crossingId, x * MESH_DISTANCE / 2, y * MESH_DISTANCE / 2, trafficLightsSettings, rand);
         crossings.add(crossing);
         return crossing;
+    }
+
+    public void setTrafficLightsSettingsList(List<TrafficLightsSettings> trafficLightsSettingsList) {
+        // changing lights must happen before starting simulation
+        assert time == Settings.STARTING_HOUR * 3600;
+
+        this.trafficLightsSettingsList = trafficLightsSettingsList;
+        for (int i = 0; i < crossings.size(); i++) {
+            crossings.get(i).setTrafficLightsSettings(trafficLightsSettingsList.get(i));
+        }
     }
 
     private void addNewRoad(List<Node> nodes, Crossing crossing1, Crossing crossing2) {
