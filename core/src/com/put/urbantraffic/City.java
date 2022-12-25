@@ -16,7 +16,7 @@ public class City {
     private final List<Road> roads;
     private final List<Lane> lanes = new ArrayList<>();
     public List<Integer> spawnCarArray = new ArrayList<>();
-    public int time = Settings.STARTING_HOUR*3600;
+    public int time = Settings.STARTING_HOUR*3600*Settings.TIME_PRECISION;
     public long waitingTime = 0;
     Random rand;
     public CityGraph.PathWithTime[][] paths;
@@ -84,7 +84,7 @@ public class City {
     }
 
     public void startSimulation() {
-        for (int i = Settings.STARTING_HOUR * 3600; i < Settings.ENDING_HOUR * 3600 - 1; i++) {
+        for (int i = Settings.STARTING_HOUR * Settings.TIME_PRECISION * 3600; i < Settings.ENDING_HOUR * Settings.TIME_PRECISION * 3600 - 1; i++) {
             makeStep();
             if (IS_DEBUG) System.out.println("Rendering frame: " + frame.size());
         }
