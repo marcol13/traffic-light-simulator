@@ -392,9 +392,9 @@ public class City {
     }
 
     private Crossing addNewCrossing(int x, int y, int crossingId) {
-        final int greenDuration = 10 * Settings.TIME_PRECISION;
-        final int redDuration = 10  * Settings.TIME_PRECISION;
-        final int offset = 0 * Settings.TIME_PRECISION;
+        final int greenDuration = Settings.MAX_RED_LIGHT_LENGTH * Settings.TIME_PRECISION;
+        final int redDuration = Settings.MAX_GREEN_LIGHT_LENGTH * Settings.TIME_PRECISION;
+        final int offset = Settings.MAX_OFFSET_LENGTH * Settings.TIME_PRECISION;
         TrafficLightsSettings trafficLightsSettings;
         if (shouldGenerateLights) {
             trafficLightsSettings = new TrafficLightsSettings(greenDuration, redDuration, offset);

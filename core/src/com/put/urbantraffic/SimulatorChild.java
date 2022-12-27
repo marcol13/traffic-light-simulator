@@ -33,8 +33,8 @@ public class SimulatorChild extends Thread {
     public List<TrafficLightsSettings> generateSettings(int size) {
         List<TrafficLightsSettings> list = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            final int greenDuration = random.nextInt(600);
-            final int redDuration = random.nextInt(600);
+            final int greenDuration = random.nextInt(Settings.MAX_GREEN_LIGHT_LENGTH);
+            final int redDuration = random.nextInt(Settings.MAX_RED_LIGHT_LENGTH);
             final int offset = random.nextInt(600);
             TrafficLightsSettings trafficLightsSettings = new TrafficLightsSettings(greenDuration, redDuration, offset);
             list.add(trafficLightsSettings);
