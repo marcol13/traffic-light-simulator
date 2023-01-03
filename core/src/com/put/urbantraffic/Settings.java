@@ -43,6 +43,9 @@ public class Settings {
 //    Yellow, red light length
     final static int ALL_RED_LIGHT_LENGTH = 2;
     final static int YELLOW_LIGHT_LENGTH = 2;
+    final static int MAX_RED_LIGHT_LENGTH = 300;
+    final static int MAX_GREEN_LIGHT_LENGTH = 300;
+    final static int MAX_OFFSET_LENGTH = MAX_RED_LIGHT_LENGTH + MAX_GREEN_LIGHT_LENGTH;
 
 ///////////////////////////////////
 

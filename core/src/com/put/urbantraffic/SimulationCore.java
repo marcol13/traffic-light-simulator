@@ -114,8 +114,8 @@ public class SimulationCore {
             mutatedRed = (int) (rand.nextFloat() * mutationScale - mutationScale / 2) + settingsToBeMutated.getRedDuration();
             mutatedGreen = (int) (rand.nextFloat() * mutationScale - mutationScale / 2) + settingsToBeMutated.getGreenDuration();
             mutatedOffset = (int) (rand.nextFloat() * mutationScale - mutationScale / 2) + settingsToBeMutated.getOffset();
-            boolean isGreenInRange = isInRange(mutatedGreen);
-            boolean isRedInRange = isInRange(mutatedRed);
+            boolean isGreenInRange = isInRange(mutatedGreen, 0, Settings.MAX_GREEN_LIGHT_LENGTH);
+            boolean isRedInRange = isInRange(mutatedRed, 0 , Settings.MAX_RED_LIGHT_LENGTH);
 //            boolean isOffsetInRange = isInRange(mutatedOffset);
             if (isGreenInRange && isRedInRange) {
                 break;
@@ -126,9 +126,7 @@ public class SimulationCore {
         return newGenotype;
     }
 
-    boolean isInRange(float duration) {
-        boolean isOverZero = duration > TrafficLightsSupervisor.YELLOW_DURATION * 2;
-        boolean isUnderInitialDeltaRange = duration < initialDeltaRange;
-        return isOverZero && isUnderInitialDeltaRange;
+    boolean isInRange(float duration, float min, float max) {
+       return duration > min && duration < max;
     }
 }
