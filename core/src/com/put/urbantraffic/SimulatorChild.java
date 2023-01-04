@@ -19,12 +19,12 @@ public class SimulatorChild extends Thread {
 
     public void run() {
         if (trafficLightsSettingsList == null) {
-            city = new City(new Random(seed), new ArrayList<>());
+            city = new City(new Random(seed), new ArrayList<>(), null);
             int crossingsSize = city.getCrossings().size();
             trafficLightsSettingsList = generateSettings(crossingsSize);
             city.setTrafficLightsSettingsList(trafficLightsSettingsList);
         } else {
-            city = new City(new Random(seed), trafficLightsSettingsList);
+            city = new City(new Random(seed), trafficLightsSettingsList, null);
         }
         city.startSimulation();
         valueOfGoalFunction = city.waitingTime;
