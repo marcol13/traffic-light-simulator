@@ -3,8 +3,10 @@ package com.put.urbantraffic;
 import com.put.urbantraffic.drawablemodels.DrawableCrossingTrafficLight;
 import com.put.urbantraffic.drawablemodels.DrawableCar;
 import com.put.urbantraffic.drawablemodels.Frame;
+import lombok.SneakyThrows;
 import lombok.val;
 
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,12 +25,15 @@ public class City {
     final List<Car> cars = new ArrayList<>();
     List<TrafficLightsSettings> trafficLightsSettingsList;
     private final boolean shouldGenerateLights;
+    private BufferedWriter writer = null;
+    private final String filename;
 
-    public City(Random rand) {
-        this(rand, new ArrayList<>());
+    public City(Random rand, String filename) {
+        this(rand, new ArrayList<>(), filename);
     }
 
-    public City(Random rand, List<TrafficLightsSettings> trafficLightsSettingsList) {
+    public City(Random rand, List<TrafficLightsSettings> trafficLightsSettingsList, String filename) {
+        this.filename = filename;
         int width = Settings.GRID_MULTIPLIER * 2 * 16;
         int height = Settings.GRID_MULTIPLIER * 2 * 9;
         int crossingAmount = Settings.CROSSING_AMOUNT;
@@ -59,8 +64,6 @@ public class City {
         paths = new CityGraph().generate(this);
     }
 
-    public List<Frame> frame = new ArrayList<>();
-
     public void makeStep() {
         while (spawnCarArray.size() > 0 && time == spawnCarArray.get(0)) {
             cars.add(spawnCar());
@@ -80,13 +83,32 @@ public class City {
                 .map(DrawableCrossingTrafficLight::fromCrossing)
                 .collect(Collectors.toList());
 
-        frame.add(new Frame(drawableCars, drawableLights, waitingTime, time));
+        if (writer != null) {
+            String json = UrbanTrafficFlowSimulation.gson.toJson(new Frame(drawableCars, drawableLights, waitingTime, time));
+            try {
+                writer.write(json);
+                writer.write("\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
+    @SneakyThrows
     public void startSimulation() {
+        if (filename != null) {
+            writer = new BufferedWriter(new FileWriter(filename));
+        }
         for (int i = Settings.STARTING_HOUR * Settings.TIME_PRECISION * 3600; i < Settings.ENDING_HOUR * Settings.TIME_PRECISION * 3600 - 1; i++) {
             makeStep();
-            if (IS_DEBUG) System.out.println("Rendering frame: " + frame.size());
+            if (IS_DEBUG) System.out.println("Writing frame: " + (i - Settings.STARTING_HOUR * Settings.TIME_PRECISION * 3600));
+        }
+        if (writer != null) {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -392,11 +414,11 @@ public class City {
     }
 
     private Crossing addNewCrossing(int x, int y, int crossingId) {
-        final int greenDuration = Settings.MAX_RED_LIGHT_LENGTH * Settings.TIME_PRECISION;
-        final int redDuration = Settings.MAX_GREEN_LIGHT_LENGTH * Settings.TIME_PRECISION;
-        final int offset = Settings.MAX_OFFSET_LENGTH * Settings.TIME_PRECISION;
         TrafficLightsSettings trafficLightsSettings;
         if (shouldGenerateLights) {
+            final int greenDuration = rand.nextInt(Settings.MAX_RED_LIGHT_LENGTH * Settings.TIME_PRECISION);
+            final int redDuration = rand.nextInt(Settings.MAX_GREEN_LIGHT_LENGTH * Settings.TIME_PRECISION);
+            final int offset = rand.nextInt(Settings.MAX_OFFSET_LENGTH * Settings.TIME_PRECISION);
             trafficLightsSettings = new TrafficLightsSettings(greenDuration, redDuration, offset);
             trafficLightsSettingsList.add(trafficLightsSettings);
         } else {

@@ -10,11 +10,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.put.urbantraffic.drawablemodels.DrawableCrossingTrafficLight;
 import com.put.urbantraffic.drawablemodels.DrawableCar;
 import com.put.urbantraffic.drawablemodels.Frame;
+import lombok.SneakyThrows;
 import lombok.val;
 
+import java.io.*;
 import java.util.*;
 
 import static com.put.urbantraffic.Settings.IS_DEBUG;
@@ -29,6 +33,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     BitmapFont clockFont;
     SpriteBatch batch;
 
+    public static Gson gson = new Gson();
     private City city;
     private Frame frameToRender = null;
     private int frameIndex = 0;
@@ -38,21 +43,21 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private final int scalePositionY = 0;
     private final int scaleSpace = 20;
     SimulationCore simulation = new SimulationCore(new Random());
+    List<Frame> frames = new ArrayList<>();
+    private BufferedReader reader;
+    Random rand = new Random(0);
+    //        long seed = rand.nextLong();
+    long seed = 0;
 
+    @SneakyThrows
     @Override
     public void create() {
+        String filename = "plik.txt";
         shapeRenderer = new ShapeRenderer();
         extendViewport = new ExtendViewport(1200, 1200);
-        Random rand = new Random(0);
-//        long seed = rand.nextLong();
-        long seed = 0;
+
         rand.setSeed(seed);
         System.out.println("Seed is " + seed);
-
-        if (IS_DEBUG) {
-            System.out.println("Quantity of Crossings: " + city.getCrossings().size());
-            System.out.println("Quantity of Roads: " + city.getRoads().size());
-        }
 
         if (IS_OPTIMIZATION) {
             simulation.seed = seed;
@@ -63,20 +68,23 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             simulation.tournamentSelectionContestants = Settings.TOURNAMENT_SELECTION_CONTESTANT;
             simulation.startSimulation();
             city = simulation.worst;
+            city = new City(rand, city.trafficLightsSettingsList, filename);
             System.out.println(city.waitingTime);
         } else {
-            // runs whole simulation on different thread
-            // so we can still render next frames
-            city = new City(rand);
-            new Thread(() -> {
-                city.startSimulation();
-            }).start();
+            city = new City(rand, filename);
         }
+
+//        city.startSimulation();
+        reader = new BufferedReader(new FileReader(filename));
+        loadMoreFrames();
 
         font = new BitmapFont(Gdx.files.internal("bahnschrift.fnt"));
         clockFont = new BitmapFont(Gdx.files.internal("clock-font.fnt"));
         batch = new SpriteBatch();
-
+        if (IS_DEBUG) {
+            System.out.println("Quantity of Crossings: " + city.getCrossings().size());
+            System.out.println("Quantity of Roads: " + city.getRoads().size());
+        }
         setupInitialCameraPositionAndZoom(Settings.GRID_MULTIPLIER);
     }
 
@@ -227,6 +235,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
     public void moveCamera() {
         float delta = Gdx.graphics.getDeltaTime();
+        String filename = "plikBest.txt";
 
         if (Gdx.input.isKeyPressed(Input.Keys.O)) {
             ((OrthographicCamera) extendViewport.getCamera()).zoom += .5f * delta;
@@ -234,23 +243,30 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             ((OrthographicCamera) extendViewport.getCamera()).zoom -= .5f * delta;
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-            if (frameIndex < city.frame.size()) {
-                frameToRender = city.frame.get(frameIndex);
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            if (frameIndex < frames.size()) {
+                frameToRender = frames.get(frameIndex);
+                for (int i = 0; i < frameIndex; i++) {
+                    frames.remove(0);
+                }
+                if (frames.size() < 100) {
+                    loadMoreFrames();
+                }
+                frameIndex = 0;
                 frameIndex += speed;
-            }
-            else{
-                frameIndex = city.frame.size()-1;
-                frameToRender = city.frame.get(frameIndex);
+            } else {
+                frameIndex = frames.size() - 1;
+                frameToRender = frames.get(frameIndex);
                 if (IS_OPTIMIZATION) {
+                    city = simulation.best;
+                    rand.setSeed(seed);
+                    city = new City(rand, city.trafficLightsSettingsList, filename);
+                    city.startSimulation();
                     try {
-                        // sleep so we are aware of the first simulation is ending
-                        // and that the 2nd is about to start
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
+                        reader = new BufferedReader(new FileReader(filename));
+                    } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                    city = simulation.best;
                     frameIndex = 0;
                 }
             }
@@ -271,6 +287,19 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
 
         extendViewport.getCamera().position.set(playerX, playerY, 0);
+    }
+
+    private void loadMoreFrames() {
+        try {
+            for (int i = 0; i < 100; i++) {
+                String json = reader.readLine();
+                if (json == null) return;
+
+                frames.add(gson.fromJson(json, Frame.class));
+            }
+        } catch (JsonSyntaxException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleSpeedControl() {
@@ -303,6 +332,15 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_0)) {
             speed = 1;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_0)) {
+            speed = 1;
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
+            speed = Math.max(speed - 1, 1);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.EQUALS)) {
+            speed += 1;
         }
     }
 
