@@ -23,6 +23,7 @@ public class City {
     final List<Car> cars = new ArrayList<>();
     List<TrafficLightsSettings> trafficLightsSettingsList;
     private final boolean shouldGenerateLights;
+    public int[][] carsInDistricts = new int[9*Settings.HEATMAP_PRECISION*Settings.GRID_MULTIPLIER][16*Settings.HEATMAP_PRECISION*Settings.GRID_MULTIPLIER];
 
     public City(Random rand) {
         this(rand, new ArrayList<>());
@@ -79,7 +80,9 @@ public class City {
         List<DrawableCrossingTrafficLight> drawableLights = crossings.stream()
                 .map(DrawableCrossingTrafficLight::fromCrossing)
                 .collect(Collectors.toList());
-
+        for (Car car: cars) {
+            carsInDistricts[(car.getCarPosition().getY() + MESH_DISTANCE/2) * Settings.HEATMAP_PRECISION / Settings.GRID_MULTIPLIER / MESH_DISTANCE][(car.getCarPosition().getX() + Settings.MESH_DISTANCE/2) * Settings.HEATMAP_PRECISION / Settings.GRID_MULTIPLIER / MESH_DISTANCE]++;
+        }
         frame.add(new Frame(drawableCars, drawableLights, waitingTime, time));
     }
 

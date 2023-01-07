@@ -16,9 +16,10 @@ import com.put.urbantraffic.drawablemodels.Frame;
 import lombok.val;
 
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import static com.put.urbantraffic.Settings.IS_DEBUG;
-import static com.put.urbantraffic.Settings.IS_OPTIMIZATION;
+import static com.put.urbantraffic.Settings.*;
 
 public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
@@ -38,6 +39,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private final int scalePositionY = 0;
     private final int scaleSpace = 20;
     SimulationCore simulation = new SimulationCore(new Random());
+
+    private int worstDistrict;
 
     @Override
     public void create() {
@@ -63,6 +66,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             simulation.tournamentSelectionContestants = Settings.TOURNAMENT_SELECTION_CONTESTANT;
             simulation.startSimulation();
             city = simulation.worst;
+            worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
             System.out.println(city.waitingTime);
         } else {
             // runs whole simulation on different thread
@@ -98,6 +102,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         moveCamera();
 
         ScreenUtils.clear(0, 0, 0, 1);
+        drawHeatmap();
 
         extendViewport.apply();
         shapeRenderer.setProjectionMatrix(extendViewport.getCamera().combined);
@@ -167,6 +172,25 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
         font.draw(batch, "Amount of cars: " + frameToRender.getCars().size(), -100,-200);
         batch.end();
+    }
+
+    private void drawHeatmap() {
+        if (Gdx.input.isKeyPressed(Input.Keys.H)) {
+            if(!IS_OPTIMIZATION){
+                worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
+            }
+            for (int i = 0; i < 9 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; i++) {
+                for (int j = 0; j < 16 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; j++) {
+                    //Uncomment for white to red transition
+//                    shapeRenderer.setColor(new Color(1, 1 - city.carsInDistricts[i][j] / (float) worstDistrict, (float)(1 - city.carsInDistricts[i][j]/worstDistrict), 1));
+                    //Uncomment for black to red transition
+                    shapeRenderer.setColor(new Color(city.carsInDistricts[i][j] / (float) worstDistrict, 0, 0, 1));
+                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.rect((float) (j - 1 - (HEATMAP_PRECISION-1)/2.) * Settings.GRID_MULTIPLIER * MESH_DISTANCE / HEATMAP_PRECISION, (float) (i - 1 - (HEATMAP_PRECISION-1)/2.) * Settings.GRID_MULTIPLIER * MESH_DISTANCE / HEATMAP_PRECISION, MESH_DISTANCE/ HEATMAP_PRECISION * GRID_MULTIPLIER, MESH_DISTANCE/ HEATMAP_PRECISION * GRID_MULTIPLIER);
+                    shapeRenderer.end();
+                }
+            }
+        }
     }
 
     private void drawTrafficLight(DrawableCrossingTrafficLight crossing) {

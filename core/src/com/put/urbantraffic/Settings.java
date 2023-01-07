@@ -61,4 +61,5 @@ public class Settings {
     final static int INITIAL_DELTA_RANGE = 1000;
 
     final static int TIME_PRECISION = 10; //One second is divided into TIME_PRECISION frames so e.g. TIME_PRECISION = 30 => one day is 24 x 60 x 60 x 30 frames
+    final static int HEATMAP_PRECISION = 2;
 }
