@@ -40,6 +40,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private final int scaleSpace = 20;
     SimulationCore simulation = new SimulationCore(new Random());
 
+    private int worstDistrict;
+
     @Override
     public void create() {
         shapeRenderer = new ShapeRenderer();
@@ -64,6 +66,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             simulation.tournamentSelectionContestants = Settings.TOURNAMENT_SELECTION_CONTESTANT;
             simulation.startSimulation();
             city = simulation.worst;
+            worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
             System.out.println(city.waitingTime);
         } else {
             // runs whole simulation on different thread
@@ -173,13 +176,15 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
     private void drawHeatmap() {
         if (Gdx.input.isKeyPressed(Input.Keys.H)) {
-            double max = Stream.of(city.carsInDistricts)
-                    .flatMapToInt(IntStream::of)
-                    .summaryStatistics().getMax();
-
+            if(!IS_OPTIMIZATION){
+                worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
+            }
             for (int i = 0; i < 9 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; i++) {
                 for (int j = 0; j < 16 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; j++) {
-                    shapeRenderer.setColor(new Color((float)(city.carsInDistricts[i][j]/max), 0, 0, 1));
+                    //Uncomment for white to red transition
+//                    shapeRenderer.setColor(new Color(1, 1 - city.carsInDistricts[i][j] / (float) worstDistrict, (float)(1 - city.carsInDistricts[i][j]/worstDistrict), 1));
+                    //Uncomment for black to red transition
+                    shapeRenderer.setColor(new Color(city.carsInDistricts[i][j] / (float) worstDistrict, 0, 0, 1));
                     shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.rect((float) (j - 1 - (HEATMAP_PRECISION-1)/2.) * Settings.GRID_MULTIPLIER * MESH_DISTANCE / HEATMAP_PRECISION, (float) (i - 1 - (HEATMAP_PRECISION-1)/2.) * Settings.GRID_MULTIPLIER * MESH_DISTANCE / HEATMAP_PRECISION, MESH_DISTANCE/ HEATMAP_PRECISION * GRID_MULTIPLIER, MESH_DISTANCE/ HEATMAP_PRECISION * GRID_MULTIPLIER);
                     shapeRenderer.end();
