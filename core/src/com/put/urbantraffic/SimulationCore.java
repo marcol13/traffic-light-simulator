@@ -21,7 +21,7 @@ public class SimulationCore {
     public void startSimulation() {
         individuals = new SimulatorChild[population];
         for (int i = 0; i < population; i++) {
-            individuals[i] = new SimulatorChild(seed, null);
+            individuals[i] = new SimulatorChild(seed, null, individuals, population);
         }
         simulateChildren(individuals);
 //        Ascending order!
@@ -48,7 +48,7 @@ public class SimulationCore {
 //            index2 = returnGaussian();
             index = returnTournamentSelection(individuals);
             index2 = returnTournamentSelection(individuals);
-            children[child] = new SimulatorChild(seed, makeNewGenotype(individuals[index].trafficLightsSettingsList, individuals[index2].trafficLightsSettingsList));
+            children[child] = new SimulatorChild(seed, makeNewGenotype(individuals[index].trafficLightsSettingsList, individuals[index2].trafficLightsSettingsList), children, population);
         }
         simulateChildren(children);
 

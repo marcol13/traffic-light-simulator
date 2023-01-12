@@ -66,7 +66,10 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             simulation.mutationScale = Settings.MUTATION_SCALE;
             simulation.initialDeltaRange = Settings.INITIAL_DELTA_RANGE;
             simulation.tournamentSelectionContestants = Settings.TOURNAMENT_SELECTION_CONTESTANT;
+            long startTime = System.currentTimeMillis();
             simulation.startSimulation();
+            long time = System.currentTimeMillis() - startTime;
+            System.out.println("Total time " + time);
             city = simulation.worst;
             city = new City(rand, city.trafficLightsSettingsList, filename);
             System.out.println(city.waitingTime);
@@ -74,7 +77,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             city = new City(rand, filename);
         }
 
-//        city.startSimulation();
+        city.startSimulation();
         reader = new BufferedReader(new FileReader(filename));
         loadMoreFrames();
 
