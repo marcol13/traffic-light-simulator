@@ -27,6 +27,7 @@ public class City {
     private final boolean shouldGenerateLights;
     private BufferedWriter writer = null;
     private final String filename;
+    public int[][] carsInDistricts = new int[9*Settings.HEATMAP_PRECISION*Settings.GRID_MULTIPLIER][16*Settings.HEATMAP_PRECISION*Settings.GRID_MULTIPLIER];
 
     public City(Random rand, String filename) {
         this(rand, new ArrayList<>(), filename);
@@ -82,7 +83,6 @@ public class City {
         List<DrawableCrossingTrafficLight> drawableLights = crossings.stream()
                 .map(DrawableCrossingTrafficLight::fromCrossing)
                 .collect(Collectors.toList());
-
         if (writer != null) {
             String json = UrbanTrafficFlowSimulation.gson.toJson(new Frame(drawableCars, drawableLights, waitingTime, time));
             try {
@@ -91,7 +91,11 @@ public class City {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            for (Car car: cars) {
+                carsInDistricts[(car.getCarPosition().getY() + MESH_DISTANCE/2) * Settings.HEATMAP_PRECISION / Settings.GRID_MULTIPLIER / MESH_DISTANCE][(car.getCarPosition().getX() + Settings.MESH_DISTANCE/2) * Settings.HEATMAP_PRECISION / Settings.GRID_MULTIPLIER / MESH_DISTANCE]++;
+            }
         }
+
     }
 
     @SneakyThrows

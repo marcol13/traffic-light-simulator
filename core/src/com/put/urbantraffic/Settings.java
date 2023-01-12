@@ -10,10 +10,10 @@ public class Settings {
 
 //    25 hours -> first and last one must match
     final static int STARTING_HOUR = 0;
-    final static int ENDING_HOUR = 24;
+    final static int ENDING_HOUR = 1;
     final static double[] TRAFFIC_LEVEL_BY_HOUR = new double[]{1.6, 1.1, 1.1, 0.9, 1.1, 1.2, 2.4, 4.4, 6.8, 7.8, 5.7, 5.3, 5.7, 5.8, 6.3, 7.4, 8.2, 6.9, 5.2, 4.2, 3.2, 2.8, 2.3, 1.9, 1.6};
 
-    final static int CARS_QUANTITY = 20000;
+    final static int CARS_QUANTITY = 2000;
 
 
 ///////////////////////////////////
@@ -61,4 +61,5 @@ public class Settings {
     final static int INITIAL_DELTA_RANGE = 1000;
 
     final static int TIME_PRECISION = 3; //One second is divided into TIME_PRECISION frames so e.g. TIME_PRECISION = 30 => one day is 24 x 60 x 60 x 30 frames
+    final static int HEATMAP_PRECISION = 2;
 }
