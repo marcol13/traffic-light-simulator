@@ -69,19 +69,31 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             simulation.mutationScale = Settings.MUTATION_SCALE;
             simulation.initialDeltaRange = Settings.INITIAL_DELTA_RANGE;
             simulation.tournamentSelectionContestants = Settings.TOURNAMENT_SELECTION_CONTESTANT;
-            long startTime = System.currentTimeMillis();
-            simulation.startSimulation();
-            long time = System.currentTimeMillis() - startTime;
-            System.out.println("Total time " + time);
-            city = simulation.worst;
-            city = new City(rand, city.trafficLightsSettingsList, filename);
-            worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
-            System.out.println(city.waitingTime);
+            val resultsStream = new BufferedWriter(new FileWriter("results_skrz_" + CROSSING_AMOUNT + "_cars_" + CARS_QUANTITY + "_" + System.currentTimeMillis() +".txt"));
+            resultsStream.write("aut " + CARS_QUANTITY + "\n");
+            resultsStream.write("skrzyzowan " + CROSSING_AMOUNT + "\n");
+            for (int i = 0; i < 1; i++) {
+                long startTime = System.currentTimeMillis();
+                simulation.startSimulation();
+                long time = System.currentTimeMillis() - startTime;
+                System.out.println("Total time " + time);
+                resultsStream.write("time " + time + "\n");
+                city = simulation.best;
+                city = new City(new Random(seed), city.trafficLightsSettingsList, filename);
+                worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
+                System.out.println(city.waitingTime);
+                resultsStream.write("Worst " + simulation.worst.waitingTime + "\n");
+                resultsStream.write("Best " + simulation.best.waitingTime + "\n\n");
+            }
+            resultsStream.close();
         } else {
-            city = new City(rand, filename);
+            city = new City(new Random(seed), filename);
         }
+//        System.exit(0);
 
+        System.out.println("zaczynam wyswietlanie");
         city.startSimulation();
+        System.out.println("zaczynam wyswietlanie2");
         reader = new BufferedReader(new FileReader(filename));
         loadMoreFrames();
 

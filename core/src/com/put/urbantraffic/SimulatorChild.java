@@ -15,7 +15,7 @@ public class SimulatorChild extends Thread {
     private SimulatorChild[] children;
     private int population;
     private final Random random = new Random();
-    private boolean hasEnded = false;
+    public boolean hasEnded = false;
 
     public SimulatorChild(long seed, List<TrafficLightsSettings> trafficLightsSettingsList, SimulatorChild[] children, int population) {
         this.seed = seed;
@@ -36,16 +36,12 @@ public class SimulatorChild extends Thread {
         city.startSimulation();
         valueOfGoalFunction = city.waitingTime;
         hasEnded = true;
-        List<SimulatorChild> ended = Arrays.stream(children).filter(children -> children.hasEnded).collect(Collectors.toList());
-        if (ended.size() > population / 2) {
-            Long max = ended.stream().map(children -> children.valueOfGoalFunction).sorted().collect(Collectors.toList()).get(population / 2);
-            for (SimulatorChild child : children) {
-                if (child.isAlive() && !child.isInterrupted() && !child.hasEnded && child.city.waitingTime > max) {
-                    child.interrupt();
-                    System.out.println("ZABIJAM " + child.getId());
-                }
-            }
-        }
+        System.out.println("koncze" + getId());
+        System.out.flush();
+    }
+
+    public void stopSimulation() {
+        city.run = false;
     }
 
     public List<TrafficLightsSettings> generateSettings(int size) {

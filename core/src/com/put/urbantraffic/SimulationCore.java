@@ -1,6 +1,7 @@
 package com.put.urbantraffic;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class SimulationCore {
     public long seed;
@@ -23,10 +24,10 @@ public class SimulationCore {
         for (int i = 0; i < population; i++) {
             individuals[i] = new SimulatorChild(seed, null, individuals, population);
         }
-        simulateChildren(individuals);
+        simulateChildren(individuals, new SimulatorChild[0]);
 //        Ascending order!
         Arrays.sort(individuals, Comparator.comparing(p -> p.valueOfGoalFunction));
-        worst = individuals[individuals.length - 1].city;
+        worst = individuals[individuals.length / 2].city;
 
         for (int epoch = 0; epoch < epochs; epoch++) {
 
@@ -50,7 +51,7 @@ public class SimulationCore {
             index2 = returnTournamentSelection(individuals);
             children[child] = new SimulatorChild(seed, makeNewGenotype(individuals[index].trafficLightsSettingsList, individuals[index2].trafficLightsSettingsList), children, population);
         }
-        simulateChildren(children);
+        simulateChildren(children, Arrays.copyOf(individuals, population / 2));
 
         System.arraycopy(children, 0, individuals, population / 2, population / 2);
 
@@ -58,18 +59,27 @@ public class SimulationCore {
         Arrays.sort(individuals, Comparator.comparing(p -> p.valueOfGoalFunction));
     }
 
-    private void simulateChildren(SimulatorChild[] children) {
+    private void simulateChildren(SimulatorChild[] children, SimulatorChild[] lastBest) {
 
+        SimulationPulseChecker checker = new SimulationPulseChecker(
+                Stream.concat(Arrays.stream(children), Arrays.stream(lastBest)).toArray(SimulatorChild[]::new),
+                population
+        );
+        checker.start();
         for (SimulatorChild child : children) {
             child.start();
+            System.out.println("start" + child.getId());
         }
-        try {
-            for (SimulatorChild child : children) {
+        for (SimulatorChild child : children) {
+            try {
                 child.join();
+                System.out.println(child.getId() + "joined");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
+        checker.run = false;
+        checker.interrupt();
     }
 
     private int returnTournamentSelection(SimulatorChild[] individuals) {

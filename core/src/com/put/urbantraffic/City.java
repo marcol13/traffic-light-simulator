@@ -98,14 +98,20 @@ public class City {
 
     }
 
+    public boolean run = true;
+
     @SneakyThrows
     public void startSimulation() {
         if (filename != null) {
             writer = new BufferedWriter(new FileWriter(filename));
         }
-        for (int i = Settings.STARTING_HOUR * Settings.TIME_PRECISION * 3600; i < Settings.ENDING_HOUR * Settings.TIME_PRECISION * 3600 - 1; i++) {
+        for (int i = Settings.STARTING_HOUR * Settings.TIME_PRECISION * 3600; run && i < Settings.ENDING_HOUR * Settings.TIME_PRECISION * 3600 - 1; i++) {
+            if (i % (Settings.TIME_PRECISION * 3600 * 4) == 0) {
+                System.out.println(Thread.currentThread().getId() + ": " + (float) i / (Settings.ENDING_HOUR * Settings.TIME_PRECISION * 3600));
+            }
             makeStep();
-            if (IS_DEBUG) System.out.println("Writing frame: " + (i - Settings.STARTING_HOUR * Settings.TIME_PRECISION * 3600));
+            if (IS_DEBUG)
+                System.out.println("Writing frame: " + (i - Settings.STARTING_HOUR * Settings.TIME_PRECISION * 3600));
         }
         if (writer != null) {
             try {
