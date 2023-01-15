@@ -72,7 +72,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             val resultsStream = new BufferedWriter(new FileWriter("results_skrz_" + CROSSING_AMOUNT + "_cars_" + CARS_QUANTITY + "_" + System.currentTimeMillis() +".txt"));
             resultsStream.write("aut " + CARS_QUANTITY + "\n");
             resultsStream.write("skrzyzowan " + CROSSING_AMOUNT + "\n");
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < 5; i++) {
                 long startTime = System.currentTimeMillis();
                 simulation.startSimulation();
                 long time = System.currentTimeMillis() - startTime;
@@ -84,6 +84,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 System.out.println(city.waitingTime);
                 resultsStream.write("Worst " + simulation.worst.waitingTime + "\n");
                 resultsStream.write("Best " + simulation.best.waitingTime + "\n\n");
+                resultsStream.flush();
             }
             resultsStream.close();
         } else {
@@ -296,7 +297,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             } else {
                 frameIndex = frames.size() - 1;
                 frameToRender = frames.get(frameIndex);
-                if (IS_OPTIMIZATION) {
+                if (false) {
                     city = simulation.best;
                     rand.setSeed(seed);
                     city = new City(rand, city.trafficLightsSettingsList, filename);
@@ -308,6 +309,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                     }
                     frameIndex = 0;
                 }
+                frameIndex = 0;
             }
         }
 
