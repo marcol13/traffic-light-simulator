@@ -8,8 +8,7 @@ import lombok.val;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.put.urbantraffic.Settings.IS_DEBUG;
-import static com.put.urbantraffic.Settings.MESH_DISTANCE;
+import static com.put.urbantraffic.Settings.*;
 
 public class City {
     private final List<Crossing> crossings;
