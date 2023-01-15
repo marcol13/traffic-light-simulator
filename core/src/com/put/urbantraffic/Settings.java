@@ -36,7 +36,8 @@ public class Settings {
     final static int NODE_LANE_OFFSET = 4;
     final static int CAR_RADIUS = 2;
     final static int DISTANCE_BETWEEN_CARS_IN_JAM = 1;
-    final static Color CAR_CIRCLE_COLOR = Color.YELLOW;
+    final static Color CAR_CIRCLE_COLOR = new Color(0.1f, 0.7f, 0.1f, 1);
+    final static Color CAR_CIRCLE_COLOR_WAITING = new Color(0.7f, 0.1f, 0.1f, 1);
     final static float CAR_SPEED_MULTIPLIER = 1.0f;
 
 ///////////////////////////////////
