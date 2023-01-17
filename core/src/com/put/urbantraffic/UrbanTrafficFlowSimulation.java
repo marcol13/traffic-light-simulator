@@ -182,7 +182,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             for (int i = 0; i < 9 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; i++) {
                 for (int j = 0; j < 16 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; j++) {
                     //Uncomment for white to red transition
-                    shapeRenderer.setColor(new Color(1, 1 - city.carsInDistricts[i][j] / (float) worstDistrict, (float)(1 - city.carsInDistricts[i][j]/worstDistrict), 1));
+                    shapeRenderer.setColor(new Color(1, 1 - city.carsInDistricts[i][j] / (float) worstDistrict, 1 - city.carsInDistricts[i][j]/(float)(worstDistrict), 1));
                     //Uncomment for black to red transition
 //                    shapeRenderer.setColor(new Color(city.carsInDistricts[i][j] / (float) worstDistrict, 0, 0, 1));
                     shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
