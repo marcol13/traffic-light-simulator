@@ -157,11 +157,11 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
         batch.setProjectionMatrix(extendViewport.getCamera().combined);
         batch.begin();
-        font.getData().setScale(1.0f);
+        font.getData().setScale(0.25f);
         font.draw(batch, "0", scalePositionX - 5,scalePositionY + 2 * scaleSpace);
         font.draw(batch, "100", scalePositionX + Settings.MESH_DISTANCE - 15,scalePositionY + 2 * scaleSpace);
         font.draw(batch, "200 [m]", scalePositionX + 2 * Settings.MESH_DISTANCE - 15,scalePositionY + 2 * scaleSpace);
-        font.getData().setScale(4.0f);
+        font.getData().setScale(1.0f);
         font.draw(batch, "Value of goal function: " + Long.toString(frameToRender.getWaitingTime()), -100,-300);
 
         long currentSimulationTime = frameToRender.getCurrentTime();
@@ -388,7 +388,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
     private void drawLinearScale(){
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.setColor(Color.BLACK);
         shapeRenderer.rectLine(scalePositionX, scalePositionY, scalePositionX + 2 * Settings.MESH_DISTANCE, scalePositionY, 5);
         shapeRenderer.rectLine(scalePositionX, scalePositionY - scaleSpace, scalePositionX, scalePositionY + scaleSpace, 5);
         shapeRenderer.rectLine(scalePositionX + 2 * Settings.MESH_DISTANCE, scalePositionY - scaleSpace, scalePositionX + 2 * Settings.MESH_DISTANCE, scalePositionY + scaleSpace, 5);
