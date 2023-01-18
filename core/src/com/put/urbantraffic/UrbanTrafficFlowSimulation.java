@@ -20,6 +20,7 @@ import lombok.val;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -72,7 +73,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             val resultsStream = new BufferedWriter(new FileWriter("results_skrz_" + CROSSING_AMOUNT + "_cars_" + CARS_QUANTITY + "_" + System.currentTimeMillis() +".txt"));
             resultsStream.write("aut " + CARS_QUANTITY + "\n");
             resultsStream.write("skrzyzowan " + CROSSING_AMOUNT + "\n");
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 1; i++) {
                 long startTime = System.currentTimeMillis();
                 simulation.startSimulation();
                 long time = System.currentTimeMillis() - startTime;
@@ -80,6 +81,8 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 resultsStream.write("time " + time + "\n");
                 city = simulation.best;
                 city = new City(new Random(seed), city.trafficLightsSettingsList, filename);
+                System.out.println(city.getCrossings().stream().sorted(Comparator.comparingInt(Crossing::getX)).collect(Collectors.toList()));
+                System.out.println(city.getCrossings().stream().sorted(Comparator.comparingInt(Crossing::getY)).collect(Collectors.toList()));
                 worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
                 System.out.println(city.waitingTime);
                 resultsStream.write("Worst " + simulation.worst.waitingTime + "\n");
@@ -182,6 +185,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         batch.setProjectionMatrix(extendViewport.getCamera().combined);
         batch.begin();
         font.getData().setScale(1.0f);
+        font.setColor(Color.BLACK);
         font.draw(batch, "0", scalePositionX - 5,scalePositionY + 2 * scaleSpace);
         font.draw(batch, "100", scalePositionX + Settings.MESH_DISTANCE - 15,scalePositionY + 2 * scaleSpace);
         font.draw(batch, "200 [m]", scalePositionX + 2 * Settings.MESH_DISTANCE - 15,scalePositionY + 2 * scaleSpace);
