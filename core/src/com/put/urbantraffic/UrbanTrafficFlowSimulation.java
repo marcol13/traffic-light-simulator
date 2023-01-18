@@ -210,7 +210,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             for (int i = 0; i < 9 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; i++) {
                 for (int j = 0; j < 16 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; j++) {
                     //Uncomment for white to red transition
-                    shapeRenderer.setColor(new Color(1, 1 - city.carsInDistricts[i][j] / (float) worstDistrict, (float)(1 - city.carsInDistricts[i][j]/worstDistrict), 1));
+                    shapeRenderer.setColor(new Color(1, 1 - city.carsInDistricts[i][j] / (float) worstDistrict, 1 - city.carsInDistricts[i][j]/(float)(worstDistrict), 1));
                     //Uncomment for black to red transition
 //                    shapeRenderer.setColor(new Color(city.carsInDistricts[i][j] / (float) worstDistrict, 0, 0, 1));
                     shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -269,9 +269,9 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
     private void drawLaneWithSpeedLimit(int lanesAmount, Lane lane, int startX, int startY, int endX, int endY) {
         if (lane.getSpeedLimit() == 30) {
-            drawLanes(startX, startY, endX, endY, lanesAmount, new Color(0.9f, 0.9f, 0.9f, 1));
+            drawLanes(startX, startY, endX, endY, lanesAmount, new Color(0.75f, 0.75f, 0.75f, 1));
         } else if (lane.getSpeedLimit() == 50) {
-            drawLanes(startX, startY, endX, endY, lanesAmount, new Color(0.6f, 0.6f, 0.6f, 1));
+            drawLanes(startX, startY, endX, endY, lanesAmount, new Color(0.5f, 0.5f, 0.5f, 1));
         } else {
             drawLanes(startX, startY, endX, endY, lanesAmount, Color.BLACK);
         }
