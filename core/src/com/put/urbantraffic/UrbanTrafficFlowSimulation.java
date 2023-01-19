@@ -73,7 +73,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             val resultsStream = new BufferedWriter(new FileWriter("results_skrz_" + CROSSING_AMOUNT + "_cars_" + CARS_QUANTITY + "_" + System.currentTimeMillis() +".txt"));
             resultsStream.write("aut " + CARS_QUANTITY + "\n");
             resultsStream.write("skrzyzowan " + CROSSING_AMOUNT + "\n");
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < 5; i++) {
                 long startTime = System.currentTimeMillis();
                 simulation.startSimulation();
                 long time = System.currentTimeMillis() - startTime;
@@ -88,6 +88,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 resultsStream.write("Worst " + simulation.worst.waitingTime + "\n");
                 resultsStream.write("Best " + simulation.best.waitingTime + "\n\n");
                 resultsStream.flush();
+
             }
             resultsStream.close();
         } else {
@@ -98,6 +99,11 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         System.out.println("zaczynam wyswietlanie");
         city.startSimulation();
         System.out.println("zaczynam wyswietlanie2");
+        val waitingStream = new BufferedWriter(new FileWriter("czasy_aut1.txt"));
+        waitingStream.write(city.waitingTimes.stream().map(Object::toString)
+                .collect(Collectors.joining(", ")));
+        waitingStream.close();
+
         reader = new BufferedReader(new FileReader(filename));
         loadMoreFrames();
 
@@ -204,9 +210,9 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
     private void drawHeatmap() {
         if (Gdx.input.isKeyPressed(Input.Keys.H)) {
-            if(!IS_OPTIMIZATION){
-                worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
-            }
+
+            worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
+
             for (int i = 0; i < 9 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; i++) {
                 for (int j = 0; j < 16 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; j++) {
                     //Uncomment for white to red transition
@@ -301,14 +307,17 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             } else {
                 frameIndex = frames.size() - 1;
                 frameToRender = frames.get(frameIndex);
-                if (false) {
+                if (IS_OPTIMIZATION) {
                     city = simulation.best;
-                    rand.setSeed(seed);
-                    city = new City(rand, city.trafficLightsSettingsList, filename);
+                    city = new City(new Random(seed), city.trafficLightsSettingsList, filename);
                     city.startSimulation();
                     try {
+                        val waitingStream = new BufferedWriter(new FileWriter("czasy_aut2.txt"));
+                        waitingStream.write(city.waitingTimes.stream().map(Object::toString)
+                                .collect(Collectors.joining(", ")));
+                        waitingStream.close();
                         reader = new BufferedReader(new FileReader(filename));
-                    } catch (FileNotFoundException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                     frameIndex = 0;
@@ -447,7 +456,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
     private void drawLinearScale(){
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.setColor(Color.BLACK);
         shapeRenderer.rectLine(scalePositionX, scalePositionY, scalePositionX + 2 * Settings.MESH_DISTANCE, scalePositionY, 5);
         shapeRenderer.rectLine(scalePositionX, scalePositionY - scaleSpace, scalePositionX, scalePositionY + scaleSpace, 5);
         shapeRenderer.rectLine(scalePositionX + 2 * Settings.MESH_DISTANCE, scalePositionY - scaleSpace, scalePositionX + 2 * Settings.MESH_DISTANCE, scalePositionY + scaleSpace, 5);
