@@ -207,9 +207,9 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
     private void drawHeatmap() {
         if (Gdx.input.isKeyPressed(Input.Keys.H)) {
-            if(!IS_OPTIMIZATION){
+//            if(!IS_OPTIMIZATION){
                 worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
-            }
+//            }
             for (int i = 0; i < 9 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; i++) {
                 for (int j = 0; j < 16 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; j++) {
                     //Uncomment for white to red transition
