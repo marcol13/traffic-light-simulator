@@ -195,6 +195,13 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         font.draw(batch, "Current time: " + hour + ":" + minute + ":" + second, -100,-100);
 
         font.draw(batch, "Amount of cars: " + frameToRender.getCars().size(), -100,-200);
+
+        font.getData().setScale(0.15f);
+        for (final DrawableCrossingTrafficLight light :frameToRender.getLights()) {
+            font.draw(batch, "Hor.: " + light.getTrafficLightsSettings().getGreenDuration(), light.getX() + 10f, light.getY() + 40f);
+            font.draw(batch, "Ver.: "+ light.getTrafficLightsSettings().getRedDuration(), light.getX() + 10f, light.getY() + 30f);
+            font.draw(batch, "Offset: " + light.getTrafficLightsSettings().getOffset(), light.getX() + 10f, light.getY() + 20f);
+        }
         batch.end();
     }
 

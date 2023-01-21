@@ -1,10 +1,7 @@
 package com.put.urbantraffic.drawablemodels;
 
 import com.badlogic.gdx.utils.Null;
-import com.put.urbantraffic.Crossing;
-import com.put.urbantraffic.Light;
-import com.put.urbantraffic.TrafficLight;
-import com.put.urbantraffic.TrafficLightsSupervisor;
+import com.put.urbantraffic.*;
 import lombok.Data;
 
 @Data
@@ -15,6 +12,7 @@ public class DrawableCrossingTrafficLight {
     private final SingleTrafficLight bottomTrafficLight;
     private final SingleTrafficLight leftTrafficLight;
     private final SingleTrafficLight rightTrafficLight;
+    private final TrafficLightsSettings trafficLightsSettings;
 
     @Data
     public static class SingleTrafficLight {
@@ -35,7 +33,8 @@ public class DrawableCrossingTrafficLight {
                 SingleTrafficLight.fromTrafficLight(lightsSupervisor.getTopTrafficLight()),
                 SingleTrafficLight.fromTrafficLight(lightsSupervisor.getBottomTrafficLight()),
                 SingleTrafficLight.fromTrafficLight(lightsSupervisor.getLeftTrafficLight()),
-                SingleTrafficLight.fromTrafficLight(lightsSupervisor.getRightTrafficLight())
+                SingleTrafficLight.fromTrafficLight(lightsSupervisor.getRightTrafficLight()),
+                lightsSupervisor.getTrafficLightsSettings()
         );
     }
 }
