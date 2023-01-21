@@ -50,6 +50,7 @@ public class Car {
 
     private int carPositionInTrafficJam;
     private boolean changedPositionInTrafficJam;
+    int waitingTime = 0;
 
     public enum Way {
         TOP, RIGHT, BOTTOM, LEFT

@@ -38,6 +38,7 @@ public class Crossing {
         return "Crossing{" +
                 "x=" + x +
                 ", y=" + y +
+                ", settings = " + getTrafficLightsSupervisor().getTrafficLightsSettings() +
                 '}';
     }
 

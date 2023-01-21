@@ -27,6 +27,7 @@ public class City {
     private BufferedWriter writer = null;
     private final String filename;
     public int[][] carsInDistricts = new int[9*Settings.HEATMAP_PRECISION*Settings.GRID_MULTIPLIER][16*Settings.HEATMAP_PRECISION*Settings.GRID_MULTIPLIER];
+    List<Integer> waitingTimes = new ArrayList<>();
 
     public City(Random rand, String filename) {
         this(rand, new ArrayList<>(), filename);
@@ -143,8 +144,10 @@ public class City {
         List<Car> removeCars = new ArrayList<>();
 
         for(Car car: cars){
-            if(car.getStatus() == RideStatus.WAITING)
+            if(car.getStatus() == RideStatus.WAITING) {
                 waitingTime++;
+                car.waitingTime++;
+            }
             else if(car.getStatus() == RideStatus.FINISH){
                 removeCars.add(car);
                 continue;
@@ -154,6 +157,7 @@ public class City {
 
         for(Car removeCar: removeCars){
             cars.remove(removeCar);
+            waitingTimes.add(removeCar.waitingTime);
         }
 
         for( Car car: cars){

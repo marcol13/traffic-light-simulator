@@ -20,6 +20,7 @@ import lombok.val;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -80,11 +81,14 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 resultsStream.write("time " + time + "\n");
                 city = simulation.best;
                 city = new City(new Random(seed), city.trafficLightsSettingsList, filename);
+                System.out.println(city.getCrossings().stream().sorted(Comparator.comparingInt(Crossing::getX)).collect(Collectors.toList()));
+                System.out.println(city.getCrossings().stream().sorted(Comparator.comparingInt(Crossing::getY)).collect(Collectors.toList()));
                 worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
                 System.out.println(city.waitingTime);
                 resultsStream.write("Worst " + simulation.worst.waitingTime + "\n");
                 resultsStream.write("Best " + simulation.best.waitingTime + "\n\n");
                 resultsStream.flush();
+
             }
             resultsStream.close();
         } else {
@@ -95,6 +99,11 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         System.out.println("zaczynam wyswietlanie");
         city.startSimulation();
         System.out.println("zaczynam wyswietlanie2");
+        val waitingStream = new BufferedWriter(new FileWriter("czasy_aut1.txt"));
+        waitingStream.write(city.waitingTimes.stream().map(Object::toString)
+                .collect(Collectors.joining(", ")));
+        waitingStream.close();
+
         reader = new BufferedReader(new FileReader(filename));
         loadMoreFrames();
 
@@ -207,9 +216,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
     private void drawHeatmap() {
         if (Gdx.input.isKeyPressed(Input.Keys.H)) {
-//            if(!IS_OPTIMIZATION){
-                worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
-//            }
+            worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
             for (int i = 0; i < 9 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; i++) {
                 for (int j = 0; j < 16 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; j++) {
                     //Uncomment for white to red transition
@@ -304,14 +311,17 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             } else {
                 frameIndex = frames.size() - 1;
                 frameToRender = frames.get(frameIndex);
-                if (false) {
+                if (IS_OPTIMIZATION) {
                     city = simulation.best;
-                    rand.setSeed(seed);
-                    city = new City(rand, city.trafficLightsSettingsList, filename);
+                    city = new City(new Random(seed), city.trafficLightsSettingsList, filename);
                     city.startSimulation();
                     try {
+                        val waitingStream = new BufferedWriter(new FileWriter("czasy_aut2.txt"));
+                        waitingStream.write(city.waitingTimes.stream().map(Object::toString)
+                                .collect(Collectors.joining(", ")));
+                        waitingStream.close();
                         reader = new BufferedReader(new FileReader(filename));
-                    } catch (FileNotFoundException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                     frameIndex = 0;
