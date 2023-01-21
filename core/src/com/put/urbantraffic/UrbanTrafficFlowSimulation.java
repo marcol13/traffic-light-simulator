@@ -125,7 +125,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
         moveCamera();
 
-        ScreenUtils.clear(0, 0, 0, 1);
+        ScreenUtils.clear(1, 1, 1, 1);
         drawHeatmap();
 
         extendViewport.apply();
@@ -157,7 +157,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         if (frameToRender == null) return;
 
         for (final DrawableCrossingTrafficLight light :frameToRender.getLights()) {
-            drawCircle(light.getX(), light.getY(), Settings.CROSSING_RADIUS, Color.WHITE);
+            drawCircle(light.getX(), light.getY(), Settings.CROSSING_RADIUS, Color.BLACK);
             drawTrafficLight(light);
         }
 
@@ -174,18 +174,18 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 offsetY = Settings.NODE_LANE_OFFSET;
             if(car.getWay() == Car.Way.RIGHT)
                 offsetY = -Settings.NODE_LANE_OFFSET;
-            drawCircle(car.getX() + offsetX, car.getY() + offsetY, Settings.CAR_RADIUS, car.getStatus() == RideStatus.STARTING ? Color.GREEN : (car.getStatus() == RideStatus.RIDING ? Settings.CAR_CIRCLE_COLOR : Color.BLUE));
+            drawCircle(car.getX() + offsetX, car.getY() + offsetY, Settings.CAR_RADIUS, car.getStatus() == RideStatus.STARTING ? Color.ORANGE : (car.getStatus() == RideStatus.RIDING ? Settings.CAR_CIRCLE_COLOR : CAR_CIRCLE_COLOR_WAITING));
         }
 
         drawLinearScale();
 
         batch.setProjectionMatrix(extendViewport.getCamera().combined);
         batch.begin();
-        font.getData().setScale(1.0f);
+        font.getData().setScale(0.25f);
         font.draw(batch, "0", scalePositionX - 5,scalePositionY + 2 * scaleSpace);
         font.draw(batch, "100", scalePositionX + Settings.MESH_DISTANCE - 15,scalePositionY + 2 * scaleSpace);
         font.draw(batch, "200 [m]", scalePositionX + 2 * Settings.MESH_DISTANCE - 15,scalePositionY + 2 * scaleSpace);
-        font.getData().setScale(4.0f);
+        font.getData().setScale(1.0f);
         font.draw(batch, "Value of goal function: " + Long.toString(frameToRender.getWaitingTime()), -100,-300);
 
         long currentSimulationTime = frameToRender.getCurrentTime();
@@ -206,9 +206,9 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             for (int i = 0; i < 9 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; i++) {
                 for (int j = 0; j < 16 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; j++) {
                     //Uncomment for white to red transition
-//                    shapeRenderer.setColor(new Color(1, 1 - city.carsInDistricts[i][j] / (float) worstDistrict, (float)(1 - city.carsInDistricts[i][j]/worstDistrict), 1));
+                    shapeRenderer.setColor(new Color(1, 1 - city.carsInDistricts[i][j] / (float) worstDistrict, 1 - city.carsInDistricts[i][j]/(float)(worstDistrict), 1));
                     //Uncomment for black to red transition
-                    shapeRenderer.setColor(new Color(city.carsInDistricts[i][j] / (float) worstDistrict, 0, 0, 1));
+//                    shapeRenderer.setColor(new Color(city.carsInDistricts[i][j] / (float) worstDistrict, 0, 0, 1));
                     shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.rect((float) (j - 1 - (HEATMAP_PRECISION-1)/2.) * Settings.GRID_MULTIPLIER * MESH_DISTANCE / HEATMAP_PRECISION, (float) (i - 1 - (HEATMAP_PRECISION-1)/2.) * Settings.GRID_MULTIPLIER * MESH_DISTANCE / HEATMAP_PRECISION, MESH_DISTANCE/ HEATMAP_PRECISION * GRID_MULTIPLIER, MESH_DISTANCE/ HEATMAP_PRECISION * GRID_MULTIPLIER);
                     shapeRenderer.end();
@@ -265,11 +265,11 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
     private void drawLaneWithSpeedLimit(int lanesAmount, Lane lane, int startX, int startY, int endX, int endY) {
         if (lane.getSpeedLimit() == 30) {
-            drawLanes(startX, startY, endX, endY, lanesAmount, Color.DARK_GRAY);
+            drawLanes(startX, startY, endX, endY, lanesAmount, new Color(0.75f, 0.75f, 0.75f, 1));
         } else if (lane.getSpeedLimit() == 50) {
-            drawLanes(startX, startY, endX, endY, lanesAmount, Color.LIGHT_GRAY);
+            drawLanes(startX, startY, endX, endY, lanesAmount, new Color(0.5f, 0.5f, 0.5f, 1));
         } else {
-            drawLanes(startX, startY, endX, endY, lanesAmount, Color.RED);
+            drawLanes(startX, startY, endX, endY, lanesAmount, Color.BLACK);
         }
     }
 
@@ -443,7 +443,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
     private void drawLinearScale(){
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.setColor(Color.BLACK);
         shapeRenderer.rectLine(scalePositionX, scalePositionY, scalePositionX + 2 * Settings.MESH_DISTANCE, scalePositionY, 5);
         shapeRenderer.rectLine(scalePositionX, scalePositionY - scaleSpace, scalePositionX, scalePositionY + scaleSpace, 5);
         shapeRenderer.rectLine(scalePositionX + 2 * Settings.MESH_DISTANCE, scalePositionY - scaleSpace, scalePositionX + 2 * Settings.MESH_DISTANCE, scalePositionY + scaleSpace, 5);
