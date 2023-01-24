@@ -5,6 +5,8 @@ build/
 !**/src/test/**/build/
 assets/plik.txt
 assets/results*
+assets/czasy*
+assets/ilosc*
 
 ### IntelliJ IDEA ###
 .idea/

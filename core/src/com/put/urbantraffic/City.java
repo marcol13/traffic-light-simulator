@@ -28,6 +28,8 @@ public class City {
     private final String filename;
     public int[][] carsInDistricts = new int[9*Settings.HEATMAP_PRECISION*Settings.GRID_MULTIPLIER][16*Settings.HEATMAP_PRECISION*Settings.GRID_MULTIPLIER];
     List<Integer> waitingTimes = new ArrayList<>();
+    List<Integer> carsOnRoads = new ArrayList<>();
+    List<Long> goalFunctions = new ArrayList<>();
 
     public City(Random rand, String filename) {
         this(rand, new ArrayList<>(), filename);
@@ -74,6 +76,10 @@ public class City {
             crossing.getTrafficLightsSupervisor().changeAllLights();
         }
         carHandler();
+        if(time % (15 * 60 * TIME_PRECISION) == 0){
+            carsOnRoads.add(cars.size());
+            goalFunctions.add(waitingTime);
+        }
         time += 1;
 
         // TODO: Disable if rendering is not enabled

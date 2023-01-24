@@ -102,13 +102,25 @@ public class Lane {
         return Objects.hash(id, startCrossing, endCrossing, directions, speedLimit, nodeList, length, carsList);
     }
 
-    public boolean isLaneFull(){
+    public boolean isLaneFull(Crossing crossing){
 //        ???
 //        return length - carsList.size()* (AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS) < AVERAGE_CAR_LENGTH + DISTANCE_BETWEEN_CARS;
 
         //TODO Nie jest uwzględniany rozmiar skrzyżowania
-        int carsWithoutStarting = (int)carsList.stream().filter(car -> car.getStatus() != RideStatus.STARTING && !car.isOnCrossing()).count();
-        return length - carsWithoutStarting * (2 * Settings.CAR_RADIUS + Settings.DISTANCE_BETWEEN_CARS_IN_JAM) - 2 * Settings.CROSSING_RADIUS < 2 * Settings.CAR_RADIUS + Settings.DISTANCE_BETWEEN_CARS_IN_JAM;
+        if(carsList.isEmpty())
+            return false;
+//        int carsWithoutStarting = (int)carsList.stream().filter(car -> car.getStatus() != RideStatus.STARTING && !car.isOnCrossing()).count();
+//        boolean firstCondition = length - carsWithoutStarting * (2 * Settings.CAR_RADIUS + Settings.DISTANCE_BETWEEN_CARS_IN_JAM) - 2 * Settings.CROSSING_RADIUS < 2 * Settings.CAR_RADIUS + Settings.DISTANCE_BETWEEN_CARS_IN_JAM;
+        Car lastCar = carsList.stream().filter(car -> car.getStatus() == RideStatus.WAITING).reduce((first, second) -> second).orElse(null);
+        if(lastCar == null)
+            return false;
+//        Car lastCar = carsList.get(carsList.size() - 1);
+        return 2 * Settings.CAR_RADIUS + Settings.DISTANCE_BETWEEN_CARS_IN_JAM + Settings.CROSSING_RADIUS > calculateDistance(lastCar.getCarPosition().getX(), lastCar.getCarPosition().getY(), crossing.getX(), crossing.getY());
+//        return firstCondition;
+    }
+
+    public double calculateDistance(int x1, int y1, int x2, int y2){
+        return Math.sqrt(Math.pow((x1-x2),2) + Math.pow((y1-y2),2));
     }
 
     @Override

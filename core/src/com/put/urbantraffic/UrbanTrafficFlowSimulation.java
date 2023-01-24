@@ -99,10 +99,15 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         System.out.println("zaczynam wyswietlanie");
         city.startSimulation();
         System.out.println("zaczynam wyswietlanie2");
-        val waitingStream = new BufferedWriter(new FileWriter("czasy_aut1.txt"));
+        val waitingStream = new BufferedWriter(new FileWriter("czasy_aut1" + "_" + System.currentTimeMillis() + ".txt"));
         waitingStream.write(city.waitingTimes.stream().map(Object::toString)
                 .collect(Collectors.joining(", ")));
         waitingStream.close();
+
+        val amountStream = new BufferedWriter(new FileWriter("ilosc-aut1" + "_" + System.currentTimeMillis() + ".txt"));
+        amountStream.write(city.carsOnRoads.stream().map(Object::toString).collect(Collectors.joining(", ")) + "\n");
+        amountStream.write(city.goalFunctions.stream().map(Object::toString).collect(Collectors.joining(", ")));
+        amountStream.close();
 
         reader = new BufferedReader(new FileReader(filename));
         loadMoreFrames();

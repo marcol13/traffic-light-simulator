@@ -205,7 +205,7 @@ public class Car {
                         status = RideStatus.WAITING;
                         return;
                     } else {
-                        if (!lanesList.get(1).isLaneFull()) {
+                        if (!lanesList.get(1).isLaneFull(crossingList.get(0))) {
                             status = RideStatus.RIDING;
                         } else {
                             status = RideStatus.WAITING;
@@ -213,7 +213,7 @@ public class Car {
                         }
                     }
                 } else{
-                    if(!lanesList.get(1).isLaneFull()){
+                    if(!lanesList.get(1).isLaneFull(crossingList.get(0))){
                         status = RideStatus.RIDING;
                     }
                     else{
