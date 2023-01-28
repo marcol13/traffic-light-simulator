@@ -20,6 +20,7 @@ import lombok.val;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -62,7 +63,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         rand.setSeed(seed);
         System.out.println("Seed is " + seed);
 
-        if (IS_OPTIMIZATION) {
+        if (true) {
             simulation.seed = seed;
             simulation.epochs = Settings.EPOCHS;
             simulation.population = Settings.POPULATION;
@@ -72,7 +73,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             val resultsStream = new BufferedWriter(new FileWriter("results_skrz_" + CROSSING_AMOUNT + "_cars_" + CARS_QUANTITY + "_" + System.currentTimeMillis() +".txt"));
             resultsStream.write("aut " + CARS_QUANTITY + "\n");
             resultsStream.write("skrzyzowan " + CROSSING_AMOUNT + "\n");
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 1; i++) {
                 long startTime = System.currentTimeMillis();
                 simulation.startSimulation();
                 long time = System.currentTimeMillis() - startTime;
@@ -82,13 +83,20 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
                 city = new City(new Random(seed), city.trafficLightsSettingsList, filename);
                 worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
                 System.out.println(city.waitingTime);
+                System.out.println(
+                        city.getCrossings().stream().map(x -> x.trafficLightsSupervisor.trafficLightsSettings)
+                                .map(o -> String.format("new TrafficLightsSettings(%d, %d, %d /* %d, %d, %d */)", o.getGreenDuration(), o.getRedDuration(), o.getOffset(), o.getGreenDuration() / 3 + 2, o.getRedDuration() / 3 + 2, o.getOffset() / 3 + 2))
+                                .collect(Collectors.toList())
+                );
                 resultsStream.write("Worst " + simulation.worst.waitingTime + "\n");
                 resultsStream.write("Best " + simulation.best.waitingTime + "\n\n");
                 resultsStream.flush();
             }
             resultsStream.close();
         } else {
-            city = new City(new Random(seed), filename);
+            city = new City(new Random(seed), Arrays.asList(new TrafficLightsSettings(31, 14, 0), new TrafficLightsSettings(22, 150, 157), new TrafficLightsSettings(131, 231, 612), new TrafficLightsSettings(60, 32, 202), new TrafficLightsSettings(203, 76, 370) /* done */, new TrafficLightsSettings(35, 29, 56)/* done */, new TrafficLightsSettings(71, 180, 86), new TrafficLightsSettings(35, 19, 573), new TrafficLightsSettings(99, 77, 437) /* done */, new TrafficLightsSettings(42, 30, 36), new TrafficLightsSettings(25,130, 120), new TrafficLightsSettings(100, 120, 131), new TrafficLightsSettings(14, 20, 33), new TrafficLightsSettings(40, 26, 30), new TrafficLightsSettings(44, 33, 85), new TrafficLightsSettings(6, 12, 14), new TrafficLightsSettings(28, 35, 54)), filename);
+            System.out.println("Green" + city.getCrossings().stream().map(x -> x.trafficLightsSupervisor.trafficLightsSettings.getGreenDuration()).reduce(Integer::sum).get() / (float) city.getCrossings().size() / 3);
+            System.out.println("Red" + city.getCrossings().stream().map(x -> x.trafficLightsSupervisor.trafficLightsSettings.getRedDuration()).reduce(Integer::sum).get()/ (float) city.getCrossings().size() / 3);
         }
 //        System.exit(0);
 
@@ -198,18 +206,18 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
         font.getData().setScale(0.15f);
         for (final DrawableCrossingTrafficLight light :frameToRender.getLights()) {
-            font.draw(batch, "Hor.: " + light.getTrafficLightsSettings().getGreenDuration(), light.getX() + 10f, light.getY() + 40f);
-            font.draw(batch, "Ver.: "+ light.getTrafficLightsSettings().getRedDuration(), light.getX() + 10f, light.getY() + 30f);
-            font.draw(batch, "Offset: " + light.getTrafficLightsSettings().getOffset(), light.getX() + 10f, light.getY() + 20f);
+            font.draw(batch, "Hor.: " + (light.getTrafficLightsSettings().getGreenDuration() /3 + 2) , light.getX() + 10f, light.getY() + 40f);
+            font.draw(batch, "Ver.: "+ (light.getTrafficLightsSettings().getRedDuration()/ 3 + 2) , light.getX() + 10f, light.getY() + 30f);
+            font.draw(batch, "Offset: " + (light.getTrafficLightsSettings().getOffset()/3 + 2) , light.getX() + 10f, light.getY() + 20f);
         }
         batch.end();
     }
 
     private void drawHeatmap() {
         if (Gdx.input.isKeyPressed(Input.Keys.H)) {
-            if(!IS_OPTIMIZATION){
+//            if(!IS_OPTIMIZATION){
                 worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
-            }
+//            }
             for (int i = 0; i < 9 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; i++) {
                 for (int j = 0; j < 16 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; j++) {
                     //Uncomment for white to red transition

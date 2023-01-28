@@ -126,12 +126,12 @@ public class SimulationCore {
             mutatedOffset = (int) (rand.nextFloat() * mutationScale - mutationScale / 2) + settingsToBeMutated.getOffset();
             boolean isGreenInRange = isInRange(mutatedGreen, 0, Settings.MAX_GREEN_LIGHT_LENGTH);
             boolean isRedInRange = isInRange(mutatedRed, 0 , Settings.MAX_RED_LIGHT_LENGTH);
-//            boolean isOffsetInRange = isInRange(mutatedOffset);
+//            boolean isOffsetInRange = isInRange(mutatedOffset, 0, mutatedGreen + mutatedRed + (2 * Settings.ALL_RED_LIGHT_LENGTH) + (4 * Settings.YELLOW_LIGHT_LENGTH));
             if (isGreenInRange && isRedInRange) {
                 break;
             }
         }
-        newGenotype.set(whichDeltaMutated, new TrafficLightsSettings(mutatedGreen, mutatedRed, mutatedOffset));
+        newGenotype.set(whichDeltaMutated, new TrafficLightsSettings(mutatedGreen, mutatedRed, mutatedOffset % (mutatedGreen + mutatedRed + (2 * Settings.ALL_RED_LIGHT_LENGTH) + (4 * Settings.YELLOW_LIGHT_LENGTH))));
 
         return newGenotype;
     }

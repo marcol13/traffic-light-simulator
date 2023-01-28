@@ -427,7 +427,7 @@ public class City {
         if (shouldGenerateLights) {
             final int greenDuration = rand.nextInt(Settings.MAX_RED_LIGHT_LENGTH * Settings.TIME_PRECISION);
             final int redDuration = rand.nextInt(Settings.MAX_GREEN_LIGHT_LENGTH * Settings.TIME_PRECISION);
-            final int offset = rand.nextInt(Settings.MAX_OFFSET_LENGTH * Settings.TIME_PRECISION);
+            final int offset = rand.nextInt(greenDuration + redDuration + (YELLOW_LIGHT_LENGTH * Settings.TIME_PRECISION * 4) + (ALL_RED_LIGHT_LENGTH * Settings.TIME_PRECISION * 4));
             trafficLightsSettings = new TrafficLightsSettings(greenDuration, redDuration, offset);
             trafficLightsSettingsList.add(trafficLightsSettings);
         } else {

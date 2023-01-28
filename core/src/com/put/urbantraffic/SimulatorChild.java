@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import static com.put.urbantraffic.Settings.ALL_RED_LIGHT_LENGTH;
+import static com.put.urbantraffic.Settings.YELLOW_LIGHT_LENGTH;
+
 public class SimulatorChild extends Thread {
     public City city;
     public Long valueOfGoalFunction = Long.MAX_VALUE;
@@ -49,7 +52,7 @@ public class SimulatorChild extends Thread {
         for (int i = 0; i < size; i++) {
             final int greenDuration = random.nextInt(Settings.MAX_GREEN_LIGHT_LENGTH);
             final int redDuration = random.nextInt(Settings.MAX_RED_LIGHT_LENGTH);
-            final int offset = random.nextInt(600);
+            final int offset = random.nextInt(greenDuration + redDuration + (YELLOW_LIGHT_LENGTH * Settings.TIME_PRECISION * 4) + (ALL_RED_LIGHT_LENGTH * Settings.TIME_PRECISION * 4));
             TrafficLightsSettings trafficLightsSettings = new TrafficLightsSettings(greenDuration, redDuration, offset);
             list.add(trafficLightsSettings);
         }
