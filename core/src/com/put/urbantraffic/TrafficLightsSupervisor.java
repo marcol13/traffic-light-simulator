@@ -10,7 +10,7 @@ import lombok.Setter;
 public class TrafficLightsSupervisor {
     static final int YELLOW_DURATION = Settings.YELLOW_LIGHT_LENGTH * Settings.TIME_PRECISION;
     static final int ALL_RED_DURATION = Settings.ALL_RED_LIGHT_LENGTH * Settings.TIME_PRECISION;
-    private TrafficLightsSettings trafficLightsSettings;
+    TrafficLightsSettings trafficLightsSettings;
     private final Random rand;
 
     private int timeToChangeLights;

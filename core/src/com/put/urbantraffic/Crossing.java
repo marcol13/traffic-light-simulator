@@ -31,7 +31,7 @@ public class Crossing {
     private final ArrayList<Car> turnLeftRightCardField = new ArrayList<>();
 
 
-    private final TrafficLightsSupervisor trafficLightsSupervisor;
+    final TrafficLightsSupervisor trafficLightsSupervisor;
 
     @Override
     public String toString() {

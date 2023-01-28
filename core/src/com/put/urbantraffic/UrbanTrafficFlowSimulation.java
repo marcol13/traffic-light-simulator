@@ -10,12 +10,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.put.urbantraffic.drawablemodels.DrawableCrossingTrafficLight;
 import com.put.urbantraffic.drawablemodels.DrawableCar;
 import com.put.urbantraffic.drawablemodels.Frame;
+import lombok.SneakyThrows;
 import lombok.val;
 
+import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -30,6 +35,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     BitmapFont clockFont;
     SpriteBatch batch;
 
+    public static Gson gson = new Gson();
     private City city;
     private Frame frameToRender = null;
     private int frameIndex = 0;
@@ -39,48 +45,74 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
     private final int scalePositionY = 0;
     private final int scaleSpace = 20;
     SimulationCore simulation = new SimulationCore(new Random());
+    List<Frame> frames = new ArrayList<>();
+    private BufferedReader reader;
+    Random rand = new Random(0);
+    //        long seed = rand.nextLong();
+    long seed = 0;
 
     private int worstDistrict;
 
+    @SneakyThrows
     @Override
     public void create() {
+        String filename = "plik.txt";
         shapeRenderer = new ShapeRenderer();
         extendViewport = new ExtendViewport(1200, 1200);
-        Random rand = new Random(0);
-//        long seed = rand.nextLong();
-        long seed = 0;
+
         rand.setSeed(seed);
         System.out.println("Seed is " + seed);
 
-        if (IS_DEBUG) {
-            System.out.println("Quantity of Crossings: " + city.getCrossings().size());
-            System.out.println("Quantity of Roads: " + city.getRoads().size());
-        }
-
-        if (IS_OPTIMIZATION) {
+        if (true) {
             simulation.seed = seed;
             simulation.epochs = Settings.EPOCHS;
             simulation.population = Settings.POPULATION;
             simulation.mutationScale = Settings.MUTATION_SCALE;
             simulation.initialDeltaRange = Settings.INITIAL_DELTA_RANGE;
             simulation.tournamentSelectionContestants = Settings.TOURNAMENT_SELECTION_CONTESTANT;
-            simulation.startSimulation();
-            city = simulation.worst;
-            worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
-            System.out.println(city.waitingTime);
+            val resultsStream = new BufferedWriter(new FileWriter("results_skrz_" + CROSSING_AMOUNT + "_cars_" + CARS_QUANTITY + "_" + System.currentTimeMillis() +".txt"));
+            resultsStream.write("aut " + CARS_QUANTITY + "\n");
+            resultsStream.write("skrzyzowan " + CROSSING_AMOUNT + "\n");
+            for (int i = 0; i < 1; i++) {
+                long startTime = System.currentTimeMillis();
+                simulation.startSimulation();
+                long time = System.currentTimeMillis() - startTime;
+                System.out.println("Total time " + time);
+                resultsStream.write("time " + time + "\n");
+                city = simulation.best;
+                city = new City(new Random(seed), city.trafficLightsSettingsList, filename);
+                worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
+                System.out.println(city.waitingTime);
+                System.out.println(
+                        city.getCrossings().stream().map(x -> x.trafficLightsSupervisor.trafficLightsSettings)
+                                .map(o -> String.format("new TrafficLightsSettings(%d, %d, %d /* %d, %d, %d */)", o.getGreenDuration(), o.getRedDuration(), o.getOffset(), o.getGreenDuration() / 3 + 2, o.getRedDuration() / 3 + 2, o.getOffset() / 3 + 2))
+                                .collect(Collectors.toList())
+                );
+                resultsStream.write("Worst " + simulation.worst.waitingTime + "\n");
+                resultsStream.write("Best " + simulation.best.waitingTime + "\n\n");
+                resultsStream.flush();
+            }
+            resultsStream.close();
         } else {
-            // runs whole simulation on different thread
-            // so we can still render next frames
-            city = new City(rand);
-            new Thread(() -> {
-                city.startSimulation();
-            }).start();
+            city = new City(new Random(seed), Arrays.asList(new TrafficLightsSettings(31, 14, 0), new TrafficLightsSettings(22, 150, 157), new TrafficLightsSettings(131, 231, 612), new TrafficLightsSettings(60, 32, 202), new TrafficLightsSettings(203, 76, 370) /* done */, new TrafficLightsSettings(35, 29, 56)/* done */, new TrafficLightsSettings(71, 180, 86), new TrafficLightsSettings(35, 19, 573), new TrafficLightsSettings(99, 77, 437) /* done */, new TrafficLightsSettings(42, 30, 36), new TrafficLightsSettings(25,130, 120), new TrafficLightsSettings(100, 120, 131), new TrafficLightsSettings(14, 20, 33), new TrafficLightsSettings(40, 26, 30), new TrafficLightsSettings(44, 33, 85), new TrafficLightsSettings(6, 12, 14), new TrafficLightsSettings(28, 35, 54)), filename);
+            System.out.println("Green" + city.getCrossings().stream().map(x -> x.trafficLightsSupervisor.trafficLightsSettings.getGreenDuration()).reduce(Integer::sum).get() / (float) city.getCrossings().size() / 3);
+            System.out.println("Red" + city.getCrossings().stream().map(x -> x.trafficLightsSupervisor.trafficLightsSettings.getRedDuration()).reduce(Integer::sum).get()/ (float) city.getCrossings().size() / 3);
         }
+//        System.exit(0);
+
+        System.out.println("zaczynam wyswietlanie");
+        city.startSimulation();
+        System.out.println("zaczynam wyswietlanie2");
+        reader = new BufferedReader(new FileReader(filename));
+        loadMoreFrames();
 
         font = new BitmapFont(Gdx.files.internal("bahnschrift.fnt"));
         clockFont = new BitmapFont(Gdx.files.internal("clock-font.fnt"));
         batch = new SpriteBatch();
-
+        if (IS_DEBUG) {
+            System.out.println("Quantity of Crossings: " + city.getCrossings().size());
+            System.out.println("Quantity of Roads: " + city.getRoads().size());
+        }
         setupInitialCameraPositionAndZoom(Settings.GRID_MULTIPLIER);
     }
 
@@ -171,14 +203,21 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         font.draw(batch, "Current time: " + hour + ":" + minute + ":" + second, -100,-100);
 
         font.draw(batch, "Amount of cars: " + frameToRender.getCars().size(), -100,-200);
+
+        font.getData().setScale(0.15f);
+        for (final DrawableCrossingTrafficLight light :frameToRender.getLights()) {
+            font.draw(batch, "Hor.: " + (light.getTrafficLightsSettings().getGreenDuration() /3 + 2) , light.getX() + 10f, light.getY() + 40f);
+            font.draw(batch, "Ver.: "+ (light.getTrafficLightsSettings().getRedDuration()/ 3 + 2) , light.getX() + 10f, light.getY() + 30f);
+            font.draw(batch, "Offset: " + (light.getTrafficLightsSettings().getOffset()/3 + 2) , light.getX() + 10f, light.getY() + 20f);
+        }
         batch.end();
     }
 
     private void drawHeatmap() {
         if (Gdx.input.isKeyPressed(Input.Keys.H)) {
-            if(!IS_OPTIMIZATION){
+//            if(!IS_OPTIMIZATION){
                 worstDistrict = Stream.of(city.carsInDistricts).flatMapToInt(IntStream::of).summaryStatistics().getMax();
-            }
+//            }
             for (int i = 0; i < 9 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; i++) {
                 for (int j = 0; j < 16 * Settings.HEATMAP_PRECISION * Settings.GRID_MULTIPLIER; j++) {
                     //Uncomment for white to red transition
@@ -251,6 +290,7 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
 
     public void moveCamera() {
         float delta = Gdx.graphics.getDeltaTime();
+        String filename = "plikBest.txt";
 
         if (Gdx.input.isKeyPressed(Input.Keys.O)) {
             ((OrthographicCamera) extendViewport.getCamera()).zoom += .5f * delta;
@@ -258,25 +298,33 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
             ((OrthographicCamera) extendViewport.getCamera()).zoom -= .5f * delta;
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-            if (frameIndex < city.frame.size()) {
-                frameToRender = city.frame.get(frameIndex);
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            if (frameIndex < frames.size()) {
+                frameToRender = frames.get(frameIndex);
+                for (int i = 0; i < frameIndex; i++) {
+                    frames.remove(0);
+                }
+                if (frames.size() < 100) {
+                    loadMoreFrames();
+                }
+                frameIndex = 0;
                 frameIndex += speed;
-            }
-            else{
-                frameIndex = city.frame.size()-1;
-                frameToRender = city.frame.get(frameIndex);
-                if (IS_OPTIMIZATION) {
+            } else {
+                frameIndex = frames.size() - 1;
+                frameToRender = frames.get(frameIndex);
+                if (false) {
+                    city = simulation.best;
+                    rand.setSeed(seed);
+                    city = new City(rand, city.trafficLightsSettingsList, filename);
+                    city.startSimulation();
                     try {
-                        // sleep so we are aware of the first simulation is ending
-                        // and that the 2nd is about to start
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
+                        reader = new BufferedReader(new FileReader(filename));
+                    } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                    city = simulation.best;
                     frameIndex = 0;
                 }
+                frameIndex = 0;
             }
         }
 
@@ -295,6 +343,19 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
 
         extendViewport.getCamera().position.set(playerX, playerY, 0);
+    }
+
+    private void loadMoreFrames() {
+        try {
+            for (int i = 0; i < 100; i++) {
+                String json = reader.readLine();
+                if (json == null) return;
+
+                frames.add(gson.fromJson(json, Frame.class));
+            }
+        } catch (JsonSyntaxException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleSpeedControl() {
@@ -327,6 +388,15 @@ public class UrbanTrafficFlowSimulation extends ApplicationAdapter {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_0)) {
             speed = 1;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_0)) {
+            speed = 1;
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
+            speed = Math.max(speed - 1, 1);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.EQUALS)) {
+            speed += 1;
         }
     }
 
